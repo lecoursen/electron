@@ -6,6 +6,7 @@
 #include "atom/browser/native_window_views.h"
 #include "atom/browser/ui/views/root_view.h"
 #include "atom/common/atom_constants.h"
+#include "base/win/scoped_handle.h"
 #include "content/public/browser/browser_accessibility_state.h"
 #include "ui/base/win/accessibility_misc_utils.h"
 #include "ui/display/win/screen_win.h"
@@ -132,10 +133,37 @@ const char* AppCommandToString(int command_id) {
   }
 }
 
+bool IsMutexPresent(const wchar_t* name) {
+  base::win::ScopedHandle hMutex(::CreateMutex(nullptr, false, name));
+  return ::GetLastError() == ERROR_ALREADY_EXISTS;
+}
+
+bool IsLibraryLoaded(const wchar_t* name) {
+  HMODULE hModule = nullptr;
+  ::GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, name,
+                      &hModule);
+  return hModule != nullptr;
+}
+
 bool IsScreenReaderActive() {
-  UINT screenReader = 0;
-  SystemParametersInfo(SPI_GETSCREENREADER, 0, &screenReader, 0);
-  return screenReader && UiaClientsAreListening();
+  if (IsMutexPresent(L"NarratorRunning"))
+    return true;
+
+  static const wchar_t* names[] = {// NVDA
+                                   L"nvdaHelperRemote.dll",
+                                   // JAWS
+                                   L"jhook.dll",
+                                   // Window-Eyes
+                                   L"gwhk64.dll", L"gwmhook.dll",
+                                   // ZoomText
+                                   L"AiSquared.Infuser.HookLib.dll"};
+
+  for (auto name : names) {
+    if (IsLibraryLoaded(name))
+      return true;
+  }
+
+  return false;
 }
 
 }  // namespace
