@@ -274,12 +274,15 @@ static_library("electron_lib") {
   defines = [
     # Disable warnings for g_settings_list_schemas.
     "GLIB_DISABLE_DEPRECATION_WARNINGS",
-
-    # Import V8 symbols from shared library (node.dll / libnode.so)
-    "USING_V8_SHARED",
-    "USING_V8_PLATFORM_SHARED",
-    "USING_V8_BASE_SHARED",
   ]
+  if (is_component_build) {
+    defines += [
+      # Import V8 symbols from shared library (node.dll / libnode.so)
+      "USING_V8_SHARED",
+      "USING_V8_PLATFORM_SHARED",
+      "USING_V8_BASE_SHARED",
+    ]
+  }
   include_dirs = [
     "chromium_src",
     ".",
@@ -659,12 +662,13 @@ if (is_mac) {
         # TODO: move non-windows specific deps into the non-windows-specific list
         "//third_party/breakpad:breakpad_handler",
         "//third_party/breakpad:breakpad_sender",
-        "//third_party/webrtc/system_wrappers:metrics_default",
         "//ui/native_theme:native_theme_browser",
         "//ui/shell_dialogs",
         "//ui/views/controls/webview",
         "//ui/wm",
         "//ui/wm/public",
+        "//content/public/app:both",
+        "//content",
       ]
 
       libs = [
