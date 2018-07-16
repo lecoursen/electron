@@ -325,23 +325,29 @@ jobs:
           command: |
             git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
             echo 'export PATH=$PATH:`pwd`/depot_tools' >> $BASH_ENV
-            source $BASH_ENV
-            echo $PATH
+      - checkout:
+          path: src/electron
+      - restore_cache:
+          paths:
+            - ~/.gclient-cache
+          keys:
+            - v1-gclient-cache-{{ checksum "src/electron/DEPS" }}
+            - v1-gclient-cache-
       - run:
           name: Gclient sync
           command: |
             echo $PATH
-            cat > .gclient <<-GCLIENT
-            solutions = [
-              {
-                "url": "https://github.com/electron/electron",
-                "managed": False,
-                "name": "src/electron",
-              },
-            ]
-            GCLIENT
+            gclient config \
+              --name "src/electron" \
+              --unmanaged \
+              --cache-dir "$HOME/.gclient-cache" \
+              "https://github.com/electron/electron"
 
             gclient sync --with_branch_heads --with_tags
+      - save_cache:
+          paths:
+            - ~/.gclient-cache
+          key: v1-gclient-cache-{{ checksum "src/electron/DEPS" }}
       - run:
           name: GN gen
           command: |
@@ -352,7 +358,8 @@ jobs:
       - run:
           name: Ninja build
           command: |
-             ninja -C out/Default electron:electron_app
+            cd src
+            ninja -C out/Default electron:electron_app
       - run:
           name: Setup for headless testing
           environment:
@@ -365,37 +372,38 @@ jobs:
             MOCHA_FILE: junit/test-results.xml
             MOCHA_REPORTER: mocha-junit-reporter
           command: |
-             (cd electron/spec && npm i --nodedir=../../third_party/electron_node)
-             ./out/Default/electron electron/spec --ci
+            cd src
+            (cd electron/spec && npm i --nodedir=../../third_party/electron_node)
+            ./out/Default/electron electron/spec --ci
       - <<: *notify-slack-failure
       - <<: *notify-slack-success
 
 workflows:
   version: 2
-  build-arm:
-    jobs:
-      - electron-linux-arm
-      - electron-linux-arm-test:
-          requires:
-            - electron-linux-arm
-  build-arm64:
-    jobs:
-      - electron-linux-arm64
-      - electron-linux-arm64-test:
-          requires:
-            - electron-linux-arm64
-  build-ia32:
-    jobs:
-      - electron-linux-ia32
-  build-x64:
-    jobs:
-      - electron-linux-x64
-  build-osx-x64:
-    jobs:
-      - electron-osx-x64
-  build-mas-x64:
-    jobs:
-      - electron-mas-x64
+#  build-arm:
+#    jobs:
+#      - electron-linux-arm
+#      - electron-linux-arm-test:
+#          requires:
+#            - electron-linux-arm
+#  build-arm64:
+#    jobs:
+#      - electron-linux-arm64
+#      - electron-linux-arm64-test:
+#          requires:
+#            - electron-linux-arm64
+#  build-ia32:
+#    jobs:
+#      - electron-linux-ia32
+#  build-x64:
+#    jobs:
+#      - electron-linux-x64
+#  build-osx-x64:
+#    jobs:
+#      - electron-osx-x64
+#  build-mas-x64:
+#    jobs:
+#      - electron-mas-x64
   build-gn-linux:
     jobs:
       - electron-linux-gn
