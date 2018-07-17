@@ -280,6 +280,9 @@ static_library("electron_lib") {
     ]
     configs += [ ":gio_unix" ]
   }
+  if (is_win) {
+    libs = [ "dwmapi.lib" ]
+  }
   defines = [
     # Disable warnings for g_settings_list_schemas.
     "GLIB_DISABLE_DEPRECATION_WARNINGS",
