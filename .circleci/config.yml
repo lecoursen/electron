@@ -373,7 +373,9 @@ jobs:
             MOCHA_REPORTER: mocha-junit-reporter
           command: |
             cd src
-            (cd electron/spec && npm i --nodedir=../../third_party/electron_node)
+            ninja -C out/Default electron/build/node:headers
+            export npm_config_nodedir="$PWD/out/Default/gen/node_headers"
+            (cd electron/spec && npm install)
             ./out/Default/electron electron/spec --ci
       - <<: *notify-slack-failure
       - <<: *notify-slack-success
