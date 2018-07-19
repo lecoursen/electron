@@ -377,6 +377,10 @@ jobs:
             export npm_config_nodedir="$PWD/out/Default/gen/node_headers"
             (cd electron/spec && npm install)
             ./out/Default/electron electron/spec --ci
+      - store_test_results:
+          path: src/junit
+      - store_artifacts:
+          path: src/junit
       - <<: *notify-slack-failure
       - <<: *notify-slack-success
 
