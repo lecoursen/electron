@@ -1163,8 +1163,40 @@ std::vector<mate::Dictionary> App::GetAppMetrics(v8::Isolate* isolate) {
 
 v8::Local<v8::Value> App::GetGPUFeatureStatus(v8::Isolate* isolate) {
   auto status = content::GetFeatureStatus();
-  base::DictionaryValue temp;
-  return mate::ConvertToV8(isolate, status ? *status : temp);
+  auto problems = content::GetProblems();
+  auto driver_bug_workarounds = content::GetDriverBugWorkarounds();
+  base::DictionaryValue result;
+  if (status) {
+    result.Swap(status.get());
+    auto gpu_info = content::GpuDataManagerImpl::GetInstance()->GetGPUInfo();
+    auto gpu_feature_info =
+        content::GpuDataManagerImpl::GetInstance()->GetGpuFeatureInfo();
+    auto blacklist_entries = std::make_unique<base::ListValue>();
+    for (auto& blacklist_entry : gpu_feature_info.applied_gpu_blacklist_entries)
+      blacklist_entries->AppendInteger(blacklist_entry);
+    result.SetList("applied_gpu_blacklist_entries",
+                   std::move(blacklist_entries));
+    auto buglist_entries = std::make_unique<base::ListValue>();
+    for (auto& buglist_entry :
+         gpu_feature_info.applied_gpu_driver_bug_list_entries)
+      buglist_entries->AppendInteger(buglist_entry);
+    result.SetList("applied_gpu_driver_bug_list_entries",
+                   std::move(buglist_entries));
+    auto gpu_device = gpu_info.active_gpu();
+    result.SetInteger("vendor_id", gpu_device.vendor_id);
+    result.SetInteger("device_id", gpu_device.device_id);
+    result.SetString("machine_model_name", gpu_info.machine_model_name);
+    result.SetString("machine_model_version", gpu_info.machine_model_version);
+    result.SetBoolean("sandboxed", gpu_info.sandboxed);
+    result.SetBoolean("in_process_gpu", gpu_info.in_process_gpu);
+  }
+  auto driver_bug_workarounds_list = std::make_unique<base::ListValue>();
+  for (auto& workaround : driver_bug_workarounds)
+    driver_bug_workarounds_list->AppendString(workaround);
+  result.SetList("driver_bug_workarounds",
+                 std::move(driver_bug_workarounds_list));
+  result.SetList("problems", std::move(problems));
+  return mate::ConvertToV8(isolate, result);
 }
 
 void App::EnableMixedSandbox(mate::Arguments* args) {

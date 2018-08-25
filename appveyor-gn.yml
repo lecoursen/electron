@@ -43,7 +43,7 @@ test_script:
       } else {
         echo "Skipping tests for $env:GN_CONFIG build"
       }
-  - if "%GN_CONFIG%"=="testing" ( echo "Running test suite" & .\out\Default\electron.exe electron\spec --ci )
+  - if "%GN_CONFIG%"=="testing" ( echo "Running test suite" & .\out\Default\electron.exe electron\spec --ci --enable-logging --disable-gpu-early-init --disable-gpu-compositing )
 artifacts:
 - path: src/out/Default/dist.zip
   name: dist.zip
