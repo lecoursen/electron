@@ -92,8 +92,12 @@ void WindowList::CloseAllWindows() {
 // static
 void WindowList::DestroyAllWindows() {
   WindowVector windows = GetInstance()->windows_;
-  for (auto* const& window : windows)
-    window->CloseImmediately();  // e.g. Destroy()
+  if (!windows.empty()) {
+    for (auto* const& window : windows)
+      window->CloseImmediately();  // e.g. Destroy()
+    // Pump the message loop to allow window teardown tasks to run.
+    base::RunLoop().RunUntilIdle();
+  }
 }
 
 WindowList::WindowList() {}

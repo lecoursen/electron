@@ -62,6 +62,7 @@ NativeWindow::~NativeWindow() {
   // It's possible that the windows gets destroyed before it's closed, in that
   // case we need to ensure the OnWindowClosed message is still notified.
   NotifyWindowClosed();
+  WindowList::RemoveWindow(this);
 }
 
 void NativeWindow::InitFromOptions(const mate::Dictionary& options) {
@@ -405,8 +406,6 @@ void NativeWindow::NotifyWindowCloseButtonClicked() {
 void NativeWindow::NotifyWindowClosed() {
   if (is_closed_)
     return;
-
-  WindowList::RemoveWindow(this);
 
   is_closed_ = true;
   for (NativeWindowObserver& observer : observers_)
