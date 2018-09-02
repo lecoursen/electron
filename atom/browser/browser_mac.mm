@@ -265,20 +265,17 @@ void Browser::DockHide() {
   for (auto* const& window : WindowList::GetWindows())
     [window->GetNativeWindow() setCanHide:NO];
 
-  ProcessSerialNumber psn = {0, kCurrentProcess};
-  TransformProcessType(&psn, kProcessTransformToUIElementApplication);
+  [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
 }
 
 bool Browser::DockIsVisible() {
   // Because DockShow has a slight delay this may not be true immediately
   // after that call.
-  return ([[NSRunningApplication currentApplication] activationPolicy] ==
-          NSApplicationActivationPolicyRegular);
+  return ([NSApp activationPolicy] == NSApplicationActivationPolicyRegular);
 }
 
 void Browser::DockShow() {
-  BOOL active = [[NSRunningApplication currentApplication] isActive];
-  ProcessSerialNumber psn = {0, kCurrentProcess};
+  BOOL active = [NSApp isActive];
   if (active) {
     // Workaround buggy behavior of TransformProcessType.
     // http://stackoverflow.com/questions/7596643/
@@ -290,7 +287,7 @@ void Browser::DockShow() {
     }
     dispatch_time_t one_ms = dispatch_time(DISPATCH_TIME_NOW, USEC_PER_SEC);
     dispatch_after(one_ms, dispatch_get_main_queue(), ^{
-      TransformProcessType(&psn, kProcessTransformToForegroundApplication);
+      [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
       dispatch_time_t one_ms = dispatch_time(DISPATCH_TIME_NOW, USEC_PER_SEC);
       dispatch_after(one_ms, dispatch_get_main_queue(), ^{
         [[NSRunningApplication currentApplication]
@@ -298,7 +295,7 @@ void Browser::DockShow() {
       });
     });
   } else {
-    TransformProcessType(&psn, kProcessTransformToForegroundApplication);
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
   }
 }
 
