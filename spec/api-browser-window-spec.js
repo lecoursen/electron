@@ -2380,7 +2380,17 @@ describe('BrowserWindow module', () => {
           if (called) return
           // We asked for just the dirty rectangle, so we expect to receive a
           // rect smaller than the full size.
-          assert(rect.width < contentWidth || rect.height < contentHeight)
+          const widthLess = rect.width < contentWidth
+          const heightLess = rect.height < contentHeight
+
+          if (!(widthLess || heightLess)) {
+            if (!widthLess) {
+              expect(rect.width).to.be.lessThan(contentWidth, 'rect width should be less than content width')
+            }
+            if (!heightLess) {
+              expect(rect.height).to.be.lessThan(contentHeight, 'rect height should be less than content height')
+            }
+          }
           called = true
 
           expect(data.length).to.equal(rect.width * rect.height * 4)
