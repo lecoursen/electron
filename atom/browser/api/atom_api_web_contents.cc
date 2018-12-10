@@ -1579,6 +1579,23 @@ bool WebContents::SendIPCMessage(bool all_frames,
   return false;
 }
 
+bool WebContents::SendIPCMessageToFrame(bool internal,
+                                        bool send_to_all,
+                                        int32_t frame_id,
+                                        const std::string& channel,
+                                        const base::ListValue& args) {
+  auto frames = web_contents()->GetAllFrames();
+  auto iter = std::find_if(frames.begin(), frames.end(), [frame_id](auto* f) {
+    return f->GetRoutingID() == frame_id;
+  });
+  if (iter == frames.end())
+    return false;
+  if (!(*iter)->IsRenderFrameLive())
+    return false;
+  return (*iter)->Send(new AtomFrameMsg_Message(
+      frame_id, internal, send_to_all, channel, args, 0 /* sender_id */));
+}
+
 void WebContents::SendInputEvent(v8::Isolate* isolate,
                                  v8::Local<v8::Value> input_event) {
   content::RenderWidgetHostView* view =
@@ -2027,6 +2044,7 @@ void WebContents::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("isFocused", &WebContents::IsFocused)
       .SetMethod("tabTraverse", &WebContents::TabTraverse)
       .SetMethod("_send", &WebContents::SendIPCMessage)
+      .SetMethod("_sendToFrame", &WebContents::SendIPCMessageToFrame)
       .SetMethod("sendInputEvent", &WebContents::SendInputEvent)
       .SetMethod("beginFrameSubscription", &WebContents::BeginFrameSubscription)
       .SetMethod("endFrameSubscription", &WebContents::EndFrameSubscription)
@@ -2085,7 +2103,7 @@ void WebContents::OnRendererMessage(content::RenderFrameHost* frame_host,
                                     const base::string16& channel,
                                     const base::ListValue& args) {
   // webContents.emit(channel, new Event(), args...);
-  Emit(base::UTF16ToUTF8(channel), args);
+  EmitWithSender(channel, frame_host, nullptr, args);
 }
 
 void WebContents::OnRendererMessageSync(content::RenderFrameHost* frame_host,
