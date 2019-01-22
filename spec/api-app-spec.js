@@ -328,7 +328,7 @@ describe('app module', () => {
           subject: { commonName: 'Client Cert' }
         })
 
-        event.sender.send('client-certificate-response', list[0])
+        event.reply('client-certificate-response', list[0])
       })
 
       app.importCertificate(options, result => {

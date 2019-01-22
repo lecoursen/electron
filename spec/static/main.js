@@ -46,7 +46,7 @@ process.env.sandboxmain = ''
 console
 
 ipcMain.on('message', function (event, ...args) {
-  event.sender.send('message', ...args)
+  event.reply('message', ...args)
 })
 
 // Set productName so getUploadedReports() uses the right directory in specs
@@ -368,7 +368,7 @@ ipcMain.on('test-webcontents-navigation-observer', (event, options) => {
   contents.once(options.name, () => destroy())
 
   contents.once('destroyed', () => {
-    event.sender.send(options.responseEvent)
+    event.reply(options.responseEvent)
   })
 
   contents.loadURL(options.url)
@@ -391,7 +391,7 @@ ipcMain.on('test-browserwindow-destroy', (event, testOptions) => {
   windows.forEach(win => win.focus())
   windows.forEach(win => win.destroy())
   app.removeListener('browser-window-focus', focusListener)
-  event.sender.send(testOptions.responseEvent)
+  event.reply(testOptions.responseEvent)
 })
 
 // Suspend listeners until the next event and then restore them

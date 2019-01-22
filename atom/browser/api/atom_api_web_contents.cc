@@ -1593,7 +1593,7 @@ bool WebContents::SendIPCMessageToFrame(bool internal,
   if (!(*iter)->IsRenderFrameLive())
     return false;
   return (*iter)->Send(new AtomFrameMsg_Message(
-      frame_id, internal, send_to_all, channel, args, 0 /* sender_id */));
+      frame_id, send_to_all, base::UTF8ToUTF16(channel), args));
 }
 
 void WebContents::SendInputEvent(v8::Isolate* isolate,
@@ -2103,7 +2103,7 @@ void WebContents::OnRendererMessage(content::RenderFrameHost* frame_host,
                                     const base::string16& channel,
                                     const base::ListValue& args) {
   // webContents.emit(channel, new Event(), args...);
-  EmitWithSender(channel, frame_host, nullptr, args);
+  EmitWithSender(base::UTF16ToUTF8(channel), frame_host, nullptr, args);
 }
 
 void WebContents::OnRendererMessageSync(content::RenderFrameHost* frame_host,

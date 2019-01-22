@@ -55,6 +55,7 @@ WebContentsPreferences::WebContentsPreferences(
   SetDefaultBoolIfUndefined(options::kExperimentalFeatures, false);
   SetDefaultBoolIfUndefined(options::kExperimentalCanvasFeatures, false);
   bool node = SetDefaultBoolIfUndefined(options::kNodeIntegration, true);
+  SetDefaultBoolIfUndefined(options::kNodeIntegrationInSubFrames, false);
   SetDefaultBoolIfUndefined(options::kNodeIntegrationInWorker, false);
   SetDefaultBoolIfUndefined(options::kWebviewTag, node);
   SetDefaultBoolIfUndefined(options::kSandbox, false);
@@ -277,6 +278,9 @@ void WebContentsPreferences::AppendCommandLineSwitches(
       }
     }
   }
+
+  if (IsEnabled(options::kNodeIntegrationInSubFrames))
+    command_line->AppendSwitch(switches::kNodeIntegrationInSubFrames);
 
   // We are appending args to a webContents so let's save the current state
   // of our preferences object so that during the lifetime of the WebContents

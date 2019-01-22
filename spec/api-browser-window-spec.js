@@ -1406,12 +1406,12 @@ describe('BrowserWindow module', () => {
         })
         ipcMain.once('parent-ready', function (event) {
           assert.equal(w.webContents, event.sender)
-          event.sender.send('verified')
+          event.reply('verified')
         })
         ipcMain.once('child-ready', function (event) {
           assert(childWc)
           assert.equal(childWc, event.sender)
-          event.sender.send('verified')
+          event.reply('verified')
         })
         waitForEvents(ipcMain, [
           'parent-answer',

@@ -90,7 +90,8 @@ base::FilePath::StringType GetExecPath() {
 }
 
 void InitializeBindings(v8::Local<v8::Object> binding,
-                        v8::Local<v8::Context> context) {
+                        v8::Local<v8::Context> context,
+                        bool is_main_frame) {
   auto* isolate = context->GetIsolate();
   mate::Dictionary b(isolate, binding);
   b.SetMethod("get", GetBinding);
@@ -101,6 +102,7 @@ void InitializeBindings(v8::Local<v8::Object> binding,
   b.SetMethod("getHeapStatistics", &AtomBindings::GetHeapStatistics);
   b.SetMethod("getProcessMemoryInfo", &AtomBindings::GetProcessMemoryInfo);
   b.SetMethod("getSystemMemoryInfo", &AtomBindings::GetSystemMemoryInfo);
+  b.SetReadOnly("isMainFrame", is_main_frame);
 
   // Pass in CLI flags needed to setup the renderer
   base::CommandLine* command_line = base::CommandLine::ForCurrentProcess();
@@ -166,7 +168,15 @@ void AtomSandboxedRendererClient::DidCreateScriptContext(
 
   // Only allow preload for the main frame or
   // For devtools we still want to run the preload_bundle script
-  if (!render_frame->IsMainFrame() && !IsDevTools(render_frame))
+  // Or when nodeSupport is explicitly enabled in sub frames
+  bool is_main_frame = render_frame->IsMainFrame();
+  bool is_devtools = IsDevTools(render_frame);
+  bool allow_node_in_sub_frames =
+      base::CommandLine::ForCurrentProcess()->HasSwitch(
+          switches::kNodeIntegrationInSubFrames);
+  bool should_load_preload =
+      is_main_frame || is_devtools || allow_node_in_sub_frames;
+  if (!should_load_preload)
     return;
 
   auto* isolate = context->GetIsolate();
@@ -185,7 +195,7 @@ void AtomSandboxedRendererClient::DidCreateScriptContext(
       v8::Handle<v8::Function>::Cast(script->Run(context).ToLocalChecked());
   // Create and initialize the binding object
   auto binding = v8::Object::New(isolate);
-  InitializeBindings(binding, context);
+  InitializeBindings(binding, context, render_frame->IsMainFrame());
   AddRenderBindings(isolate, binding);
   v8::Local<v8::Value> args[] = {binding};
   // Execute the function with proper arguments
@@ -197,7 +207,10 @@ void AtomSandboxedRendererClient::WillReleaseScriptContext(
     v8::Handle<v8::Context> context,
     content::RenderFrame* render_frame) {
   // Only allow preload for the main frame
-  if (!render_frame->IsMainFrame())
+  // Or for sub frames when explicitly enabled
+  if (!render_frame->IsMainFrame() &&
+      !base::CommandLine::ForCurrentProcess()->HasSwitch(
+          switches::kNodeIntegrationInSubFrames))
     return;
 
   auto* isolate = context->GetIsolate();

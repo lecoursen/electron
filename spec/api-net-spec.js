@@ -1458,7 +1458,7 @@ describe('net module', () => {
             nodeResponse.on('data', (chunk) => {
             })
             nodeResponse.on('end', (chunk) => {
-              event.sender.send('api-net-spec-done')
+              event.reply('api-net-spec-done')
             })
           })
           netResponse.pipe(nodeRequest)
@@ -1536,7 +1536,7 @@ describe('net module', () => {
         process.nextTick(() => {
           const v8Util = process.atomBinding('v8_util')
           v8Util.requestGarbageCollectionForTesting()
-          event.sender.send('api-net-spec-done')
+          event.reply('api-net-spec-done')
         })
       `)
     })
@@ -1570,13 +1570,13 @@ describe('net module', () => {
           response.on('data', () => {
           })
           response.on('end', () => {
-            event.sender.send('api-net-spec-done')
+            event.reply('api-net-spec-done')
           })
           process.nextTick(() => {
             // Trigger a garbage collection.
             const v8Util = process.atomBinding('v8_util')
             v8Util.requestGarbageCollectionForTesting()
-            event.sender.send('api-net-spec-resume')
+            event.reply('api-net-spec-resume')
           })
         })
         urlRequest.end()
@@ -1612,7 +1612,7 @@ describe('net module', () => {
           process.nextTick(() => {
             const v8Util = process.atomBinding('v8_util')
             v8Util.requestGarbageCollectionForTesting()
-            event.sender.send('api-net-spec-done')
+            event.reply('api-net-spec-done')
           })
         })
         urlRequest.end()

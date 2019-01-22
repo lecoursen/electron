@@ -467,7 +467,7 @@ describe('webContents module', () => {
       ipcMain.on('set-zoom', (e, host) => {
         const zoomLevel = hostZoomMap[host]
         if (!finalNavigation) w.webContents.setZoomLevel(zoomLevel)
-        e.sender.send(`${host}-zoom-set`)
+        e.reply(`${host}-zoom-set`)
       })
       ipcMain.on('host1-zoom-level', (e, zoomLevel) => {
         const expectedZoomLevel = hostZoomMap.host1
