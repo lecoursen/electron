@@ -36,7 +36,7 @@ void JsAsker::AskForOptions(
   v8::Local<v8::Context> context = isolate->GetCurrentContext();
   v8::Context::Scope context_scope(context);
   handler.Run(*(request_details.get()),
-              mate::ConvertToV8(isolate, before_start));
+              gin::ConvertToV8(isolate, before_start));
 }
 
 // static

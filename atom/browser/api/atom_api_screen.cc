@@ -116,7 +116,7 @@ void Screen::OnDisplayMetricsChanged(const display::Display& display,
 // static
 v8::Local<v8::Value> Screen::Create(v8::Isolate* isolate) {
   if (!Browser::Get()->is_ready()) {
-    isolate->ThrowException(v8::Exception::Error(mate::StringToV8(
+    isolate->ThrowException(v8::Exception::Error(gin::StringToV8(
         isolate, "Cannot require \"screen\" module before app is ready")));
     return v8::Null(isolate);
   }
@@ -124,7 +124,7 @@ v8::Local<v8::Value> Screen::Create(v8::Isolate* isolate) {
   display::Screen* screen = display::Screen::GetScreen();
   if (!screen) {
     isolate->ThrowException(v8::Exception::Error(
-        mate::StringToV8(isolate, "Failed to get screen information")));
+        gin::StringToV8(isolate, "Failed to get screen information")));
     return v8::Null(isolate);
   }
 
@@ -134,7 +134,7 @@ v8::Local<v8::Value> Screen::Create(v8::Isolate* isolate) {
 // static
 void Screen::BuildPrototype(v8::Isolate* isolate,
                             v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Screen"));
+  prototype->SetClassName(gin::StringToV8(isolate, "Screen"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("getCursorScreenPoint", &Screen::GetCursorScreenPoint)
       .SetMethod("getPrimaryDisplay", &Screen::GetPrimaryDisplay)

@@ -20,7 +20,7 @@
 #include "native_mate/object_template_builder.h"
 #include "net/base/mac/url_conversions.h"
 
-namespace mate {
+namespace gin {
 template <>
 struct Converter<NSAppearance*> {
   static bool FromV8(v8::Isolate* isolate,
@@ -32,7 +32,7 @@ struct Converter<NSAppearance*> {
     }
 
     std::string name;
-    if (!mate::ConvertFromV8(isolate, val, &name)) {
+    if (!gin::ConvertFromV8(isolate, val, &name)) {
       return false;
     }
 
@@ -57,18 +57,18 @@ struct Converter<NSAppearance*> {
     }
 
     if (val.name == NSAppearanceNameAqua) {
-      return mate::ConvertToV8(isolate, "light");
+      return gin::ConvertToV8(isolate, "light");
     }
     if (@available(macOS 10.14, *)) {
       if (val.name == NSAppearanceNameDarkAqua) {
-        return mate::ConvertToV8(isolate, "dark");
+        return gin::ConvertToV8(isolate, "dark");
       }
     }
 
-    return mate::ConvertToV8(isolate, "unknown");
+    return gin::ConvertToV8(isolate, "unknown");
   }
 };
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -258,7 +258,7 @@ v8::Local<v8::Value> SystemPreferences::GetUserDefault(
   NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
   NSString* key = base::SysUTF8ToNSString(name);
   if (type == "string") {
-    return mate::StringToV8(
+    return gin::StringToV8(
         isolate(), base::SysNSStringToUTF8([defaults stringForKey:key]));
   } else if (type == "boolean") {
     return v8::Boolean::New(isolate(), [defaults boolForKey:key]);
@@ -269,20 +269,20 @@ v8::Local<v8::Value> SystemPreferences::GetUserDefault(
   } else if (type == "double") {
     return v8::Number::New(isolate(), [defaults doubleForKey:key]);
   } else if (type == "url") {
-    return mate::ConvertToV8(isolate(),
-                             net::GURLWithNSURL([defaults URLForKey:key]));
+    return gin::ConvertToV8(isolate(),
+                            net::GURLWithNSURL([defaults URLForKey:key]));
   } else if (type == "array") {
     std::unique_ptr<base::ListValue> list =
         NSArrayToListValue([defaults arrayForKey:key]);
     if (list == nullptr)
       list.reset(new base::ListValue());
-    return mate::ConvertToV8(isolate(), *list);
+    return gin::ConvertToV8(isolate(), *list);
   } else if (type == "dictionary") {
     std::unique_ptr<base::DictionaryValue> dictionary =
         NSDictionaryToDictionaryValue([defaults dictionaryForKey:key]);
     if (dictionary == nullptr)
       dictionary.reset(new base::DictionaryValue());
-    return mate::ConvertToV8(isolate(), *dictionary);
+    return gin::ConvertToV8(isolate(), *dictionary);
   } else {
     return v8::Undefined(isolate());
   }
@@ -593,7 +593,7 @@ bool SystemPreferences::IsSwipeTrackingFromScrollEventsEnabled() {
 v8::Local<v8::Value> SystemPreferences::GetEffectiveAppearance(
     v8::Isolate* isolate) {
   if (@available(macOS 10.14, *)) {
-    return mate::ConvertToV8(
+    return gin::ConvertToV8(
         isolate, [NSApplication sharedApplication].effectiveAppearance);
   }
   return v8::Null(isolate);
@@ -602,8 +602,8 @@ v8::Local<v8::Value> SystemPreferences::GetEffectiveAppearance(
 v8::Local<v8::Value> SystemPreferences::GetAppLevelAppearance(
     v8::Isolate* isolate) {
   if (@available(macOS 10.14, *)) {
-    return mate::ConvertToV8(isolate,
-                             [NSApplication sharedApplication].appearance);
+    return gin::ConvertToV8(isolate,
+                            [NSApplication sharedApplication].appearance);
   }
   return v8::Null(isolate);
 }

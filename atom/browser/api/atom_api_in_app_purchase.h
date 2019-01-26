@@ -12,6 +12,7 @@
 #include "atom/browser/mac/in_app_purchase.h"
 #include "atom/browser/mac/in_app_purchase_observer.h"
 #include "atom/browser/mac/in_app_purchase_product.h"
+#include "native_mate/arguments.h"
 #include "native_mate/handle.h"
 
 namespace atom {

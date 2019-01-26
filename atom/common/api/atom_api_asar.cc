@@ -31,7 +31,7 @@ class Archive : public mate::Wrappable<Archive> {
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype) {
-    prototype->SetClassName(mate::StringToV8(isolate, "Archive"));
+    prototype->SetClassName(gin::StringToV8(isolate, "Archive"));
     mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
         .SetProperty("path", &Archive::GetPath)
         .SetMethod("getFileInfo", &Archive::GetFileInfo)
@@ -84,7 +84,7 @@ class Archive : public mate::Wrappable<Archive> {
     std::vector<base::FilePath> files;
     if (!archive_ || !archive_->Readdir(path, &files))
       return v8::False(isolate);
-    return mate::ConvertToV8(isolate, files);
+    return gin::ConvertToV8(isolate, files);
   }
 
   // Returns the path of file with symbol link resolved.
@@ -93,7 +93,7 @@ class Archive : public mate::Wrappable<Archive> {
     base::FilePath realpath;
     if (!archive_ || !archive_->Realpath(path, &realpath))
       return v8::False(isolate);
-    return mate::ConvertToV8(isolate, realpath);
+    return gin::ConvertToV8(isolate, realpath);
   }
 
   // Copy the file out into a temporary file and returns the new path.
@@ -102,7 +102,7 @@ class Archive : public mate::Wrappable<Archive> {
     base::FilePath new_path;
     if (!archive_ || !archive_->CopyFileOut(path, &new_path))
       return v8::False(isolate);
-    return mate::ConvertToV8(isolate, new_path);
+    return gin::ConvertToV8(isolate, new_path);
   }
 
   // Return the file descriptor.

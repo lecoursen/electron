@@ -69,7 +69,7 @@
 
 using atom::Browser;
 
-namespace mate {
+namespace gin {
 
 #if defined(OS_WIN)
 template <>
@@ -133,7 +133,7 @@ struct Converter<JumpListItem::Type> {
         item_type = "file";
         break;
     }
-    return mate::ConvertToV8(isolate, item_type);
+    return gin::ConvertToV8(isolate, item_type);
   }
 };
 
@@ -243,7 +243,7 @@ struct Converter<JumpListCategory::Type> {
         category_type = "custom";
         break;
     }
-    return mate::ConvertToV8(isolate, category_type);
+    return gin::ConvertToV8(isolate, category_type);
   }
 };
 
@@ -353,7 +353,7 @@ struct Converter<content::CertificateRequestResultType> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -472,7 +472,7 @@ void OnClientCertificateSelected(
   }
 
   mate::Dictionary cert_data;
-  if (!mate::ConvertFromV8(isolate, val, &cert_data)) {
+  if (!gin::ConvertFromV8(isolate, val, &cert_data)) {
     args->ThrowError("Must pass valid certificate object.");
     return;
   }
@@ -1083,7 +1083,7 @@ v8::Local<v8::Value> App::GetJumpListSettings() {
 
   auto dict = mate::Dictionary::CreateEmpty(isolate());
   dict.Set("minItems", min_items);
-  dict.Set("removedItems", mate::ConvertToV8(isolate(), removed_items));
+  dict.Set("removedItems", gin::ConvertToV8(isolate(), removed_items));
   return dict.GetHandle();
 }
 
@@ -1092,7 +1092,7 @@ JumpListResult App::SetJumpList(v8::Local<v8::Value> val,
   std::vector<JumpListCategory> categories;
   bool delete_jump_list = val->IsNull();
   if (!delete_jump_list &&
-      !mate::ConvertFromV8(args->isolate(), val, &categories)) {
+      !gin::ConvertFromV8(args->isolate(), val, &categories)) {
     args->ThrowError("Argument must be null or an array of categories");
     return JumpListResult::ARGUMENT_ERROR;
   }
@@ -1191,7 +1191,7 @@ std::vector<mate::Dictionary> App::GetAppMetrics(v8::Isolate* isolate) {
 v8::Local<v8::Value> App::GetGPUFeatureStatus(v8::Isolate* isolate) {
   auto status = content::GetFeatureStatus();
   base::DictionaryValue temp;
-  return mate::ConvertToV8(isolate, status ? *status : temp);
+  return gin::ConvertToV8(isolate, status ? *status : temp);
 }
 
 v8::Local<v8::Promise> App::GetGPUInfo(v8::Isolate* isolate,
@@ -1268,7 +1268,7 @@ mate::Handle<App> App::Create(v8::Isolate* isolate) {
 // static
 void App::BuildPrototype(v8::Isolate* isolate,
                          v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "App"));
+  prototype->SetClassName(gin::StringToV8(isolate, "App"));
   auto browser = base::Unretained(Browser::Get());
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("quit", base::Bind(&Browser::Quit, browser))

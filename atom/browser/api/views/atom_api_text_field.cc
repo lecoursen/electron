@@ -38,7 +38,7 @@ mate::WrappableBase* TextField::New(mate::Arguments* args) {
 // static
 void TextField::BuildPrototype(v8::Isolate* isolate,
                                v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "TextField"));
+  prototype->SetClassName(gin::StringToV8(isolate, "TextField"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("setText", &TextField::SetText)
       .SetMethod("getText", &TextField::GetText);

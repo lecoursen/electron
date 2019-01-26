@@ -28,7 +28,7 @@
 
 #include "atom/common/node_includes.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<atom::api::DesktopCapturer::Source> {
@@ -53,7 +53,7 @@ struct Converter<atom::api::DesktopCapturer::Source> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -208,7 +208,7 @@ mate::Handle<DesktopCapturer> DesktopCapturer::Create(v8::Isolate* isolate) {
 void DesktopCapturer::BuildPrototype(
     v8::Isolate* isolate,
     v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "DesktopCapturer"));
+  prototype->SetClassName(gin::StringToV8(isolate, "DesktopCapturer"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("startHandling", &DesktopCapturer::StartHandling);
 }

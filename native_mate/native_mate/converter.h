@@ -14,9 +14,9 @@
 #include "gin/converter.h"
 #include "v8/include/v8.h"
 
-namespace mate {
+namespace gin {
 
-template <typename KeyType>
+/*template <typename KeyType>
 bool SetProperty(v8::Isolate* isolate,
                  v8::Local<v8::Object> object,
                  KeyType key,
@@ -39,20 +39,20 @@ struct Converter<void*> {
     return v8::Undefined(isolate);
   }
 };
-
+*/
 template <>
 struct Converter<std::nullptr_t> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate, std::nullptr_t val) {
     return v8::Null(isolate);
   }
 };
-
+/*
 template <>
 struct Converter<bool> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate, bool val);
   static bool FromV8(v8::Isolate* isolate, v8::Local<v8::Value> val, bool* out);
 };
-
+*/
 #if !defined(OS_LINUX) && !defined(OS_FREEBSD)
 template <>
 struct Converter<unsigned long> {
@@ -62,7 +62,7 @@ struct Converter<unsigned long> {
                      unsigned long* out);
 };
 #endif
-
+/*
 template <>
 struct Converter<int32_t> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate, int32_t val);
@@ -112,12 +112,20 @@ struct Converter<double> {
                      v8::Local<v8::Value> val,
                      double* out);
 };
-
+*/
 template <>
 struct Converter<const char*> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate, const char* val);
 };
 
+template <std::size_t N>
+struct Converter<char[N]> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate, const char* val) {
+    return v8::String::NewFromUtf8(isolate, val);
+  }
+};
+
+/*
 template <>
 struct Converter<base::StringPiece> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
@@ -154,7 +162,7 @@ struct Converter<v8::Local<v8::Object>> {
                      v8::Local<v8::Value> val,
                      v8::Local<v8::Object>* out);
 };
-
+*/
 template <>
 struct Converter<v8::Local<v8::String>> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
@@ -163,7 +171,7 @@ struct Converter<v8::Local<v8::String>> {
                      v8::Local<v8::Value> val,
                      v8::Local<v8::String>* out);
 };
-
+/*
 template <>
 struct Converter<v8::Local<v8::External>> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
@@ -232,7 +240,7 @@ struct Converter<std::vector<T>> {
     return true;
   }
 };
-
+*/
 template <typename T>
 struct Converter<std::set<T>> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
@@ -297,17 +305,17 @@ struct Converter<std::map<std::string, T>> {
   }
 };
 
-// Convenience functions that deduce T.
+/*// Convenience functions that deduce T.
 template <typename T>
 v8::Local<v8::Value> ConvertToV8(v8::Isolate* isolate, const T& input) {
   return Converter<T>::ToV8(isolate, input);
 }
-
+*/
 inline v8::Local<v8::Value> ConvertToV8(v8::Isolate* isolate,
                                         const char* input) {
   return Converter<const char*>::ToV8(isolate, input);
 }
-
+/*
 template <typename T>
 v8::MaybeLocal<v8::Value> ConvertToV8(v8::Local<v8::Context> context,
                                       const T& input) {
@@ -358,7 +366,7 @@ inline v8::Local<v8::String> StringToV8(v8::Isolate* isolate,
                                         const base::StringPiece& input) {
   return ConvertToV8(isolate, input).As<v8::String>();
 }
-
-}  // namespace mate
+*/
+}  // namespace gin
 
 #endif  // NATIVE_MATE_CONVERTER_H_

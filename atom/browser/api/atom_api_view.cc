@@ -52,7 +52,7 @@ mate::WrappableBase* View::New(mate::Arguments* args) {
 // static
 void View::BuildPrototype(v8::Isolate* isolate,
                           v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "View"));
+  prototype->SetClassName(gin::StringToV8(isolate, "View"));
 #if BUILDFLAG(ENABLE_VIEW_API)
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("setLayoutManager", &View::SetLayoutManager)

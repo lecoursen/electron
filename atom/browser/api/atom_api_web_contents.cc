@@ -108,7 +108,7 @@
 
 #include "atom/common/node_includes.h"
 
-namespace mate {
+namespace gin {
 
 #if BUILDFLAG(ENABLE_PRINTING)
 template <>
@@ -151,7 +151,7 @@ struct Converter<WindowOpenDisposition> {
       default:
         break;
     }
-    return mate::ConvertToV8(isolate, disposition);
+    return gin::ConvertToV8(isolate, disposition);
   }
 };
 
@@ -205,7 +205,7 @@ struct Converter<atom::api::WebContents::Type> {
       default:
         break;
     }
-    return mate::ConvertToV8(isolate, type);
+    return gin::ConvertToV8(isolate, type);
   }
 
   static bool FromV8(v8::Isolate* isolate,
@@ -232,7 +232,7 @@ struct Converter<atom::api::WebContents::Type> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -1710,10 +1710,10 @@ void WebContents::SendInputEvent(v8::Isolate* isolate,
 
   content::RenderWidgetHost* rwh = view->GetRenderWidgetHost();
   blink::WebInputEvent::Type type =
-      mate::GetWebInputEventType(isolate, input_event);
+      gin::GetWebInputEventType(isolate, input_event);
   if (blink::WebInputEvent::IsMouseEventType(type)) {
     blink::WebMouseEvent mouse_event;
-    if (mate::ConvertFromV8(isolate, input_event, &mouse_event)) {
+    if (gin::ConvertFromV8(isolate, input_event, &mouse_event)) {
       if (IsOffScreen()) {
 #if BUILDFLAG(ENABLE_OSR)
         GetOffScreenRenderWidgetHostView()->SendMouseEvent(mouse_event);
@@ -1727,13 +1727,13 @@ void WebContents::SendInputEvent(v8::Isolate* isolate,
     content::NativeWebKeyboardEvent keyboard_event(
         blink::WebKeyboardEvent::kRawKeyDown,
         blink::WebInputEvent::kNoModifiers, ui::EventTimeForNow());
-    if (mate::ConvertFromV8(isolate, input_event, &keyboard_event)) {
+    if (gin::ConvertFromV8(isolate, input_event, &keyboard_event)) {
       rwh->ForwardKeyboardEvent(keyboard_event);
       return;
     }
   } else if (type == blink::WebInputEvent::kMouseWheel) {
     blink::WebMouseWheelEvent mouse_wheel_event;
-    if (mate::ConvertFromV8(isolate, input_event, &mouse_wheel_event)) {
+    if (gin::ConvertFromV8(isolate, input_event, &mouse_wheel_event)) {
       if (IsOffScreen()) {
 #if BUILDFLAG(ENABLE_OSR)
         GetOffScreenRenderWidgetHostView()->SendMouseWheelEvent(
@@ -1747,7 +1747,7 @@ void WebContents::SendInputEvent(v8::Isolate* isolate,
   }
 
   isolate->ThrowException(
-      v8::Exception::Error(mate::StringToV8(isolate, "Invalid event object")));
+      v8::Exception::Error(gin::StringToV8(isolate, "Invalid event object")));
 }
 
 void WebContents::BeginFrameSubscription(mate::Arguments* args) {
@@ -1968,7 +1968,7 @@ v8::Local<v8::Value> WebContents::GetPreloadPath(v8::Isolate* isolate) const {
   if (auto* web_preferences = WebContentsPreferences::From(web_contents())) {
     base::FilePath::StringType preload;
     if (web_preferences->GetPreloadPath(&preload)) {
-      return mate::ConvertToV8(isolate, preload);
+      return gin::ConvertToV8(isolate, preload);
     }
   }
   return v8::Null(isolate);
@@ -1979,7 +1979,7 @@ v8::Local<v8::Value> WebContents::GetWebPreferences(
   auto* web_preferences = WebContentsPreferences::From(web_contents());
   if (!web_preferences)
     return v8::Null(isolate);
-  return mate::ConvertToV8(isolate, *web_preferences->preference());
+  return gin::ConvertToV8(isolate, *web_preferences->preference());
 }
 
 v8::Local<v8::Value> WebContents::GetLastWebPreferences(
@@ -1987,7 +1987,7 @@ v8::Local<v8::Value> WebContents::GetLastWebPreferences(
   auto* web_preferences = WebContentsPreferences::From(web_contents());
   if (!web_preferences)
     return v8::Null(isolate);
-  return mate::ConvertToV8(isolate, *web_preferences->last_preference());
+  return gin::ConvertToV8(isolate, *web_preferences->last_preference());
 }
 
 bool WebContents::IsRemoteModuleEnabled() const {
@@ -2094,7 +2094,7 @@ bool WebContents::TakeHeapSnapshot(const base::FilePath& file_path,
 // static
 void WebContents::BuildPrototype(v8::Isolate* isolate,
                                  v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "WebContents"));
+  prototype->SetClassName(gin::StringToV8(isolate, "WebContents"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetMethod("setBackgroundThrottling",

@@ -8,7 +8,7 @@
 #include "native_mate/converter.h"
 #include "ui/base/ui_base_types.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<ui::MenuSourceType> {
@@ -16,19 +16,19 @@ struct Converter<ui::MenuSourceType> {
                                    const ui::MenuSourceType& in) {
     switch (in) {
       case ui::MENU_SOURCE_MOUSE:
-        return mate::StringToV8(isolate, "mouse");
+        return gin::StringToV8(isolate, "mouse");
       case ui::MENU_SOURCE_KEYBOARD:
-        return mate::StringToV8(isolate, "keyboard");
+        return gin::StringToV8(isolate, "keyboard");
       case ui::MENU_SOURCE_TOUCH:
-        return mate::StringToV8(isolate, "touch");
+        return gin::StringToV8(isolate, "touch");
       case ui::MENU_SOURCE_TOUCH_EDIT_MENU:
-        return mate::StringToV8(isolate, "touchMenu");
+        return gin::StringToV8(isolate, "touchMenu");
       default:
-        return mate::StringToV8(isolate, "none");
+        return gin::StringToV8(isolate, "none");
     }
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_UI_BASE_TYPES_CONVERTER_H_

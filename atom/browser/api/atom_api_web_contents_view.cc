@@ -85,14 +85,14 @@ mate::WrappableBase* WebContentsView::New(
   if (!web_contents->managed_web_contents()) {
     const char* error = "The WebContents must be created by user";
     args->isolate()->ThrowException(
-        v8::Exception::Error(mate::StringToV8(args->isolate(), error)));
+        v8::Exception::Error(gin::StringToV8(args->isolate(), error)));
     return nullptr;
   }
   // Check if the WebContents has already been added to a view.
   if (WebContentsViewRelay::FromWebContents(web_contents->web_contents())) {
     const char* error = "The WebContents has already been added to a View";
     args->isolate()->ThrowException(
-        v8::Exception::Error(mate::StringToV8(args->isolate(), error)));
+        v8::Exception::Error(gin::StringToV8(args->isolate(), error)));
     return nullptr;
   }
   // Constructor call.

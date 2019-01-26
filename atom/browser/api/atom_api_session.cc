@@ -145,7 +145,7 @@ void SetUserAgentInIO(scoped_refptr<net::URLRequestContextGetter> getter,
 
 }  // namespace
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<ClearStorageDataOptions> {
@@ -198,7 +198,7 @@ struct Converter<atom::VerifyRequestParams> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -529,7 +529,7 @@ void Session::SetCertVerifyProc(v8::Local<v8::Value> val,
   base::Callback<void(const VerifyRequestParams& request,
                       base::Callback<void(int)>)>
       proc;
-  if (!(val->IsNull() || mate::ConvertFromV8(args->isolate(), val, &proc))) {
+  if (!(val->IsNull() || gin::ConvertFromV8(args->isolate(), val, &proc))) {
     args->ThrowError("Must pass null or function");
     return;
   }
@@ -544,7 +544,7 @@ void Session::SetCertVerifyProc(v8::Local<v8::Value> val,
 void Session::SetPermissionRequestHandler(v8::Local<v8::Value> val,
                                           mate::Arguments* args) {
   AtomPermissionManager::RequestHandler handler;
-  if (!(val->IsNull() || mate::ConvertFromV8(args->isolate(), val, &handler))) {
+  if (!(val->IsNull() || gin::ConvertFromV8(args->isolate(), val, &handler))) {
     args->ThrowError("Must pass null or function");
     return;
   }
@@ -556,7 +556,7 @@ void Session::SetPermissionRequestHandler(v8::Local<v8::Value> val,
 void Session::SetPermissionCheckHandler(v8::Local<v8::Value> val,
                                         mate::Arguments* args) {
   AtomPermissionManager::CheckHandler handler;
-  if (!(val->IsNull() || mate::ConvertFromV8(args->isolate(), val, &handler))) {
+  if (!(val->IsNull() || gin::ConvertFromV8(args->isolate(), val, &handler))) {
     args->ThrowError("Must pass null or function");
     return;
   }
@@ -645,12 +645,12 @@ void Session::CreateInterruptedDownload(const mate::Dictionary& options) {
   options.Get("eTag", &etag);
   options.Get("startTime", &start_time);
   if (path.empty() || url_chain.empty() || length == 0) {
-    isolate()->ThrowException(v8::Exception::Error(mate::StringToV8(
+    isolate()->ThrowException(v8::Exception::Error(gin::StringToV8(
         isolate(), "Must pass non-empty path, urlChain and length.")));
     return;
   }
   if (offset >= length) {
-    isolate()->ThrowException(v8::Exception::Error(mate::StringToV8(
+    isolate()->ThrowException(v8::Exception::Error(gin::StringToV8(
         isolate(), "Must pass an offset value less than length.")));
     return;
   }
@@ -745,7 +745,7 @@ mate::Handle<Session> Session::FromPartition(
 // static
 void Session::BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Session"));
+  prototype->SetClassName(gin::StringToV8(isolate, "Session"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetMethod("resolveProxy", &Session::ResolveProxy)

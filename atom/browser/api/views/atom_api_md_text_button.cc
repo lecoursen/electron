@@ -31,7 +31,7 @@ mate::WrappableBase* MdTextButton::New(mate::Arguments* args,
 // static
 void MdTextButton::BuildPrototype(v8::Isolate* isolate,
                                   v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "MdTextButton"));
+  prototype->SetClassName(gin::StringToV8(isolate, "MdTextButton"));
 }
 
 }  // namespace api

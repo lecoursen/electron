@@ -56,8 +56,8 @@ void BeforeStartInUI(base::WeakPtr<URLRequestStreamJob> job,
       new net::HttpResponseHeaders(status));
 
   if (opts.Get("headers", &value)) {
-    mate::Converter<net::HttpResponseHeaders*>::FromV8(args->isolate(), value,
-                                                       response_headers.get());
+    gin::Converter<net::HttpResponseHeaders*>::FromV8(args->isolate(), value,
+                                                      response_headers.get());
   }
 
   if (!opts.Get("data", &value)) {

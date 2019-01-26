@@ -50,7 +50,8 @@ void Event::FrameDeleted(content::RenderFrameHost* rfh) {
 }
 
 void Event::PreventDefault(v8::Isolate* isolate) {
-  GetWrapper()->Set(StringToV8(isolate, "defaultPrevented"), v8::True(isolate));
+  GetWrapper()->Set(gin::StringToV8(isolate, "defaultPrevented"),
+                    v8::True(isolate));
 }
 
 bool Event::SendReply(const base::ListValue& result) {
@@ -72,7 +73,7 @@ Handle<Event> Event::Create(v8::Isolate* isolate) {
 // static
 void Event::BuildPrototype(v8::Isolate* isolate,
                            v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Event"));
+  prototype->SetClassName(gin::StringToV8(isolate, "Event"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("preventDefault", &Event::PreventDefault)
       .SetMethod("sendReply", &Event::SendReply);

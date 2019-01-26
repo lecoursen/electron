@@ -14,11 +14,10 @@
 #include "atom/common/native_mate_converters/string16_converter.h"
 #include "atom/common/node_includes.h"
 #include "base/threading/thread_task_runner_handle.h"
-#include "native_mate/constructor.h"
 #include "native_mate/dictionary.h"
 #include "ui/gfx/image/image.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<atom::TrayIcon::HighlightMode> {
@@ -43,7 +42,7 @@ struct Converter<atom::TrayIcon::HighlightMode> {
     return false;
   }
 };
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -220,7 +219,7 @@ gfx::Rect Tray::GetBounds() {
 // static
 void Tray::BuildPrototype(v8::Isolate* isolate,
                           v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Tray"));
+  prototype->SetClassName(gin::StringToV8(isolate, "Tray"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetMethod("setImage", &Tray::SetImage)

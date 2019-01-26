@@ -8,7 +8,7 @@
 #include "base/strings/string16.h"
 #include "native_mate/converter.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<base::string16> {
@@ -35,6 +35,6 @@ inline v8::Local<v8::String> StringToV8(v8::Isolate* isolate,
   return ConvertToV8(isolate, input).As<v8::String>();
 }
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_STRING16_CONVERTER_H_

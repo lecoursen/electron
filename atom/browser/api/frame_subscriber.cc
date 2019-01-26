@@ -166,7 +166,7 @@ void FrameSubscriber::Done(const gfx::Rect& damage, const SkBitmap& frame) {
   auto local_buffer = buffer.ToLocalChecked();
 
   v8::Local<v8::Value> damage_rect =
-      mate::Converter<gfx::Rect>::ToV8(isolate_, damage);
+      gin::Converter<gfx::Rect>::ToV8(isolate_, damage);
 
   callback_.Run(local_buffer, damage_rect);
 }

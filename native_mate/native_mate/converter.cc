@@ -23,7 +23,7 @@ using v8::String;
 using v8::Uint32;
 using v8::Value;
 
-namespace mate {
+namespace gin {
 
 namespace {
 
@@ -36,7 +36,7 @@ bool FromMaybe(Maybe<T> maybe, U* out) {
 }
 
 }  // namespace
-
+/*
 Local<Value> Converter<bool>::ToV8(Isolate* isolate, bool val) {
   return v8::Boolean::New(isolate, val);
 }
@@ -47,7 +47,7 @@ bool Converter<bool>::FromV8(Isolate* isolate, Local<Value> val, bool* out) {
   *out = val.As<Boolean>()->Value();
   return true;
 }
-
+*/
 #if !defined(OS_LINUX) && !defined(OS_FREEBSD)
 Local<Value> Converter<unsigned long>::ToV8(Isolate* isolate,
                                             unsigned long val) {
@@ -62,7 +62,7 @@ bool Converter<unsigned long>::FromV8(Isolate* isolate,
   return FromMaybe(val->IntegerValue(isolate->GetCurrentContext()), out);
 }
 #endif
-
+/*
 Local<Value> Converter<int32_t>::ToV8(Isolate* isolate, int32_t val) {
   return v8::Integer::New(isolate, val);
 }
@@ -137,12 +137,13 @@ bool Converter<double>::FromV8(Isolate* isolate,
     return false;
   *out = val.As<Number>()->Value();
   return true;
-}
+}*/
 
 Local<Value> Converter<const char*>::ToV8(Isolate* isolate, const char* val) {
   return v8::String::NewFromUtf8(isolate, val);
 }
 
+/*
 Local<Value> Converter<base::StringPiece>::ToV8(Isolate* isolate,
                                                 const base::StringPiece& val) {
   return v8::String::NewFromUtf8(isolate, val.data(), v8::String::kNormalString,
@@ -194,7 +195,7 @@ bool Converter<Local<Object>>::FromV8(Isolate* isolate,
   *out = Local<Object>::Cast(val);
   return true;
 }
-
+*/
 Local<Value> Converter<Local<String>>::ToV8(Isolate* isolate,
                                             Local<String> val) {
   return val;
@@ -208,7 +209,7 @@ bool Converter<Local<String>>::FromV8(Isolate* isolate,
   *out = Local<String>::Cast(val);
   return true;
 }
-
+/*
 Local<Value> Converter<Local<External>>::ToV8(Isolate* isolate,
                                               Local<External> val) {
   return val;
@@ -257,6 +258,6 @@ v8::Local<v8::String> StringToSymbol(v8::Isolate* isolate,
   return v8::String::NewFromUtf8(isolate, val.data(),
                                  v8::String::kInternalizedString,
                                  static_cast<uint32_t>(val.length()));
-}
+}*/
 
-}  // namespace mate
+}  // namespace gin

@@ -16,7 +16,7 @@
 
 #include "atom/common/node_includes.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<device::mojom::WakeLockType> {
@@ -36,7 +36,7 @@ struct Converter<device::mojom::WakeLockType> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -127,7 +127,7 @@ mate::Handle<PowerSaveBlocker> PowerSaveBlocker::Create(v8::Isolate* isolate) {
 void PowerSaveBlocker::BuildPrototype(
     v8::Isolate* isolate,
     v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "PowerSaveBlocker"));
+  prototype->SetClassName(gin::StringToV8(isolate, "PowerSaveBlocker"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("start", &PowerSaveBlocker::Start)
       .SetMethod("stop", &PowerSaveBlocker::Stop)

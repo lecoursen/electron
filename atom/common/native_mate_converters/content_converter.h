@@ -22,7 +22,7 @@ class WebContents;
 using ContextMenuParamsWithWebContents =
     std::pair<content::ContextMenuParams, content::WebContents*>;
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<content::MenuItem::Type> {
@@ -74,6 +74,6 @@ struct Converter<content::Referrer> {
                      content::Referrer* out);
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_CONTENT_CONVERTER_H_

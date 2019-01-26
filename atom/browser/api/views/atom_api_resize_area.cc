@@ -34,7 +34,7 @@ mate::WrappableBase* ResizeArea::New(mate::Arguments* args) {
 // static
 void ResizeArea::BuildPrototype(v8::Isolate* isolate,
                                 v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "ResizeArea"));
+  prototype->SetClassName(gin::StringToV8(isolate, "ResizeArea"));
 }
 
 }  // namespace api

@@ -57,7 +57,7 @@ class Promise : public base::RefCounted<Promise> {
         v8::Local<v8::Context>::New(isolate(), GetContext()));
 
     return GetInner()->Resolve(GetContext(),
-                               mate::ConvertToV8(isolate(), value));
+                               gin::ConvertToV8(isolate(), value));
   }
 
   template <typename T>
@@ -68,8 +68,7 @@ class Promise : public base::RefCounted<Promise> {
     v8::Context::Scope context_scope(
         v8::Local<v8::Context>::New(isolate(), GetContext()));
 
-    return GetInner()->Reject(GetContext(),
-                              mate::ConvertToV8(isolate(), value));
+    return GetInner()->Reject(GetContext(), gin::ConvertToV8(isolate(), value));
   }
 
   v8::Maybe<bool> RejectWithErrorMessage(const std::string& error);
@@ -94,7 +93,7 @@ class Promise : public base::RefCounted<Promise> {
 
 }  // namespace atom
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<atom::util::Promise*> {
@@ -107,6 +106,6 @@ struct Converter<atom::util::Promise*> {
   //                    Promise* out);
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_PROMISE_UTIL_H_

@@ -12,6 +12,7 @@
 #include "base/callback.h"
 #include "base/memory/weak_ptr.h"
 #include "base/message_loop/message_loop.h"
+#include "native_mate/converter.h"
 #include "native_mate/function_template.h"
 #include "native_mate/scoped_persistent.h"
 
@@ -54,7 +55,7 @@ struct V8FunctionInvoker<v8::Local<v8::Value>(ArgTypes...)> {
     v8::Local<v8::Function> holder = function.NewHandle(isolate);
     v8::Local<v8::Context> context = holder->CreationContext();
     v8::Context::Scope context_scope(context);
-    std::vector<v8::Local<v8::Value>> args{ConvertToV8(isolate, raw)...};
+    std::vector<v8::Local<v8::Value>> args{gin::ConvertToV8(isolate, raw)...};
     v8::Local<v8::Value> ret(holder
                                  ->Call(context, holder, args.size(),
                                         args.empty() ? nullptr : &args.front())
@@ -77,7 +78,7 @@ struct V8FunctionInvoker<void(ArgTypes...)> {
     v8::Local<v8::Function> holder = function.NewHandle(isolate);
     v8::Local<v8::Context> context = holder->CreationContext();
     v8::Context::Scope context_scope(context);
-    std::vector<v8::Local<v8::Value>> args{ConvertToV8(isolate, raw)...};
+    std::vector<v8::Local<v8::Value>> args{gin::ConvertToV8(isolate, raw)...};
     holder
         ->Call(context, holder, args.size(),
                args.empty() ? nullptr : &args.front())
@@ -100,12 +101,12 @@ struct V8FunctionInvoker<ReturnType(ArgTypes...)> {
     v8::Local<v8::Function> holder = function.NewHandle(isolate);
     v8::Local<v8::Context> context = holder->CreationContext();
     v8::Context::Scope context_scope(context);
-    std::vector<v8::Local<v8::Value>> args{ConvertToV8(isolate, raw)...};
+    std::vector<v8::Local<v8::Value>> args{gin::ConvertToV8(isolate, raw)...};
     v8::Local<v8::Value> result;
     auto maybe_result = holder->Call(context, holder, args.size(),
                                      args.empty() ? nullptr : &args.front());
     if (maybe_result.ToLocal(&result))
-      Converter<ReturnType>::FromV8(isolate, result, &ret);
+      gin::Converter<ReturnType>::FromV8(isolate, result, &ret);
     return ret;
   }
 };
@@ -136,6 +137,9 @@ struct NativeFunctionInvoker<ReturnType(ArgTypes...)> {
 };
 
 }  // namespace internal
+}  // namespace mate
+
+namespace gin {
 
 template <typename Sig>
 struct Converter<base::OnceCallback<Sig>> {
@@ -145,8 +149,8 @@ struct Converter<base::OnceCallback<Sig>> {
     if (!val->IsFunction())
       return false;
 
-    *out = base::BindOnce(&internal::V8FunctionInvoker<Sig>::Go, isolate,
-                          internal::SafeV8Function(isolate, val));
+    *out = base::BindOnce(&mate::internal::V8FunctionInvoker<Sig>::Go, isolate,
+                          mate::internal::SafeV8Function(isolate, val));
     return true;
   }
 };
@@ -157,11 +161,12 @@ struct Converter<base::RepeatingCallback<Sig>> {
                                    const base::RepeatingCallback<Sig>& val) {
     // We don't use CreateFunctionTemplate here because it creates a new
     // FunctionTemplate everytime, which is cached by V8 and causes leaks.
-    internal::Translater translater =
-        base::Bind(&internal::NativeFunctionInvoker<Sig>::Go, val);
+    mate::internal::Translater translater =
+        base::Bind(&mate::internal::NativeFunctionInvoker<Sig>::Go, val);
     // To avoid memory leak, we ensure that the callback can only be called
     // for once.
-    return internal::CreateFunctionFromTranslater(isolate, translater, true);
+    return mate::internal::CreateFunctionFromTranslater(isolate, translater,
+                                                        true);
   }
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -169,12 +174,16 @@ struct Converter<base::RepeatingCallback<Sig>> {
     if (!val->IsFunction())
       return false;
 
-    *out = base::BindRepeating(&internal::V8FunctionInvoker<Sig>::Go, isolate,
-                               internal::SafeV8Function(isolate, val));
+    *out = base::BindRepeating(&mate::internal::V8FunctionInvoker<Sig>::Go,
+                               isolate,
+                               mate::internal::SafeV8Function(isolate, val));
     return true;
   }
 };
 
+}  // namespace gin
+
+namespace mate {
 // Convert a callback to V8 without the call number limitation, this can easily
 // cause memory leaks so use it with caution.
 template <typename Sig>

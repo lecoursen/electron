@@ -54,7 +54,7 @@ class View : public mate::TrackableObject<View> {
 
 }  // namespace atom
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<views::View*> {
@@ -69,6 +69,6 @@ struct Converter<views::View*> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_BROWSER_API_ATOM_API_VIEW_H_

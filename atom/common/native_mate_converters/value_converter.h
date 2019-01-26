@@ -13,7 +13,7 @@ class ListValue;
 class Value;
 }  // namespace base
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<base::DictionaryValue> {
@@ -42,6 +42,6 @@ struct Converter<base::ListValue> {
                                    const base::ListValue& val);
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_VALUE_CONVERTER_H_

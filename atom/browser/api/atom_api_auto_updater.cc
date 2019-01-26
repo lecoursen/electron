@@ -14,7 +14,7 @@
 #include "native_mate/dictionary.h"
 #include "native_mate/object_template_builder.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<base::Time> {
@@ -29,7 +29,7 @@ struct Converter<base::Time> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -47,7 +47,7 @@ AutoUpdater::~AutoUpdater() {
 void AutoUpdater::OnError(const std::string& message) {
   v8::Locker locker(isolate());
   v8::HandleScope handle_scope(isolate());
-  auto error = v8::Exception::Error(mate::StringToV8(isolate(), message));
+  auto error = v8::Exception::Error(gin::StringToV8(isolate(), message));
   mate::EmitEvent(
       isolate(), GetWrapper(), "error",
       error->ToObject(isolate()->GetCurrentContext()).ToLocalChecked(),
@@ -60,15 +60,15 @@ void AutoUpdater::OnError(const std::string& message,
                           const std::string& domain) {
   v8::Locker locker(isolate());
   v8::HandleScope handle_scope(isolate());
-  auto error = v8::Exception::Error(mate::StringToV8(isolate(), message));
+  auto error = v8::Exception::Error(gin::StringToV8(isolate(), message));
   auto errorObject =
       error->ToObject(isolate()->GetCurrentContext()).ToLocalChecked();
 
   // add two new params for better error handling
-  errorObject->Set(mate::StringToV8(isolate(), "code"),
+  errorObject->Set(gin::StringToV8(isolate(), "code"),
                    v8::Integer::New(isolate(), code));
-  errorObject->Set(mate::StringToV8(isolate(), "domain"),
-                   mate::StringToV8(isolate(), domain));
+  errorObject->Set(gin::StringToV8(isolate(), "domain"),
+                   gin::StringToV8(isolate(), domain));
 
   mate::EmitEvent(isolate(), GetWrapper(), "error", errorObject, message);
 }
@@ -124,7 +124,7 @@ mate::Handle<AutoUpdater> AutoUpdater::Create(v8::Isolate* isolate) {
 // static
 void AutoUpdater::BuildPrototype(v8::Isolate* isolate,
                                  v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "AutoUpdater"));
+  prototype->SetClassName(gin::StringToV8(isolate, "AutoUpdater"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("checkForUpdates", &auto_updater::AutoUpdater::CheckForUpdates)
       .SetMethod("getFeedURL", &auto_updater::AutoUpdater::GetFeedURL)

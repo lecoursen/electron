@@ -53,7 +53,7 @@ mate::Handle<SystemPreferences> SystemPreferences::Create(
 void SystemPreferences::BuildPrototype(
     v8::Isolate* isolate,
     v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "SystemPreferences"));
+  prototype->SetClassName(gin::StringToV8(isolate, "SystemPreferences"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
 #if defined(OS_WIN) || defined(OS_MACOSX)
       .SetMethod("getColor", &SystemPreferences::GetColor)

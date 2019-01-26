@@ -28,7 +28,7 @@ struct hash<std::pair<Type1, Type2>> {
 
 }  // namespace std
 
-namespace mate {
+namespace gin {
 
 template <typename Type1, typename Type2>
 struct Converter<std::pair<Type1, Type2>> {
@@ -46,7 +46,7 @@ struct Converter<std::pair<Type1, Type2>> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace {
 

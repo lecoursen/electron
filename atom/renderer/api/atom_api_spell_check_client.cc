@@ -212,7 +212,7 @@ void SpellCheckClient::SpellCheckWords(
       isolate_, base::Bind(&SpellCheckClient::OnSpellCheckDone, AsWeakPtr()));
 
   auto context = isolate_->GetCurrentContext();
-  v8::Local<v8::Value> args[] = {mate::ConvertToV8(isolate_, words),
+  v8::Local<v8::Value> args[] = {gin::ConvertToV8(isolate_, words),
                                  templ->GetFunction(context).ToLocalChecked()};
   // Call javascript with the words and the callback function
   scope.spell_check_->Call(context, scope.provider_, 2, args).ToLocalChecked();

@@ -114,7 +114,7 @@ WebContentsPreferences::WebContentsPreferences(
   copied.Delete("isGuest");
   copied.Delete("session");
 
-  mate::ConvertFromV8(isolate, copied.GetHandle(), &preference_);
+  gin::ConvertFromV8(isolate, copied.GetHandle(), &preference_);
   web_contents->SetUserData(UserDataKey(), base::WrapUnique(this));
 
   instances_.push_back(this);

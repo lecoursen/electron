@@ -47,7 +47,7 @@ void StreamSubscriber::On(const std::string& event,
   // emitter.on(event, EventEmitted)
   auto fn = CallbackToV8(isolate_, callback);
   js_handlers_[event] = v8::Global<v8::Value>(isolate_, fn);
-  internal::ValueVector args = {StringToV8(isolate_, event), fn};
+  internal::ValueVector args = {gin::StringToV8(isolate_, event), fn};
   internal::CallMethodWithArgs(isolate_, emitter_.Get(isolate_), "on", &args);
 }
 
@@ -105,7 +105,7 @@ void StreamSubscriber::RemoveAllListeners() {
 }
 
 void StreamSubscriber::RemoveListener(JSHandlersMap::iterator it) {
-  internal::ValueVector args = {StringToV8(isolate_, it->first),
+  internal::ValueVector args = {gin::StringToV8(isolate_, it->first),
                                 it->second.Get(isolate_)};
   internal::CallMethodWithArgs(isolate_, emitter_.Get(isolate_),
                                "removeListener", &args);

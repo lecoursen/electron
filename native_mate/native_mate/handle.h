@@ -36,7 +36,9 @@ class Handle {
   v8::Local<v8::Object> wrapper_;
   T* object_;
 };
+}  // namespace mate
 
+namespace gin {
 template <typename T>
 struct Converter<mate::Handle<T>> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
@@ -59,7 +61,9 @@ struct Converter<mate::Handle<T>> {
     return true;
   }
 };
+}  // namespace gin
 
+namespace mate {
 // This function is a convenient way to create a handle from a raw pointer
 // without having to write out the type of the object explicitly.
 template <typename T>

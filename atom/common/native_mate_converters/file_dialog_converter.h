@@ -8,7 +8,7 @@
 #include "atom/browser/ui/file_dialog.h"
 #include "native_mate/converter.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<file_dialog::Filter> {
@@ -28,6 +28,6 @@ struct Converter<file_dialog::DialogSettings> {
                      file_dialog::DialogSettings* out);
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_FILE_DIALOG_CONVERTER_H_

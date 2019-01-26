@@ -163,7 +163,7 @@ void Protocol::OnIOCompleted(const CompletionCallback& callback,
     callback.Run(v8::Null(isolate()));
   } else {
     std::string str = ErrorCodeToString(error);
-    callback.Run(v8::Exception::Error(mate::StringToV8(isolate(), str)));
+    callback.Run(v8::Exception::Error(gin::StringToV8(isolate(), str)));
   }
 }
 
@@ -193,7 +193,7 @@ mate::Handle<Protocol> Protocol::Create(v8::Isolate* isolate,
 // static
 void Protocol::BuildPrototype(v8::Isolate* isolate,
                               v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Protocol"));
+  prototype->SetClassName(gin::StringToV8(isolate, "Protocol"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("registerServiceWorkerSchemes",
                  &Protocol::RegisterServiceWorkerSchemes)

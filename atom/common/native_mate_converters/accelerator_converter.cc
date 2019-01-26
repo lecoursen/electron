@@ -8,7 +8,7 @@
 
 #include "atom/browser/ui/accelerator_util.h"
 
-namespace mate {
+namespace gin {
 
 // static
 bool Converter<ui::Accelerator>::FromV8(v8::Isolate* isolate,
@@ -20,4 +20,4 @@ bool Converter<ui::Accelerator>::FromV8(v8::Isolate* isolate,
   return accelerator_util::StringToAccelerator(keycode, out);
 }
 
-}  // namespace mate
+}  // namespace gin

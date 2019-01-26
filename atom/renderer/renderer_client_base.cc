@@ -67,7 +67,7 @@ v8::Local<v8::Value> GetRenderProcessPreferences(
     const PreferencesManager* preferences_manager,
     v8::Isolate* isolate) {
   if (preferences_manager->preferences())
-    return mate::ConvertToV8(isolate, *preferences_manager->preferences());
+    return gin::ConvertToV8(isolate, *preferences_manager->preferences());
   else
     return v8::Null(isolate);
 }
@@ -84,7 +84,7 @@ void SetHiddenValue(v8::Handle<v8::Context> context,
                     v8::Local<v8::Value> value) {
   v8::Isolate* isolate = context->GetIsolate();
   v8::Local<v8::Private> privateKey =
-      v8::Private::ForApi(isolate, mate::StringToV8(isolate, key));
+      v8::Private::ForApi(isolate, gin::StringToV8(isolate, key));
   context->Global()->SetPrivate(context, privateKey, value);
 }
 
@@ -117,13 +117,13 @@ void RendererClientBase::DidCreateScriptContext(
   auto context_id = base::StringPrintf(
       "%s-%" PRId64, renderer_client_id_.c_str(), ++next_context_id_);
   v8::Isolate* isolate = context->GetIsolate();
-  SetHiddenValue(context, "contextId", mate::ConvertToV8(isolate, context_id));
+  SetHiddenValue(context, "contextId", gin::ConvertToV8(isolate, context_id));
 
   auto* command_line = base::CommandLine::ForCurrentProcess();
   bool enableRemoteModule =
       !command_line->HasSwitch(switches::kDisableRemoteModule);
   SetHiddenValue(context, "enableRemoteModule",
-                 mate::ConvertToV8(isolate, enableRemoteModule));
+                 gin::ConvertToV8(isolate, enableRemoteModule));
 }
 
 void RendererClientBase::AddRenderBindings(

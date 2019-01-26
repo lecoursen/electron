@@ -10,7 +10,7 @@
 #include "native_mate/converter.h"
 #include "url/gurl.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<GURL> {
@@ -30,6 +30,6 @@ struct Converter<GURL> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_GURL_CONVERTER_H_

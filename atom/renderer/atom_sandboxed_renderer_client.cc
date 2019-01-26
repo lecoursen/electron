@@ -18,7 +18,7 @@
 #include "base/path_service.h"
 #include "base/process/process_handle.h"
 #include "content/public/renderer/render_frame.h"
-#include "gin/converter.h"
+#include "native_mate/converter.h"
 #include "native_mate/dictionary.h"
 #include "third_party/blink/public/web/blink.h"
 #include "third_party/blink/public/web/web_document.h"
@@ -114,10 +114,9 @@ class AtomSandboxedRenderFrameObserver : public AtomRenderFrameObserver {
     auto context = renderer_client_->GetContext(frame, isolate);
     v8::Context::Scope context_scope(context);
 
-    v8::Local<v8::Value> argv[] = {mate::ConvertToV8(isolate, internal),
-                                   mate::ConvertToV8(isolate, channel),
-                                   mate::ConvertToV8(isolate, args),
-                                   mate::ConvertToV8(isolate, sender_id)};
+    v8::Local<v8::Value> argv[] = {
+        gin::ConvertToV8(isolate, internal), gin::ConvertToV8(isolate, channel),
+        gin::ConvertToV8(isolate, args), gin::ConvertToV8(isolate, sender_id)};
     renderer_client_->InvokeIpcCallback(
         context, "onMessage",
         std::vector<v8::Local<v8::Value>>(argv, argv + node::arraysize(argv)));
@@ -257,7 +256,7 @@ void AtomSandboxedRendererClient::InvokeIpcCallback(
     const std::string& callback_name,
     std::vector<v8::Handle<v8::Value>> args) {
   auto* isolate = context->GetIsolate();
-  auto binding_key = mate::ConvertToV8(isolate, kIpcKey)->ToString(isolate);
+  auto binding_key = gin::ConvertToV8(isolate, kIpcKey)->ToString(isolate);
   auto private_binding_key = v8::Private::ForApi(isolate, binding_key);
   auto global_object = context->Global();
   v8::Local<v8::Value> value;
@@ -267,7 +266,7 @@ void AtomSandboxedRendererClient::InvokeIpcCallback(
     return;
   auto binding = value->ToObject(isolate);
   auto callback_key =
-      mate::ConvertToV8(isolate, callback_name)->ToString(isolate);
+      gin::ConvertToV8(isolate, callback_name)->ToString(isolate);
   auto callback_value = binding->Get(callback_key);
   DCHECK(callback_value->IsFunction());  // set by sandboxed_renderer/init.js
   auto callback = v8::Handle<v8::Function>::Cast(callback_value);

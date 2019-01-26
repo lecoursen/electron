@@ -23,7 +23,7 @@ class KeyWeakMap : public mate::Wrappable<KeyWeakMap<K>> {
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype) {
-    prototype->SetClassName(mate::StringToV8(isolate, "KeyWeakMap"));
+    prototype->SetClassName(gin::StringToV8(isolate, "KeyWeakMap"));
     mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
         .SetMethod("set", &KeyWeakMap<K>::Set)
         .SetMethod("get", &KeyWeakMap<K>::Get)

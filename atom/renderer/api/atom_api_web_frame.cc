@@ -36,7 +36,7 @@
 
 #include "atom/common/node_includes.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<blink::WebLocalFrame::ScriptExecutionType> {
@@ -59,7 +59,7 @@ struct Converter<blink::WebLocalFrame::ScriptExecutionType> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -245,7 +245,7 @@ void WebFrame::SetSpellCheckProvider(mate::Arguments* args,
                                      const std::string& language,
                                      v8::Local<v8::Object> provider) {
   auto context = args->isolate()->GetCurrentContext();
-  if (!provider->Has(context, mate::StringToV8(args->isolate(), "spellCheck"))
+  if (!provider->Has(context, gin::StringToV8(args->isolate(), "spellCheck"))
            .ToChecked()) {
     args->ThrowError("\"spellCheck\" has to be defined");
     return;
@@ -507,7 +507,7 @@ v8::Local<v8::Value> WebFrame::RoutingId() const {
 // static
 void WebFrame::BuildPrototype(v8::Isolate* isolate,
                               v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "WebFrame"));
+  prototype->SetClassName(gin::StringToV8(isolate, "WebFrame"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("setName", &WebFrame::SetName)
       .SetMethod("setZoomLevel", &WebFrame::SetZoomLevel)

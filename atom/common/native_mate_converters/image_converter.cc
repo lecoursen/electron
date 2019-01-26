@@ -8,7 +8,7 @@
 #include "atom/common/native_mate_converters/file_path_converter.h"
 #include "ui/gfx/image/image_skia.h"
 
-namespace mate {
+namespace gin {
 
 bool Converter<gfx::ImageSkia>::FromV8(v8::Isolate* isolate,
                                        v8::Local<v8::Value> val,
@@ -27,7 +27,7 @@ bool Converter<gfx::Image>::FromV8(v8::Isolate* isolate,
   if (val->IsNull())
     return true;
 
-  Handle<atom::api::NativeImage> native_image;
+  mate::Handle<atom::api::NativeImage> native_image;
   if (!ConvertFromV8(isolate, val, &native_image))
     return false;
 
@@ -40,4 +40,4 @@ v8::Local<v8::Value> Converter<gfx::Image>::ToV8(v8::Isolate* isolate,
   return ConvertToV8(isolate, atom::api::NativeImage::Create(isolate, val));
 }
 
-}  // namespace mate
+}  // namespace gin

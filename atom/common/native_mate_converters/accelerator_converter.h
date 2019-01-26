@@ -11,7 +11,7 @@ namespace ui {
 class Accelerator;
 }
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<ui::Accelerator> {
@@ -20,6 +20,6 @@ struct Converter<ui::Accelerator> {
                      ui::Accelerator* out);
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_ACCELERATOR_CONVERTER_H_

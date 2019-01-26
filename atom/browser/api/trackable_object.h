@@ -79,7 +79,7 @@ class TrackableObject : public TrackableObjectBase,
       return nullptr;
 
     T* self = nullptr;
-    mate::ConvertFromV8(isolate, object.ToLocalChecked(), &self);
+    gin::ConvertFromV8(isolate, object.ToLocalChecked(), &self);
     return self;
   }
 

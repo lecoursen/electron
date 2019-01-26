@@ -102,7 +102,7 @@ class EventEmitter : public Wrappable<T> {
     v8::Locker locker(isolate());
     v8::HandleScope handle_scope(isolate());
     EmitEvent(isolate(), GetWrapper(), name, event, args...);
-    return event->Get(StringToV8(isolate(), "defaultPrevented"))
+    return event->Get(gin::StringToV8(isolate(), "defaultPrevented"))
         ->BooleanValue(isolate()->GetCurrentContext())
         .ToChecked();
   }

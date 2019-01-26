@@ -13,7 +13,7 @@
 
 #include "atom/common/node_includes.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<in_app_purchase::Payment> {
@@ -68,7 +68,7 @@ struct Converter<in_app_purchase::Product> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -83,7 +83,7 @@ mate::Handle<InAppPurchase> InAppPurchase::Create(v8::Isolate* isolate) {
 // static
 void InAppPurchase::BuildPrototype(v8::Isolate* isolate,
                                    v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "InAppPurchase"));
+  prototype->SetClassName(gin::StringToV8(isolate, "InAppPurchase"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("canMakePayments", &in_app_purchase::CanMakePayments)
       .SetMethod("getReceiptURL", &in_app_purchase::GetReceiptURL)

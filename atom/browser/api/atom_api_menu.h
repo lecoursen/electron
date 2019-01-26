@@ -115,7 +115,7 @@ class Menu : public mate::TrackableObject<Menu>,
 
 }  // namespace atom
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<atom::AtomMenuModel*> {
@@ -136,6 +136,6 @@ struct Converter<atom::AtomMenuModel*> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_BROWSER_API_ATOM_API_MENU_H_

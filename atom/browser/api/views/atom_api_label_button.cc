@@ -49,7 +49,7 @@ mate::WrappableBase* LabelButton::New(mate::Arguments* args,
 // static
 void LabelButton::BuildPrototype(v8::Isolate* isolate,
                                  v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "LabelButton"));
+  prototype->SetClassName(gin::StringToV8(isolate, "LabelButton"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("getText", &LabelButton::GetText)
       .SetMethod("setText", &LabelButton::SetText)

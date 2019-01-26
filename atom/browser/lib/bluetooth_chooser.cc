@@ -7,7 +7,7 @@
 #include "atom/common/native_mate_converters/string16_converter.h"
 #include "native_mate/dictionary.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<atom::BluetoothChooser::DeviceInfo> {
@@ -17,11 +17,11 @@ struct Converter<atom::BluetoothChooser::DeviceInfo> {
     mate::Dictionary dict = mate::Dictionary::CreateEmpty(isolate);
     dict.Set("deviceName", val.device_name);
     dict.Set("deviceId", val.device_id);
-    return mate::ConvertToV8(isolate, dict);
+    return gin::ConvertToV8(isolate, dict);
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 

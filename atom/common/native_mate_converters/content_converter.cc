@@ -68,12 +68,12 @@ v8::Local<v8::Value> MenuToV8(v8::Isolate* isolate,
   std::vector<v8::Local<v8::Value>> v8_menu;
   for (const auto& menu_item : menu)
     v8_menu.push_back(MenuItemToV8(isolate, web_contents, context, menu_item));
-  return mate::ConvertToV8(isolate, v8_menu);
+  return gin::ConvertToV8(isolate, v8_menu);
 }
 
 }  // namespace
 
-namespace mate {
+namespace gin {
 
 // static
 v8::Local<v8::Value> Converter<content::MenuItem::Type>::ToV8(
@@ -125,7 +125,7 @@ v8::Local<v8::Value> Converter<ContextMenuParamsWithWebContents>::ToV8(
   if (params.custom_context.is_pepper_menu)
     dict.Set("menu", MenuToV8(isolate, val.second, params.custom_context,
                               params.custom_items));
-  return mate::ConvertToV8(isolate, dict);
+  return gin::ConvertToV8(isolate, dict);
 }
 
 // static
@@ -228,7 +228,7 @@ v8::Local<v8::Value> Converter<content::Referrer>::ToV8(
   mate::Dictionary dict = mate::Dictionary::CreateEmpty(isolate);
   dict.Set("url", ConvertToV8(isolate, val.url));
   dict.Set("policy", ConvertToV8(isolate, val.policy));
-  return mate::ConvertToV8(isolate, dict);
+  return gin::ConvertToV8(isolate, dict);
 }
 
 // static
@@ -248,4 +248,4 @@ bool Converter<content::Referrer>::FromV8(v8::Isolate* isolate,
   return true;
 }
 
-}  // namespace mate
+}  // namespace gin

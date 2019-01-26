@@ -88,7 +88,7 @@ void BeforeStartInUI(base::WeakPtr<URLRequestFetchJob> job,
   v8::Local<v8::Value> value;
   mate::Dictionary options;
   if (!args->GetNext(&value) ||
-      !mate::ConvertFromV8(args->isolate(), value, &options)) {
+      !gin::ConvertFromV8(args->isolate(), value, &options)) {
     base::PostTaskWithTraits(FROM_HERE, {content::BrowserThread::IO},
                              base::BindOnce(&URLRequestFetchJob::OnError, job,
                                             net::ERR_NOT_IMPLEMENTED));
@@ -107,7 +107,7 @@ void BeforeStartInUI(base::WeakPtr<URLRequestFetchJob> job,
       url_request_context_getter = custom_browser_context->GetRequestContext();
     } else {
       mate::Handle<api::Session> session;
-      if (mate::ConvertFromV8(args->isolate(), value, &session) &&
+      if (gin::ConvertFromV8(args->isolate(), value, &session) &&
           !session.IsEmpty()) {
         AtomBrowserContext* browser_context = session->browser_context();
         url_request_context_getter = browser_context->GetRequestContext();

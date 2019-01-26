@@ -258,7 +258,7 @@ class TopLevelWindow : public mate::TrackableObject<TopLevelWindow>,
 
 }  // namespace atom
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<atom::NativeWindow*> {
@@ -279,6 +279,6 @@ struct Converter<atom::NativeWindow*> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_BROWSER_API_ATOM_API_TOP_LEVEL_WINDOW_H_

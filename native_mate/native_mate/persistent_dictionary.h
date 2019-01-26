@@ -24,14 +24,17 @@ class PersistentDictionary : public Dictionary {
  private:
   scoped_refptr<RefCountedPersistent<v8::Object>> handle_;
 };
+}  // namespace mate
+
+namespace gin {
 
 template <>
-struct Converter<PersistentDictionary> {
+struct Converter<mate::PersistentDictionary> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     PersistentDictionary* out);
+                     mate::PersistentDictionary* out);
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // NATIVE_MATE_PERSISTENT_DICTIONARY_H_

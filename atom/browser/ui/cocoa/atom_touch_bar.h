@@ -14,7 +14,6 @@
 #include "atom/browser/native_window.h"
 #include "atom/browser/ui/cocoa/touch_bar_forward_declarations.h"
 #include "base/mac/scoped_nsobject.h"
-#include "native_mate/constructor.h"
 #include "native_mate/persistent_dictionary.h"
 
 @interface AtomTouchBar : NSObject <NSScrubberDelegate,

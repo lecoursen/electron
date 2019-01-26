@@ -6,9 +6,10 @@
 #define NATIVE_MATE_WRAPPABLE_H_
 
 #include "base/bind.h"
+#include "gin/function_template.h"
 #include "gin/per_isolate_data.h"
-#include "native_mate/constructor.h"
 #include "native_mate/converter.h"
+#include "native_mate/wrappable_base.h"
 
 namespace mate {
 
@@ -26,12 +27,12 @@ class Wrappable : public WrappableBase {
   template <typename Sig>
   static void SetConstructor(v8::Isolate* isolate,
                              const base::Callback<Sig>& constructor) {
-    v8::Local<v8::FunctionTemplate> templ = CreateFunctionTemplate(
-        isolate, base::Bind(&internal::InvokeNew<Sig>, constructor));
+    /*v8::Local<v8::FunctionTemplate> templ =
+        gin::CreateFunctionTemplate(isolate, constructor);
     templ->InstanceTemplate()->SetInternalFieldCount(1);
     T::BuildPrototype(isolate, templ);
     gin::PerIsolateData::From(isolate)->SetFunctionTemplate(&kWrapperInfo,
-                                                            templ);
+                                                            templ);*/
   }
 
   static v8::Local<v8::FunctionTemplate> GetConstructor(v8::Isolate* isolate) {
@@ -74,13 +75,17 @@ class Wrappable : public WrappableBase {
 
 // static
 template <typename T>
-gin::WrapperInfo Wrappable<T>::kWrapperInfo = {gin::kEmbedderNativeGin};
+gin::WrapperInfo mate::Wrappable<T>::kWrapperInfo = {gin::kEmbedderNativeGin};
+}  // namespace mate
+
+namespace gin {
 
 // This converter handles any subclass of Wrappable.
 template <typename T>
-struct Converter<T*,
-                 typename std::enable_if<
-                     std::is_convertible<T*, WrappableBase*>::value>::type> {
+struct Converter<
+    T*,
+    typename std::enable_if<
+        std::is_convertible<T*, mate::WrappableBase*>::value>::type> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate, T* val) {
     if (val)
       return val->GetWrapper();
@@ -89,12 +94,11 @@ struct Converter<T*,
   }
 
   static bool FromV8(v8::Isolate* isolate, v8::Local<v8::Value> val, T** out) {
-    *out = static_cast<T*>(
-        static_cast<WrappableBase*>(internal::FromV8Impl(isolate, val)));
+    *out = static_cast<T*>(static_cast<mate::WrappableBase*>(
+        mate::internal::FromV8Impl(isolate, val)));
     return *out != nullptr;
   }
 };
 
-}  // namespace mate
-
+}  // namespace gin
 #endif  // NATIVE_MATE_WRAPPABLE_H_

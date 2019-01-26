@@ -23,9 +23,7 @@ class ScopedPersistent {
     reset(isolate, v8::Local<T>::Cast(handle));
   }
 
-  ~ScopedPersistent() {
-    reset();
-  }
+  ~ScopedPersistent() { reset(); }
 
   void reset(v8::Isolate* isolate, v8::Local<T> handle) {
     if (!handle.IsEmpty()) {
@@ -36,17 +34,11 @@ class ScopedPersistent {
     }
   }
 
-  void reset() {
-    handle_.Reset();
-  }
+  void reset() { handle_.Reset(); }
 
-  bool IsEmpty() const {
-    return handle_.IsEmpty();
-  }
+  bool IsEmpty() const { return handle_.IsEmpty(); }
 
-  v8::Local<T> NewHandle() const {
-    return NewHandle(isolate_);
-  }
+  v8::Local<T> NewHandle() const { return NewHandle(isolate_); }
 
   v8::Local<T> NewHandle(v8::Isolate* isolate) const {
     if (handle_.IsEmpty())
@@ -54,7 +46,7 @@ class ScopedPersistent {
     return v8::Local<T>::New(isolate, handle_);
   }
 
-  template<typename P, typename C>
+  template <typename P, typename C>
   void SetWeak(P* parameter, C callback) {
     handle_.SetWeak(parameter, callback);
   }
@@ -75,8 +67,7 @@ class RefCountedPersistent : public ScopedPersistent<T>,
   RefCountedPersistent() {}
 
   RefCountedPersistent(v8::Isolate* isolate, v8::Local<v8::Value> handle)
-    : ScopedPersistent<T>(isolate, handle) {
-  }
+      : ScopedPersistent<T>(isolate, handle) {}
 
  protected:
   friend class base::RefCounted<RefCountedPersistent<T>>;
@@ -86,19 +77,22 @@ class RefCountedPersistent : public ScopedPersistent<T>,
  private:
   DISALLOW_COPY_AND_ASSIGN(RefCountedPersistent);
 };
+}  // namespace mate
 
-template<typename T>
-struct Converter<ScopedPersistent<T> > {
+namespace gin {
+
+template <typename T>
+struct Converter<mate::ScopedPersistent<T>> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                    const ScopedPersistent<T>& val) {
+                                   const mate::ScopedPersistent<T>& val) {
     return val.NewHandle(isolate);
   }
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     ScopedPersistent<T>* out) {
+                     mate::ScopedPersistent<T>* out) {
     v8::Local<T> converted;
-    if (!Converter<v8::Local<T> >::FromV8(isolate, val, &converted))
+    if (!Converter<v8::Local<T>>::FromV8(isolate, val, &converted))
       return false;
 
     out->reset(isolate, converted);
@@ -106,6 +100,6 @@ struct Converter<ScopedPersistent<T> > {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // NATIVE_MATE_SCOPED_PERSISTENT_H_

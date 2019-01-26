@@ -11,7 +11,7 @@
 #include "ui/gfx/geometry/rect.h"
 #include "ui/gfx/geometry/size.h"
 
-namespace mate {
+namespace gin {
 
 v8::Local<v8::Value> Converter<gfx::Point>::ToV8(v8::Isolate* isolate,
                                                  const gfx::Point& val) {
@@ -136,4 +136,4 @@ v8::Local<v8::Value> Converter<display::Display>::ToV8(
   return dict.GetHandle();
 }
 
-}  // namespace mate
+}  // namespace gin

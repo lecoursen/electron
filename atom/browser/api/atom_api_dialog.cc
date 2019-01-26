@@ -37,8 +37,8 @@ void ShowMessageBox(int type,
                     mate::Arguments* args) {
   v8::Local<v8::Value> peek = args->PeekNext();
   atom::MessageBoxCallback callback;
-  if (mate::Converter<atom::MessageBoxCallback>::FromV8(args->isolate(), peek,
-                                                        &callback)) {
+  if (gin::Converter<atom::MessageBoxCallback>::FromV8(args->isolate(), peek,
+                                                       &callback)) {
     atom::ShowMessageBox(window, static_cast<atom::MessageBoxType>(type),
                          buttons, default_id, cancel_id, options, title,
                          message, detail, checkbox_label, checkbox_checked,
@@ -55,7 +55,7 @@ void ShowOpenDialog(const file_dialog::DialogSettings& settings,
                     mate::Arguments* args) {
   v8::Local<v8::Value> peek = args->PeekNext();
   file_dialog::OpenDialogCallback callback;
-  if (mate::Converter<file_dialog::OpenDialogCallback>::FromV8(
+  if (gin::Converter<file_dialog::OpenDialogCallback>::FromV8(
           args->isolate(), peek, &callback)) {
     file_dialog::ShowOpenDialog(settings, callback);
   } else {
@@ -69,7 +69,7 @@ void ShowSaveDialog(const file_dialog::DialogSettings& settings,
                     mate::Arguments* args) {
   v8::Local<v8::Value> peek = args->PeekNext();
   file_dialog::SaveDialogCallback callback;
-  if (mate::Converter<file_dialog::SaveDialogCallback>::FromV8(
+  if (gin::Converter<file_dialog::SaveDialogCallback>::FromV8(
           args->isolate(), peek, &callback)) {
     file_dialog::ShowSaveDialog(settings, callback);
   } else {

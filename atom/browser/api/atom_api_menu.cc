@@ -9,7 +9,6 @@
 #include "atom/common/native_mate_converters/callback.h"
 #include "atom/common/native_mate_converters/image_converter.h"
 #include "atom/common/native_mate_converters/string16_converter.h"
-#include "native_mate/constructor.h"
 #include "native_mate/dictionary.h"
 #include "native_mate/object_template_builder.h"
 
@@ -73,7 +72,7 @@ bool Menu::GetAcceleratorForCommandIdWithParams(
   v8::HandleScope handle_scope(isolate());
   v8::Local<v8::Value> val =
       get_accelerator_.Run(GetWrapper(), command_id, use_default_accelerator);
-  return mate::ConvertFromV8(isolate(), val, accelerator);
+  return gin::ConvertFromV8(isolate(), val, accelerator);
 }
 
 bool Menu::ShouldRegisterAcceleratorForCommandId(int command_id) const {
@@ -192,7 +191,7 @@ void Menu::OnMenuWillShow() {
 // static
 void Menu::BuildPrototype(v8::Isolate* isolate,
                           v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Menu"));
+  prototype->SetClassName(gin::StringToV8(isolate, "Menu"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetMethod("insertItem", &Menu::InsertItemAt)

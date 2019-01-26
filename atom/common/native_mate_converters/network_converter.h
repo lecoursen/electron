@@ -12,7 +12,7 @@ namespace network {
 class ResourceRequestBody;
 }
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<scoped_refptr<network::ResourceRequestBody>> {
@@ -24,6 +24,6 @@ struct Converter<scoped_refptr<network::ResourceRequestBody>> {
                      scoped_refptr<network::ResourceRequestBody>* out);
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_NETWORK_CONVERTER_H_

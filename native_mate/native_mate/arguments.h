@@ -19,34 +19,32 @@ class Arguments {
   explicit Arguments(const v8::FunctionCallbackInfo<v8::Value>& info);
   ~Arguments();
 
-  v8::Local<v8::Object> GetHolder() const {
-    return info_->Holder();
-  }
+  v8::Local<v8::Object> GetHolder() const { return info_->Holder(); }
 
-  template<typename T>
+  template <typename T>
   bool GetHolder(T* out) {
-    return ConvertFromV8(isolate_, info_->Holder(), out);
+    return gin::ConvertFromV8(isolate_, info_->Holder(), out);
   }
 
-  template<typename T>
+  template <typename T>
   bool GetData(T* out) {
-    return ConvertFromV8(isolate_, info_->Data(), out);
+    return gin::ConvertFromV8(isolate_, info_->Data(), out);
   }
 
-  template<typename T>
+  template <typename T>
   bool GetNext(T* out) {
     if (next_ >= info_->Length()) {
       insufficient_arguments_ = true;
       return false;
     }
     v8::Local<v8::Value> val = (*info_)[next_];
-    bool success = ConvertFromV8(isolate_, val, out);
+    bool success = gin::ConvertFromV8(isolate_, val, out);
     if (success)
       next_++;
     return success;
   }
 
-  template<typename T>
+  template <typename T>
   bool GetRemaining(std::vector<T>* out) {
     if (next_ >= info_->Length()) {
       insufficient_arguments_ = true;
@@ -56,27 +54,21 @@ class Arguments {
     out->resize(remaining);
     for (int i = 0; i < remaining; ++i) {
       v8::Local<v8::Value> val = (*info_)[next_++];
-      if (!ConvertFromV8(isolate_, val, &out->at(i)))
+      if (!gin::ConvertFromV8(isolate_, val, &out->at(i)))
         return false;
     }
     return true;
   }
 
-  v8::Local<v8::Object> GetThis() {
-    return info_->This();
-  }
+  v8::Local<v8::Object> GetThis() { return info_->This(); }
 
-  bool IsConstructCall() const {
-    return info_->IsConstructCall();
-  }
+  bool IsConstructCall() const { return info_->IsConstructCall(); }
 
-  int Length() const {
-    return info_->Length();
-  }
+  int Length() const { return info_->Length(); }
 
-  template<typename T>
+  template <typename T>
   void Return(T val) {
-    info_->GetReturnValue().Set(ConvertToV8(isolate_, val));
+    info_->GetReturnValue().Set(gin::ConvertToV8(isolate_, val));
   }
 
   v8::Local<v8::Value> PeekNext() const;

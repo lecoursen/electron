@@ -10,7 +10,7 @@
 #include "atom/common/native_mate_converters/string16_converter.h"
 #include "base/files/file_path.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<base::FilePath> {
@@ -34,6 +34,6 @@ struct Converter<base::FilePath> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_FILE_PATH_CONVERTER_H_

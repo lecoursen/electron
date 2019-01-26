@@ -38,7 +38,7 @@ bool GetIPCObject(v8::Isolate* isolate,
                   bool internal,
                   v8::Local<v8::Object>* ipc) {
   v8::Local<v8::String> key =
-      mate::StringToV8(isolate, internal ? "ipc-internal" : "ipc");
+      gin::StringToV8(isolate, internal ? "ipc-internal" : "ipc");
   v8::Local<v8::Private> privateKey = v8::Private::ForApi(isolate, key);
   v8::Local<v8::Object> global_object = context->Global();
   v8::Local<v8::Value> value;
@@ -53,9 +53,9 @@ bool GetIPCObject(v8::Isolate* isolate,
 std::vector<v8::Local<v8::Value>> ListValueToVector(
     v8::Isolate* isolate,
     const base::ListValue& list) {
-  v8::Local<v8::Value> array = mate::ConvertToV8(isolate, list);
+  v8::Local<v8::Value> array = gin::ConvertToV8(isolate, list);
   std::vector<v8::Local<v8::Value>> result;
-  mate::ConvertFromV8(isolate, array, &result);
+  gin::ConvertFromV8(isolate, array, &result);
   return result;
 }
 

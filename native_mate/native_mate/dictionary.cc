@@ -23,6 +23,12 @@ v8::Local<v8::Object> Dictionary::GetHandle() const {
   return object_;
 }
 
+}  // namespace mate
+
+namespace gin {
+
+using namespace mate;
+
 v8::Local<v8::Value> Converter<Dictionary>::ToV8(v8::Isolate* isolate,
                                                  Dictionary val) {
   return val.GetHandle();
@@ -37,4 +43,4 @@ bool Converter<Dictionary>::FromV8(v8::Isolate* isolate,
   return true;
 }
 
-}  // namespace mate
+}  // namespace gin

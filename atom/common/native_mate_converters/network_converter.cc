@@ -14,7 +14,7 @@
 #include "native_mate/dictionary.h"
 #include "services/network/public/cpp/resource_request_body.h"
 
-namespace mate {
+namespace gin {
 
 // static
 v8::Local<v8::Value>
@@ -91,4 +91,4 @@ bool Converter<scoped_refptr<network::ResourceRequestBody>>::FromV8(
   return true;
 }
 
-}  // namespace mate
+}  // namespace gin

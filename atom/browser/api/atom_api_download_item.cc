@@ -18,7 +18,7 @@
 
 #include "atom/common/node_includes.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<download::DownloadItem::DownloadState> {
@@ -46,7 +46,7 @@ struct Converter<download::DownloadItem::DownloadState> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -190,7 +190,7 @@ double DownloadItem::GetStartTime() const {
 // static
 void DownloadItem::BuildPrototype(v8::Isolate* isolate,
                                   v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "DownloadItem"));
+  prototype->SetClassName(gin::StringToV8(isolate, "DownloadItem"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetMethod("pause", &DownloadItem::Pause)

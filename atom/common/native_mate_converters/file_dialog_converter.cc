@@ -9,7 +9,7 @@
 #include "atom/common/native_mate_converters/file_path_converter.h"
 #include "native_mate/dictionary.h"
 
-namespace mate {
+namespace gin {
 
 bool Converter<file_dialog::Filter>::FromV8(v8::Isolate* isolate,
                                             v8::Local<v8::Value> val,
@@ -73,4 +73,4 @@ v8::Local<v8::Value> Converter<file_dialog::DialogSettings>::ToV8(
   return dict.GetHandle();
 }
 
-}  // namespace mate
+}  // namespace gin

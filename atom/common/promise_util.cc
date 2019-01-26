@@ -43,12 +43,12 @@ v8::Local<v8::Promise> Promise::GetHandle() const {
 
 }  // namespace atom
 
-namespace mate {
+namespace gin {
 
-v8::Local<v8::Value> mate::Converter<atom::util::Promise*>::ToV8(
+v8::Local<v8::Value> gin::Converter<atom::util::Promise*>::ToV8(
     v8::Isolate*,
     atom::util::Promise* val) {
   return val->GetHandle();
 }
 
-}  // namespace mate
+}  // namespace gin

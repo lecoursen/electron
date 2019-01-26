@@ -34,7 +34,7 @@ mate::WrappableBase* Button::New(mate::Arguments* args) {
 // static
 void Button::BuildPrototype(v8::Isolate* isolate,
                             v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Button"));
+  prototype->SetClassName(gin::StringToV8(isolate, "Button"));
 }
 
 }  // namespace api

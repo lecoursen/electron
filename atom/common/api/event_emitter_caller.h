@@ -30,7 +30,7 @@ v8::Local<v8::Value> EmitEvent(v8::Isolate* isolate,
                                v8::Local<v8::Object> obj,
                                const StringType& name,
                                const internal::ValueVector& args) {
-  internal::ValueVector concatenated_args = {StringToV8(isolate, name)};
+  internal::ValueVector concatenated_args = {gin::StringToV8(isolate, name)};
   concatenated_args.reserve(1 + args.size());
   concatenated_args.insert(concatenated_args.end(), args.begin(), args.end());
   return internal::CallMethodWithArgs(isolate, obj, "emit", &concatenated_args);
@@ -44,8 +44,8 @@ v8::Local<v8::Value> EmitEvent(v8::Isolate* isolate,
                                const StringType& name,
                                const Args&... args) {
   internal::ValueVector converted_args = {
-      StringToV8(isolate, name),
-      ConvertToV8(isolate, args)...,
+      gin::StringToV8(isolate, name),
+      gin::ConvertToV8(isolate, args)...,
   };
   return internal::CallMethodWithArgs(isolate, obj, "emit", &converted_args);
 }
@@ -57,7 +57,7 @@ v8::Local<v8::Value> CustomEmit(v8::Isolate* isolate,
                                 const char* custom_emit,
                                 const Args&... args) {
   internal::ValueVector converted_args = {
-      ConvertToV8(isolate, args)...,
+      gin::ConvertToV8(isolate, args)...,
   };
   return internal::CallMethodWithArgs(isolate, object, custom_emit,
                                       &converted_args);

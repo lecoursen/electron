@@ -12,7 +12,7 @@ class Image;
 class ImageSkia;
 }  // namespace gfx
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<gfx::ImageSkia> {
@@ -29,6 +29,6 @@ struct Converter<gfx::Image> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate, const gfx::Image& val);
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_IMAGE_CONVERTER_H_

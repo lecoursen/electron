@@ -22,7 +22,10 @@ PersistentDictionary::~PersistentDictionary() {}
 v8::Local<v8::Object> PersistentDictionary::GetHandle() const {
   return handle_->NewHandle();
 }
+}  // namespace mate
 
+namespace gin {
+using namespace mate;
 bool Converter<PersistentDictionary>::FromV8(v8::Isolate* isolate,
                                              v8::Local<v8::Value> val,
                                              PersistentDictionary* out) {
@@ -32,4 +35,4 @@ bool Converter<PersistentDictionary>::FromV8(v8::Isolate* isolate,
   return true;
 }
 
-}  // namespace mate
+}  // namespace gin

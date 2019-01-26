@@ -9,7 +9,7 @@
 #include "atom/common/native_mate_converters/v8_value_converter.h"
 #include "base/values.h"
 
-namespace mate {
+namespace gin {
 
 bool Converter<base::DictionaryValue>::FromV8(v8::Isolate* isolate,
                                               v8::Local<v8::Value> val,
@@ -73,4 +73,4 @@ v8::Local<v8::Value> Converter<base::ListValue>::ToV8(
   return converter.ToV8Value(&val, isolate->GetCurrentContext());
 }
 
-}  // namespace mate
+}  // namespace gin

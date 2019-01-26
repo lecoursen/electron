@@ -17,7 +17,7 @@
 #include "base/win/scoped_com_initializer.h"
 #include "base/win/shortcut.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<base::win::ShortcutOperation> {
@@ -39,7 +39,7 @@ struct Converter<base::win::ShortcutOperation> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 #endif
 
 namespace {

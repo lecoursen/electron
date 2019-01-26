@@ -12,25 +12,25 @@
 
 #include "atom/common/node_includes.h"
 
-namespace mate {
+namespace gin {
 template <>
 struct Converter<ui::IdleState> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
                                    const ui::IdleState& in) {
     switch (in) {
       case ui::IDLE_STATE_ACTIVE:
-        return mate::StringToV8(isolate, "active");
+        return gin::StringToV8(isolate, "active");
       case ui::IDLE_STATE_IDLE:
-        return mate::StringToV8(isolate, "idle");
+        return gin::StringToV8(isolate, "idle");
       case ui::IDLE_STATE_LOCKED:
-        return mate::StringToV8(isolate, "locked");
+        return gin::StringToV8(isolate, "locked");
       case ui::IDLE_STATE_UNKNOWN:
       default:
-        return mate::StringToV8(isolate, "unknown");
+        return gin::StringToV8(isolate, "unknown");
     }
   }
 };
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -90,7 +90,7 @@ void PowerMonitor::QuerySystemIdleState(v8::Isolate* isolate,
   if (idle_threshold > 0) {
     ui::CalculateIdleState(idle_threshold, callback);
   } else {
-    isolate->ThrowException(v8::Exception::TypeError(mate::StringToV8(
+    isolate->ThrowException(v8::Exception::TypeError(gin::StringToV8(
         isolate, "Invalid idle threshold, must be greater than 0")));
   }
 }
@@ -102,7 +102,7 @@ void PowerMonitor::QuerySystemIdleTime(const ui::IdleTimeCallback& callback) {
 // static
 v8::Local<v8::Value> PowerMonitor::Create(v8::Isolate* isolate) {
   if (!Browser::Get()->is_ready()) {
-    isolate->ThrowException(v8::Exception::Error(mate::StringToV8(
+    isolate->ThrowException(v8::Exception::Error(gin::StringToV8(
         isolate,
         "Cannot require \"powerMonitor\" module before app is ready")));
     return v8::Null(isolate);
@@ -114,7 +114,7 @@ v8::Local<v8::Value> PowerMonitor::Create(v8::Isolate* isolate) {
 // static
 void PowerMonitor::BuildPrototype(v8::Isolate* isolate,
                                   v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "PowerMonitor"));
+  prototype->SetClassName(gin::StringToV8(isolate, "PowerMonitor"));
 
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()

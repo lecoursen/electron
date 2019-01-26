@@ -20,7 +20,7 @@
 #include "content/browser/renderer_host/render_widget_host_impl.h"
 #include "content/public/browser/render_process_host.h"
 #include "content/public/browser/render_view_host.h"
-#include "gin/converter.h"
+#include "native_mate/converter.h"
 #include "native_mate/dictionary.h"
 #include "ui/gl/gpu_switching_manager.h"
 
@@ -56,8 +56,8 @@ BrowserWindow::BrowserWindow(v8::Isolate* isolate,
     auto* existing_preferences =
         WebContentsPreferences::From(web_contents->web_contents());
     base::DictionaryValue web_preferences_dict;
-    if (mate::ConvertFromV8(isolate, web_preferences.GetHandle(),
-                            &web_preferences_dict)) {
+    if (gin::ConvertFromV8(isolate, web_preferences.GetHandle(),
+                           &web_preferences_dict)) {
       existing_preferences->Clear();
       existing_preferences->Merge(web_preferences_dict);
     }
@@ -196,7 +196,7 @@ void BrowserWindow::OnCloseContents() {
   v8::HandleScope handle_scope(isolate());
   for (v8::Local<v8::Value> value : child_windows_.Values(isolate())) {
     mate::Handle<BrowserWindow> child;
-    if (mate::ConvertFromV8(isolate(), value, &child) && !child.IsEmpty())
+    if (gin::ConvertFromV8(isolate(), value, &child) && !child.IsEmpty())
       child->window()->CloseImmediately();
   }
 
@@ -440,7 +440,7 @@ mate::WrappableBase* BrowserWindow::New(mate::Arguments* args) {
 // static
 void BrowserWindow::BuildPrototype(v8::Isolate* isolate,
                                    v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "BrowserWindow"));
+  prototype->SetClassName(gin::StringToV8(isolate, "BrowserWindow"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("focusOnWebView", &BrowserWindow::FocusOnWebView)
       .SetMethod("blurWebView", &BrowserWindow::BlurWebView)

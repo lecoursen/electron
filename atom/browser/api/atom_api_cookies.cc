@@ -28,7 +28,7 @@
 
 using content::BrowserThread;
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<atom::api::Cookies::Error> {
@@ -68,22 +68,22 @@ struct Converter<network::mojom::CookieChangeCause> {
     switch (val) {
       case network::mojom::CookieChangeCause::INSERTED:
       case network::mojom::CookieChangeCause::EXPLICIT:
-        return mate::StringToV8(isolate, "explicit");
+        return gin::StringToV8(isolate, "explicit");
       case network::mojom::CookieChangeCause::OVERWRITE:
-        return mate::StringToV8(isolate, "overwrite");
+        return gin::StringToV8(isolate, "overwrite");
       case network::mojom::CookieChangeCause::EXPIRED:
-        return mate::StringToV8(isolate, "expired");
+        return gin::StringToV8(isolate, "expired");
       case network::mojom::CookieChangeCause::EVICTED:
-        return mate::StringToV8(isolate, "evicted");
+        return gin::StringToV8(isolate, "evicted");
       case network::mojom::CookieChangeCause::EXPIRED_OVERWRITE:
-        return mate::StringToV8(isolate, "expired-overwrite");
+        return gin::StringToV8(isolate, "expired-overwrite");
       default:
-        return mate::StringToV8(isolate, "unknown");
+        return gin::StringToV8(isolate, "unknown");
     }
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -319,7 +319,7 @@ mate::Handle<Cookies> Cookies::Create(v8::Isolate* isolate,
 // static
 void Cookies::BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Cookies"));
+  prototype->SetClassName(gin::StringToV8(isolate, "Cookies"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("get", &Cookies::Get)
       .SetMethod("remove", &Cookies::Remove)

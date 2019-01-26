@@ -21,7 +21,7 @@ class HttpResponseHeaders;
 struct CertPrincipal;
 }  // namespace net
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<const net::AuthChallengeInfo*> {
@@ -55,7 +55,7 @@ struct Converter<net::HttpResponseHeaders*> {
                      net::HttpResponseHeaders* out);
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 

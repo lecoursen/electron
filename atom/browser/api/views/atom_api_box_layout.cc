@@ -12,7 +12,7 @@
 
 #include "atom/common/node_includes.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<views::BoxLayout::Orientation> {
@@ -32,7 +32,7 @@ struct Converter<views::BoxLayout::Orientation> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -59,7 +59,7 @@ mate::WrappableBase* BoxLayout::New(mate::Arguments* args,
 // static
 void BoxLayout::BuildPrototype(v8::Isolate* isolate,
                                v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "BoxLayout"));
+  prototype->SetClassName(gin::StringToV8(isolate, "BoxLayout"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("setFlexForView", &BoxLayout::SetFlexForView);
 }

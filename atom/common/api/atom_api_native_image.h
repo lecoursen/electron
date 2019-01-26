@@ -111,7 +111,7 @@ class NativeImage : public mate::Wrappable<NativeImage> {
 
 }  // namespace atom
 
-namespace mate {
+namespace gin {
 
 // A custom converter that allows converting path to NativeImage.
 template <>
@@ -124,6 +124,6 @@ struct Converter<mate::Handle<atom::api::NativeImage>> {
                      mate::Handle<atom::api::NativeImage>* out);
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_API_ATOM_API_NATIVE_IMAGE_H_

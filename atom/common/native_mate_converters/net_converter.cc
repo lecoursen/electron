@@ -27,7 +27,7 @@
 
 #include "atom/common/node_includes.h"
 
-namespace mate {
+namespace gin {
 
 namespace {
 
@@ -60,7 +60,7 @@ v8::Local<v8::Value> Converter<const net::AuthChallengeInfo*>::ToV8(
   dict.Set("host", val->challenger.host());
   dict.Set("port", static_cast<uint32_t>(val->challenger.port()));
   dict.Set("realm", val->realm);
-  return mate::ConvertToV8(isolate, dict);
+  return gin::ConvertToV8(isolate, dict);
 }
 
 // static
@@ -191,7 +191,7 @@ bool Converter<net::HttpResponseHeaders*>::FromV8(
       return false;
     }
     std::string value;
-    mate::ConvertFromV8(isolate, localStrVal, &value);
+    gin::ConvertFromV8(isolate, localStrVal, &value);
     out->AddHeader(key + ": " + value);
     return true;
   };
@@ -205,7 +205,7 @@ bool Converter<net::HttpResponseHeaders*>::FromV8(
       return false;
     }
     std::string key;
-    mate::ConvertFromV8(isolate, keyVal, &key);
+    gin::ConvertFromV8(isolate, keyVal, &key);
 
     auto localVal = headers->Get(keyVal);
     if (localVal->IsArray()) {
@@ -224,7 +224,7 @@ bool Converter<net::HttpResponseHeaders*>::FromV8(
   return true;
 }
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 

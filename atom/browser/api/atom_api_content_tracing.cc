@@ -17,7 +17,7 @@
 
 using content::TracingController;
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<base::trace_event::TraceConfig> {
@@ -28,7 +28,7 @@ struct Converter<base::trace_event::TraceConfig> {
     // has to be checked first because none of the fields
     // in the `memory_dump_config` dict below are mandatory
     // and we cannot check the config format.
-    Dictionary options;
+    mate::Dictionary options;
     if (ConvertFromV8(isolate, val, &options)) {
       std::string category_filter, trace_options;
       if (options.Get("categoryFilter", &category_filter) &&
@@ -48,7 +48,7 @@ struct Converter<base::trace_event::TraceConfig> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace {
 

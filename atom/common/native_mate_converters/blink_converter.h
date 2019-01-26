@@ -24,7 +24,7 @@ namespace content {
 struct NativeWebKeyboardEvent;
 }
 
-namespace mate {
+namespace gin {
 
 blink::WebInputEvent::Type GetWebInputEventType(v8::Isolate* isolate,
                                                 v8::Local<v8::Value> val);
@@ -134,6 +134,6 @@ struct Converter<network::mojom::ReferrerPolicy> {
 v8::Local<v8::Value> EditFlagsToV8(v8::Isolate* isolate, int editFlags);
 v8::Local<v8::Value> MediaFlagsToV8(v8::Isolate* isolate, int mediaFlags);
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_BLINK_CONVERTER_H_

@@ -18,7 +18,7 @@ class Size;
 class Rect;
 }  // namespace gfx
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<gfx::Point> {
@@ -62,6 +62,6 @@ struct Converter<display::Display> {
                      display::Display* out);
 };
 
-}  // namespace mate
+}  // namespace gin
 
 #endif  // ATOM_COMMON_NATIVE_MATE_CONVERTERS_GFX_CONVERTER_H_

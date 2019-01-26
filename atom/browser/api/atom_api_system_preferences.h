@@ -12,6 +12,7 @@
 #include "atom/common/promise_util.h"
 #include "base/callback.h"
 #include "base/values.h"
+#include "native_mate/arguments.h"
 #include "native_mate/handle.h"
 
 #if defined(OS_WIN)

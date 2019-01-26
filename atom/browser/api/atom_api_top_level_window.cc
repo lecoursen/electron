@@ -20,7 +20,7 @@
 #include "atom/common/native_mate_converters/value_converter.h"
 #include "atom/common/options_switches.h"
 #include "electron/buildflags/buildflags.h"
-#include "gin/converter.h"
+#include "native_mate/converter.h"
 #include "native_mate/handle.h"
 #include "native_mate/persistent_dictionary.h"
 
@@ -36,7 +36,7 @@
 #include "atom/common/node_includes.h"
 
 #if defined(OS_WIN)
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<atom::TaskbarHost::ThumbarButton> {
@@ -53,7 +53,7 @@ struct Converter<atom::TaskbarHost::ThumbarButton> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 #endif
 
 namespace atom {
@@ -131,7 +131,7 @@ void TopLevelWindow::InitWith(v8::Isolate* isolate,
   // window's JS wrapper gets initialized.
   if (!parent_window_.IsEmpty()) {
     mate::Handle<TopLevelWindow> parent;
-    mate::ConvertFromV8(isolate, GetParentWindow(), &parent);
+    gin::ConvertFromV8(isolate, GetParentWindow(), &parent);
     DCHECK(!parent.IsEmpty());
     parent->child_windows_.Set(isolate, weak_map_id(), wrapper);
   }
@@ -647,7 +647,7 @@ void TopLevelWindow::SetMenu(v8::Isolate* isolate, v8::Local<v8::Value> value) {
   if (value->IsObject() &&
       gin::V8ToString(
           isolate, value->ToObject(isolate)->GetConstructorName()) == "Menu" &&
-      mate::ConvertFromV8(isolate, value, &menu) && !menu.IsEmpty()) {
+      gin::ConvertFromV8(isolate, value, &menu) && !menu.IsEmpty()) {
     menu_.Reset(isolate, menu.ToV8());
     window_->SetMenu(menu->model());
   } else if (value->IsNull()) {
@@ -655,7 +655,7 @@ void TopLevelWindow::SetMenu(v8::Isolate* isolate, v8::Local<v8::Value> value) {
     window_->SetMenu(nullptr);
   } else {
     isolate->ThrowException(
-        v8::Exception::TypeError(mate::StringToV8(isolate, "Invalid Menu")));
+        v8::Exception::TypeError(gin::StringToV8(isolate, "Invalid Menu")));
   }
 }
 
@@ -671,7 +671,7 @@ void TopLevelWindow::SetParentWindow(v8::Local<v8::Value> value,
     RemoveFromParentChildWindows();
     parent_window_.Reset();
     window_->SetParentWindow(nullptr);
-  } else if (mate::ConvertFromV8(isolate(), value, &parent)) {
+  } else if (gin::ConvertFromV8(isolate(), value, &parent)) {
     RemoveFromParentChildWindows();
     parent_window_.Reset(isolate(), value);
     window_->SetParentWindow(parent->window_.get());
@@ -689,7 +689,7 @@ void TopLevelWindow::SetBrowserView(v8::Local<v8::Value> value) {
 void TopLevelWindow::AddBrowserView(v8::Local<v8::Value> value) {
   mate::Handle<BrowserView> browser_view;
   if (value->IsObject() &&
-      mate::ConvertFromV8(isolate(), value, &browser_view)) {
+      gin::ConvertFromV8(isolate(), value, &browser_view)) {
     auto get_that_view = browser_views_.find(browser_view->weak_map_id());
     if (get_that_view == browser_views_.end()) {
       window_->AddBrowserView(browser_view->view());
@@ -702,7 +702,7 @@ void TopLevelWindow::AddBrowserView(v8::Local<v8::Value> value) {
 void TopLevelWindow::RemoveBrowserView(v8::Local<v8::Value> value) {
   mate::Handle<BrowserView> browser_view;
   if (value->IsObject() &&
-      mate::ConvertFromV8(isolate(), value, &browser_view)) {
+      gin::ConvertFromV8(isolate(), value, &browser_view)) {
     auto get_that_view = browser_views_.find(browser_view->weak_map_id());
     if (get_that_view != browser_views_.end()) {
       window_->RemoveBrowserView(browser_view->view());
@@ -984,9 +984,9 @@ int32_t TopLevelWindow::GetID() const {
 void TopLevelWindow::ResetBrowserViews() {
   for (auto& item : browser_views_) {
     mate::Handle<BrowserView> browser_view;
-    if (mate::ConvertFromV8(isolate(),
-                            v8::Local<v8::Value>::New(isolate(), item.second),
-                            &browser_view) &&
+    if (gin::ConvertFromV8(isolate(),
+                           v8::Local<v8::Value>::New(isolate(), item.second),
+                           &browser_view) &&
         !browser_view.IsEmpty()) {
       window_->RemoveBrowserView(browser_view->view());
       browser_view->web_contents()->SetOwnerWindow(nullptr);
@@ -1003,7 +1003,7 @@ void TopLevelWindow::RemoveFromParentChildWindows() {
     return;
 
   mate::Handle<TopLevelWindow> parent;
-  if (!mate::ConvertFromV8(isolate(), GetParentWindow(), &parent) ||
+  if (!gin::ConvertFromV8(isolate(), GetParentWindow(), &parent) ||
       parent.IsEmpty()) {
     return;
   }
@@ -1022,7 +1022,7 @@ mate::WrappableBase* TopLevelWindow::New(mate::Arguments* args) {
 // static
 void TopLevelWindow::BuildPrototype(v8::Isolate* isolate,
                                     v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "TopLevelWindow"));
+  prototype->SetClassName(gin::StringToV8(isolate, "TopLevelWindow"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetMethod("setContentView", &TopLevelWindow::SetContentView)

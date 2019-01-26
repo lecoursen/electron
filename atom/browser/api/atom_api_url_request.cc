@@ -16,7 +16,7 @@
 #include "atom/common/node_includes.h"
 #include "native_mate/dictionary.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<scoped_refptr<const net::IOBufferWithSize>> {
@@ -54,7 +54,7 @@ struct Converter<scoped_refptr<const net::IOBufferWithSize>> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 namespace api {
@@ -184,7 +184,7 @@ mate::WrappableBase* URLRequest::New(mate::Arguments* args) {
 // static
 void URLRequest::BuildPrototype(v8::Isolate* isolate,
                                 v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "URLRequest"));
+  prototype->SetClassName(gin::StringToV8(isolate, "URLRequest"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       // Request API
       .MakeDestroyable()
@@ -407,7 +407,7 @@ void URLRequest::OnResponseCompleted() {
 }
 
 void URLRequest::OnError(const std::string& error, bool isRequestError) {
-  auto error_object = v8::Exception::Error(mate::StringToV8(isolate(), error));
+  auto error_object = v8::Exception::Error(gin::StringToV8(isolate(), error));
   if (isRequestError) {
     request_state_.SetFlag(RequestStateFlags::kFailed);
     EmitRequestEvent(false, "error", error_object);

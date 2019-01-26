@@ -12,11 +12,10 @@
 #include "atom/common/native_mate_converters/value_converter.h"
 #include "atom/common/node_includes.h"
 #include "atom/common/options_switches.h"
-#include "native_mate/constructor.h"
 #include "native_mate/dictionary.h"
 #include "ui/gfx/geometry/rect.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<atom::AutoResizeFlags> {
@@ -43,7 +42,7 @@ struct Converter<atom::AutoResizeFlags> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -134,7 +133,7 @@ v8::Local<v8::Value> BrowserView::GetWebContents() {
 // static
 void BrowserView::BuildPrototype(v8::Isolate* isolate,
                                  v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "BrowserView"));
+  prototype->SetClassName(gin::StringToV8(isolate, "BrowserView"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetMethod("setAutoResize", &BrowserView::SetAutoResize)

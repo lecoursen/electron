@@ -25,7 +25,7 @@ v8::Local<v8::Value> Net::Create(v8::Isolate* isolate) {
 // static
 void Net::BuildPrototype(v8::Isolate* isolate,
                          v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Net"));
+  prototype->SetClassName(gin::StringToV8(isolate, "Net"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetProperty("URLRequest", &Net::URLRequest);
 }

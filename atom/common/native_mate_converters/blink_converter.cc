@@ -12,7 +12,7 @@
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
 #include "content/public/browser/native_web_keyboard_event.h"
-#include "gin/converter.h"
+#include "native_mate/converter.h"
 #include "native_mate/dictionary.h"
 #include "third_party/blink/public/platform/web_input_event.h"
 #include "third_party/blink/public/platform/web_mouse_event.h"
@@ -34,7 +34,7 @@ int VectorToBitArray(const std::vector<T>& vec) {
 
 }  // namespace
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<base::char16> {
@@ -373,19 +373,19 @@ v8::Local<v8::Value> Converter<blink::WebContextMenuData::MediaType>::ToV8(
     const blink::WebContextMenuData::MediaType& in) {
   switch (in) {
     case blink::WebContextMenuData::kMediaTypeImage:
-      return mate::StringToV8(isolate, "image");
+      return gin::StringToV8(isolate, "image");
     case blink::WebContextMenuData::kMediaTypeVideo:
-      return mate::StringToV8(isolate, "video");
+      return gin::StringToV8(isolate, "video");
     case blink::WebContextMenuData::kMediaTypeAudio:
-      return mate::StringToV8(isolate, "audio");
+      return gin::StringToV8(isolate, "audio");
     case blink::WebContextMenuData::kMediaTypeCanvas:
-      return mate::StringToV8(isolate, "canvas");
+      return gin::StringToV8(isolate, "canvas");
     case blink::WebContextMenuData::kMediaTypeFile:
-      return mate::StringToV8(isolate, "file");
+      return gin::StringToV8(isolate, "file");
     case blink::WebContextMenuData::kMediaTypePlugin:
-      return mate::StringToV8(isolate, "plugin");
+      return gin::StringToV8(isolate, "plugin");
     default:
-      return mate::StringToV8(isolate, "none");
+      return gin::StringToV8(isolate, "none");
   }
 }
 
@@ -395,13 +395,13 @@ v8::Local<v8::Value> Converter<blink::WebContextMenuData::InputFieldType>::ToV8(
     const blink::WebContextMenuData::InputFieldType& in) {
   switch (in) {
     case blink::WebContextMenuData::kInputFieldTypePlainText:
-      return mate::StringToV8(isolate, "plainText");
+      return gin::StringToV8(isolate, "plainText");
     case blink::WebContextMenuData::kInputFieldTypePassword:
-      return mate::StringToV8(isolate, "password");
+      return gin::StringToV8(isolate, "password");
     case blink::WebContextMenuData::kInputFieldTypeOther:
-      return mate::StringToV8(isolate, "other");
+      return gin::StringToV8(isolate, "other");
     default:
-      return mate::StringToV8(isolate, "none");
+      return gin::StringToV8(isolate, "none");
   }
 }
 
@@ -426,7 +426,7 @@ v8::Local<v8::Value> EditFlagsToV8(v8::Isolate* isolate, int editFlags) {
   dict.Set("canSelectAll",
            !!(editFlags & blink::WebContextMenuData::kCanSelectAll));
 
-  return mate::ConvertToV8(isolate, dict);
+  return gin::ConvertToV8(isolate, dict);
 }
 
 v8::Local<v8::Value> MediaFlagsToV8(v8::Isolate* isolate, int mediaFlags) {
@@ -446,7 +446,7 @@ v8::Local<v8::Value> MediaFlagsToV8(v8::Isolate* isolate, int mediaFlags) {
            !!(mediaFlags & blink::WebContextMenuData::kMediaCanToggleControls));
   dict.Set("canRotate",
            !!(mediaFlags & blink::WebContextMenuData::kMediaCanRotate));
-  return mate::ConvertToV8(isolate, dict);
+  return gin::ConvertToV8(isolate, dict);
 }
 
 v8::Local<v8::Value> Converter<blink::WebCache::ResourceTypeStat>::ToV8(
@@ -478,24 +478,24 @@ v8::Local<v8::Value> Converter<network::mojom::ReferrerPolicy>::ToV8(
     const network::mojom::ReferrerPolicy& in) {
   switch (in) {
     case network::mojom::ReferrerPolicy::kDefault:
-      return mate::StringToV8(isolate, "default");
+      return gin::StringToV8(isolate, "default");
     case network::mojom::ReferrerPolicy::kAlways:
-      return mate::StringToV8(isolate, "unsafe-url");
+      return gin::StringToV8(isolate, "unsafe-url");
     case network::mojom::ReferrerPolicy::kNoReferrerWhenDowngrade:
-      return mate::StringToV8(isolate, "no-referrer-when-downgrade");
+      return gin::StringToV8(isolate, "no-referrer-when-downgrade");
     case network::mojom::ReferrerPolicy::kNever:
-      return mate::StringToV8(isolate, "no-referrer");
+      return gin::StringToV8(isolate, "no-referrer");
     case network::mojom::ReferrerPolicy::kOrigin:
-      return mate::StringToV8(isolate, "origin");
+      return gin::StringToV8(isolate, "origin");
     case network::mojom::ReferrerPolicy::
         kNoReferrerWhenDowngradeOriginWhenCrossOrigin:
-      return mate::StringToV8(isolate, "strict-origin-when-cross-origin");
+      return gin::StringToV8(isolate, "strict-origin-when-cross-origin");
     case network::mojom::ReferrerPolicy::kSameOrigin:
-      return mate::StringToV8(isolate, "same-origin");
+      return gin::StringToV8(isolate, "same-origin");
     case network::mojom::ReferrerPolicy::kStrictOrigin:
-      return mate::StringToV8(isolate, "strict-origin");
+      return gin::StringToV8(isolate, "strict-origin");
     default:
-      return mate::StringToV8(isolate, "no-referrer");
+      return gin::StringToV8(isolate, "no-referrer");
   }
 }
 
@@ -527,4 +527,4 @@ bool Converter<network::mojom::ReferrerPolicy>::FromV8(
   return true;
 }
 
-}  // namespace mate
+}  // namespace gin

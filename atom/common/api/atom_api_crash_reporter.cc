@@ -14,7 +14,7 @@
 
 using crash_reporter::CrashReporter;
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<CrashReporter::UploadReportResult> {
@@ -30,7 +30,7 @@ struct Converter<CrashReporter::UploadReportResult> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace {
 

@@ -552,7 +552,7 @@ mate::Handle<NativeImage> NativeImage::CreateFromNamedImage(
 // static
 void NativeImage::BuildPrototype(v8::Isolate* isolate,
                                  v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "NativeImage"));
+  prototype->SetClassName(gin::StringToV8(isolate, "NativeImage"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .SetMethod("toPNG", &NativeImage::ToPNG)
       .SetMethod("toJPEG", &NativeImage::ToJPEG)
@@ -574,7 +574,7 @@ void NativeImage::BuildPrototype(v8::Isolate* isolate,
 
 }  // namespace atom
 
-namespace mate {
+namespace gin {
 
 v8::Local<v8::Value> Converter<mate::Handle<atom::api::NativeImage>>::ToV8(
     v8::Isolate* isolate,
@@ -594,8 +594,8 @@ bool Converter<mate::Handle<atom::api::NativeImage>>::FromV8(
     return !(*out)->image().IsEmpty();
   }
 
-  WrappableBase* wrapper =
-      static_cast<WrappableBase*>(internal::FromV8Impl(isolate, val));
+  mate::WrappableBase* wrapper = static_cast<mate::WrappableBase*>(
+      mate::internal::FromV8Impl(isolate, val));
   if (!wrapper)
     return false;
 
@@ -603,7 +603,7 @@ bool Converter<mate::Handle<atom::api::NativeImage>>::FromV8(
   return true;
 }
 
-}  // namespace mate
+}  // namespace gin
 
 namespace {
 

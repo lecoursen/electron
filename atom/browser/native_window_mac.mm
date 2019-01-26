@@ -203,7 +203,7 @@ enum { NSWindowTabbingModeDisallowed = 2 };
 
 @end
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<atom::NativeWindowMac::TitleBarStyle> {
@@ -226,7 +226,7 @@ struct Converter<atom::NativeWindowMac::TitleBarStyle> {
   }
 };
 
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 

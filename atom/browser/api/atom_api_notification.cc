@@ -12,7 +12,6 @@
 #include "atom/common/native_mate_converters/string16_converter.h"
 #include "base/guid.h"
 #include "base/strings/utf_string_conversions.h"
-#include "native_mate/constructor.h"
 #include "native_mate/dictionary.h"
 #include "native_mate/object_template_builder.h"
 #include "url/gurl.h"
@@ -20,7 +19,7 @@
 // See https://github.com/electron/electron/issues/10363
 #include "atom/common/node_includes.h"
 
-namespace mate {
+namespace gin {
 template <>
 struct Converter<atom::NotificationAction> {
   static bool FromV8(v8::Isolate* isolate,
@@ -45,7 +44,7 @@ struct Converter<atom::NotificationAction> {
     return dict.GetHandle();
   }
 };
-}  // namespace mate
+}  // namespace gin
 
 namespace atom {
 
@@ -226,7 +225,7 @@ bool Notification::IsSupported() {
 // static
 void Notification::BuildPrototype(v8::Isolate* isolate,
                                   v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Notification"));
+  prototype->SetClassName(gin::StringToV8(isolate, "Notification"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetMethod("show", &Notification::Show)
