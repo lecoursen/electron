@@ -719,7 +719,7 @@ mate::Handle<Session> Session::CreateFrom(v8::Isolate* isolate,
   // The Sessions should never be garbage collected, since the common pattern is
   // to use partition strings, instead of using the Session object directly.
   g_sessions[handle->weak_map_id()] =
-      v8::Global<v8::Object>(isolate, handle.ToV8());
+      v8::Global<v8::Object>(isolate, handle.ToV8().As<v8::Object>());
 
   return handle;
 }

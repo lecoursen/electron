@@ -6,9 +6,9 @@
 #define NATIVE_MATE_WRAPPABLE_H_
 
 #include "base/bind.h"
-#include "gin/function_template.h"
 #include "gin/per_isolate_data.h"
 #include "native_mate/converter.h"
+#include "native_mate/function_template.h"
 #include "native_mate/wrappable_base.h"
 
 namespace mate {
@@ -27,12 +27,12 @@ class Wrappable : public WrappableBase {
   template <typename Sig>
   static void SetConstructor(v8::Isolate* isolate,
                              const base::Callback<Sig>& constructor) {
-    /*v8::Local<v8::FunctionTemplate> templ =
-        gin::CreateFunctionTemplate(isolate, constructor);
+    v8::Local<v8::FunctionTemplate> templ =
+        mate::CreateFunctionTemplate(isolate, constructor);
     templ->InstanceTemplate()->SetInternalFieldCount(1);
     T::BuildPrototype(isolate, templ);
     gin::PerIsolateData::From(isolate)->SetFunctionTemplate(&kWrapperInfo,
-                                                            templ);*/
+                                                            templ);
   }
 
   static v8::Local<v8::FunctionTemplate> GetConstructor(v8::Isolate* isolate) {

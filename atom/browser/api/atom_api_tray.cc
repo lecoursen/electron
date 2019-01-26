@@ -208,7 +208,7 @@ void Tray::PopUpContextMenu(mate::Arguments* args) {
 }
 
 void Tray::SetContextMenu(v8::Isolate* isolate, mate::Handle<Menu> menu) {
-  menu_.Reset(isolate, menu.ToV8());
+  menu_.Reset(isolate, menu.ToV8().As<v8::Object>());
   tray_icon_->SetContextMenu(menu.IsEmpty() ? nullptr : menu->model());
 }
 

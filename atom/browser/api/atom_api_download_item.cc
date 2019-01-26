@@ -228,7 +228,7 @@ mate::Handle<DownloadItem> DownloadItem::Create(v8::Isolate* isolate,
 
   // Reference this object in case it got garbage collected.
   g_download_item_objects[handle->weak_map_id()] =
-      v8::Global<v8::Object>(isolate, handle.ToV8());
+      v8::Global<v8::Object>(isolate, handle.ToV8().As<v8::Object>());
   return handle;
 }
 

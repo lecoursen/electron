@@ -11,58 +11,18 @@ using namespace gin;
 
 namespace mate {
 
-namespace {
-
-std::string V8TypeAsString(v8::Isolate* isolate, v8::Local<v8::Value> value) {
-  if (value.IsEmpty())
-    return "<empty handle>";
-  v8::MaybeLocal<v8::String> details =
-      value->ToDetailString(isolate->GetCurrentContext());
-  std::string result;
-  if (!details.IsEmpty())
-    ConvertFromV8(isolate, details.ToLocalChecked(), &result);
-  return result;
-}
-
-}  // namespace
-
-Arguments::Arguments()
-    : isolate_(NULL), info_(NULL), next_(0), insufficient_arguments_(false) {}
+Arguments::Arguments() : gin::Arguments() {}
 
 Arguments::Arguments(const v8::FunctionCallbackInfo<v8::Value>& info)
-    : isolate_(info.GetIsolate()),
-      info_(&info),
-      next_(0),
-      insufficient_arguments_(false) {}
+    : gin::Arguments(info), mate_info_(&info) {}
 
 Arguments::~Arguments() {}
 
-v8::Local<v8::Value> Arguments::PeekNext() const {
-  if (next_ >= info_->Length())
-    return v8::Local<v8::Value>();
-  return (*info_)[next_];
-}
-
-v8::Local<v8::Value> Arguments::ThrowError() const {
-  if (insufficient_arguments_)
-    return ThrowTypeError("Insufficient number of arguments.");
-
-  return ThrowTypeError(base::StringPrintf(
-      "Error processing argument at index %d, conversion failure from %s",
-      next_, V8TypeAsString(isolate_, (*info_)[next_]).c_str()));
-}
-
 v8::Local<v8::Value> Arguments::ThrowError(const std::string& message) const {
-  isolate_->ThrowException(
-      v8::Exception::Error(gin::StringToV8(isolate_, message)));
-  return v8::Undefined(isolate_);
-}
-
-v8::Local<v8::Value> Arguments::ThrowTypeError(
-    const std::string& message) const {
-  isolate_->ThrowException(
-      v8::Exception::TypeError(gin::StringToV8(isolate_, message)));
-  return v8::Undefined(isolate_);
+  auto* isolate = mate_info_->GetIsolate();
+  isolate->ThrowException(
+      v8::Exception::Error(gin::StringToV8(isolate, message)));
+  return v8::Undefined(isolate);
 }
 
 }  // namespace mate

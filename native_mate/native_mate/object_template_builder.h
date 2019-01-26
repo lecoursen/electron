@@ -23,7 +23,7 @@ template <typename T, typename Enable = void>
 struct CallbackTraits {
   static v8::Local<v8::FunctionTemplate> CreateTemplate(v8::Isolate* isolate,
                                                         T callback) {
-    return CreateFunctionTemplate(isolate, base::Bind(callback));
+    return mate::CreateFunctionTemplate(isolate, base::Bind(callback));
   }
 };
 
@@ -33,7 +33,7 @@ struct CallbackTraits<base::Callback<T>> {
   static v8::Local<v8::FunctionTemplate> CreateTemplate(
       v8::Isolate* isolate,
       const base::Callback<T>& callback) {
-    return CreateFunctionTemplate(isolate, callback);
+    return mate::CreateFunctionTemplate(isolate, callback);
   }
 };
 
@@ -47,8 +47,9 @@ struct CallbackTraits<
     typename std::enable_if<std::is_member_function_pointer<T>::value>::type> {
   static v8::Local<v8::FunctionTemplate> CreateTemplate(v8::Isolate* isolate,
                                                         T callback) {
-    int flags = HolderIsFirstArgument;
-    return CreateFunctionTemplate(isolate, base::Bind(callback), flags);
+    gin::InvokerOptions options;
+    options.holder_is_first_argument = true;
+    return mate::CreateFunctionTemplate(isolate, base::Bind(callback), options);
   }
 };
 

@@ -43,8 +43,13 @@ class EventEmitter : public Wrappable<T> {
   // Make the convinient methods visible:
   // https://isocpp.org/wiki/faq/templates#nondependent-name-lookup-members
   v8::Isolate* isolate() const { return Wrappable<T>::isolate(); }
+
   v8::Local<v8::Object> GetWrapper() const {
     return Wrappable<T>::GetWrapper();
+  }
+
+  v8::MaybeLocal<v8::Object> GetWrapper(v8::Isolate* isolate) const {
+    return Wrappable<T>::GetWrapper(isolate);
   }
 
   // this.emit(name, event, args...);
