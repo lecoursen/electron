@@ -8,6 +8,7 @@
 #include "base/bind.h"
 #include "base/callback.h"
 #include "base/strings/string_piece.h"
+#include "gin/object_template_builder.h"
 #include "native_mate/converter.h"
 #include "native_mate/function_template.h"
 #include "v8/include/v8.h"
@@ -67,60 +68,17 @@ struct CallbackTraits<v8::Local<v8::FunctionTemplate>> {
 
 // ObjectTemplateBuilder provides a handy interface to creating
 // v8::ObjectTemplate instances with various sorts of properties.
-class ObjectTemplateBuilder {
+class ObjectTemplateBuilder : public gin::ObjectTemplateBuilder {
  public:
   explicit ObjectTemplateBuilder(v8::Isolate* isolate,
                                  v8::Local<v8::ObjectTemplate> templ);
   ~ObjectTemplateBuilder();
 
-  // It's against Google C++ style to return a non-const ref, but we take some
-  // poetic license here in order that all calls to Set() can be via the '.'
-  // operator and line up nicely.
-  template <typename T>
-  ObjectTemplateBuilder& SetValue(const base::StringPiece& name, T val) {
-    return SetImpl(name, ConvertToV8(isolate_, val));
-  }
-
-  // In the following methods, T and U can be function pointer, member function
-  // pointer, base::Callback, or v8::FunctionTemplate. Most clients will want to
-  // use one of the first two options. Also see mate::CreateFunctionTemplate()
-  // for creating raw function templates.
-  template <typename T>
-  ObjectTemplateBuilder& SetMethod(const base::StringPiece& name, T callback) {
-    return SetImpl(name, CallbackTraits<T>::CreateTemplate(isolate_, callback));
-  }
-  template <typename T>
-  ObjectTemplateBuilder& SetProperty(const base::StringPiece& name, T getter) {
-    return SetPropertyImpl(name,
-                           CallbackTraits<T>::CreateTemplate(isolate_, getter),
-                           v8::Local<v8::FunctionTemplate>());
-  }
-  template <typename T, typename U>
-  ObjectTemplateBuilder& SetProperty(const base::StringPiece& name,
-                                     T getter,
-                                     U setter) {
-    return SetPropertyImpl(name,
-                           CallbackTraits<T>::CreateTemplate(isolate_, getter),
-                           CallbackTraits<U>::CreateTemplate(isolate_, setter));
-  }
-
+  using gin::ObjectTemplateBuilder::Build;
+  using gin::ObjectTemplateBuilder::SetMethod;
+  using gin::ObjectTemplateBuilder::SetProperty;
   // Add "destroy" and "isDestroyed" methods.
   ObjectTemplateBuilder& MakeDestroyable();
-
-  v8::Local<v8::ObjectTemplate> Build();
-
- private:
-  ObjectTemplateBuilder& SetImpl(const base::StringPiece& name,
-                                 v8::Local<v8::Data> val);
-  ObjectTemplateBuilder& SetPropertyImpl(
-      const base::StringPiece& name,
-      v8::Local<v8::FunctionTemplate> getter,
-      v8::Local<v8::FunctionTemplate> setter);
-
-  v8::Isolate* isolate_;
-
-  // ObjectTemplateBuilder should only be used on the stack.
-  v8::Local<v8::ObjectTemplate> template_;
 };
 
 }  // namespace mate

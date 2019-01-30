@@ -39,21 +39,6 @@ struct Destroyable {
 
 using gin::CreateFunctionTemplate;
 
-// CreateFunctionHandler installs a CallAsFunction handler on the given
-// object template that forwards to a provided C++ function or base::Callback.
-template <typename Sig>
-void CreateFunctionHandler(v8::Isolate* isolate,
-                           v8::Local<v8::ObjectTemplate> tmpl,
-                           const base::Callback<Sig> callback,
-                           int callback_flags = 0) {
-  typedef gin::internal::CallbackHolder<Sig> HolderT;
-  HolderT* holder = new HolderT(isolate, callback, callback_flags);
-  tmpl->SetCallAsFunctionHandler(
-      &gin::internal::Dispatcher<Sig>::DispatchToCallback,
-      gin::ConvertToV8<v8::Local<v8::External>>(isolate,
-                                                holder->GetHandle(isolate)));
-}
-
 }  // namespace mate
 
 #endif  // NATIVE_MATE_FUNCTION_TEMPLATE_H_
