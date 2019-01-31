@@ -1,0 +1,91 @@
+From 26f129e134e004b1de8292e4afe11ef954c030a5 Mon Sep 17 00:00:00 2001
+From: Nitish Sakhawalkar <nitsakh@icloud.com>
+Date: Wed, 30 Jan 2019 16:36:59 -0800
+Subject: [PATCH] Update native_mate to reuse gin code
+
+---
+ gin/converter.cc               | 5 +++++
+ gin/converter.h                | 2 ++
+ gin/function_template.h        | 6 +++---
+ gin/object_template_builder.cc | 5 +++++
+ gin/object_template_builder.h  | 2 ++
+ 5 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/gin/converter.cc b/gin/converter.cc
+index ce40d590e8fb..bc95df469823 100644
+--- a/gin/converter.cc
++++ b/gin/converter.cc
+@@ -151,6 +151,11 @@ bool Converter<std::string>::FromV8(Isolate* isolate,
+   return true;
+ }
+ 
++Local<Value> Converter<Local<Function>>::ToV8(Isolate* isolate,
++                                              Local<Function> val) {
++  return val.As<Value>();
++}
++
+ bool Converter<Local<Function>>::FromV8(Isolate* isolate,
+                                         Local<Value> val,
+                                         Local<Function>* out) {
+diff --git a/gin/converter.h b/gin/converter.h
+index e4ef0a3ecc16..b22a5b74199f 100644
+--- a/gin/converter.h
++++ b/gin/converter.h
+@@ -121,6 +121,8 @@ struct GIN_EXPORT Converter<std::string> {
+ 
+ template<>
+ struct GIN_EXPORT Converter<v8::Local<v8::Function> > {
++  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
++                        v8::Local<v8::Function> val);
+   static bool FromV8(v8::Isolate* isolate,
+                      v8::Local<v8::Value> val,
+                      v8::Local<v8::Function>* out);
+diff --git a/gin/function_template.h b/gin/function_template.h
+index 498ca1ce8c37..846d56e9d488 100644
+--- a/gin/function_template.h
++++ b/gin/function_template.h
+@@ -196,9 +196,9 @@ struct Dispatcher<ReturnType(ArgTypes...)> {
+       const v8::FunctionCallbackInfo<v8::Value>& info) {
+     Arguments args(info);
+     v8::Local<v8::External> v8_holder;
+-    CHECK(args.GetData(&v8_holder));
+-    CallbackHolderBase* holder_base = reinterpret_cast<CallbackHolderBase*>(
+-        v8_holder->Value());
++    args.GetData(&v8_holder);
++    CallbackHolderBase* holder_base = 
++        reinterpret_cast<CallbackHolderBase*>(v8_holder->Value());
+ 
+     typedef CallbackHolder<ReturnType(ArgTypes...)> HolderT;
+     HolderT* holder = static_cast<HolderT*>(holder_base);
+diff --git a/gin/object_template_builder.cc b/gin/object_template_builder.cc
+index 83abe42a1c56..15999a1eb81f 100644
+--- a/gin/object_template_builder.cc
++++ b/gin/object_template_builder.cc
+@@ -152,6 +152,11 @@ ObjectTemplateBuilder::ObjectTemplateBuilder(v8::Isolate* isolate,
+ }
+ 
+ ObjectTemplateBuilder::ObjectTemplateBuilder(
++    v8::Isolate* isolate,
++    v8::Local<v8::ObjectTemplate> templ)
++    : isolate_(isolate), template_(templ) {}
++
++ObjectTemplateBuilder::ObjectTemplateBuilder(
+     const ObjectTemplateBuilder& other) = default;
+ 
+ ObjectTemplateBuilder::~ObjectTemplateBuilder() = default;
+diff --git a/gin/object_template_builder.h b/gin/object_template_builder.h
+index 2d67bb8e65e1..a2df232881ff 100644
+--- a/gin/object_template_builder.h
++++ b/gin/object_template_builder.h
+@@ -58,6 +58,8 @@ class GIN_EXPORT ObjectTemplateBuilder {
+  public:
+   explicit ObjectTemplateBuilder(v8::Isolate* isolate);
+   ObjectTemplateBuilder(v8::Isolate* isolate, const char* type_name);
++  explicit ObjectTemplateBuilder(v8::Isolate* isolate,
++                                 v8::Local<v8::ObjectTemplate> templ);
+   ObjectTemplateBuilder(const ObjectTemplateBuilder& other);
+   ~ObjectTemplateBuilder();
+ 
+-- 
+2.11.0 (Apple Git-81)
+
