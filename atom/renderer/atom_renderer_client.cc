@@ -92,9 +92,9 @@ void AtomRendererClient::DidCreateScriptContext(
   // window since we don't clean up node environments.
   //
   // TODO(zcbenz): We shouldn't allow node integration even for the top frame.
-  if (!render_frame->GetWebkitPreferences().node_integration &&
-      render_frame->GetWebFrame()->Opener())
-    return;
+  // if (!render_frame->GetWebkitPreferences().node_integration &&
+  //     render_frame->GetWebFrame()->Opener())
+  //   return;
 
   injected_frames_.insert(render_frame);
 
