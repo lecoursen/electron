@@ -4,6 +4,7 @@ import argparse
 import errno
 import json
 import os
+import subprocess
 
 from lib.config import PLATFORM, get_target_arch
 from lib.util import add_exec_bit, download, extract_zip, rm_rf, \
@@ -78,6 +79,30 @@ def binary_should_be_downloaded(binary):
 
   if 'targetArch' in binary and binary['targetArch'] != get_target_arch():
     return False
+
+  if 'xcode' in binary:
+    if 'platform' in binary and binary['platform'] == 'darwin':
+      xcode_req = binary['xcode']
+      current_xcode_dev_path = subprocess.check_output(
+        ['xcode-select', '-p']
+      ).strip()
+      current_xcode_path = os.path.join(
+        current_xcode_dev_path, '..', 'Info.plist'
+      )
+      current_xcode_version = subprocess.check_output(
+        ['defaults', 'read', current_xcode_path, 'CFBundleShortVersionString']
+      )
+      xcode_version = float('.'.join(current_xcode_version.split('.')[:2]))
+      if xcode_req[0] == '>':
+        if xcode_version < float(xcode_req[1:]):
+          return False
+      elif xcode_req[0] == '<':
+        if xcode_version >= float(xcode_req[1:]):
+          return False
+      else:
+        return False
+    else:
+      return False
 
   return True
 

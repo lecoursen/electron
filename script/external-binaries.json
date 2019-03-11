@@ -1,7 +1,17 @@
 {
   "baseUrl": "http://github.com/electron/electron-frameworks/releases/download",
-  "version": "v1.4.0",
+  "version": "v1.6.0",
   "binaries": [
+    {
+      "url": "touch-bar-simulator.zip",
+      "platform": "darwin",
+      "xcode": ">10"
+    },
+    {
+      "url": "touch-bar-simulator-old.zip",
+      "platform": "darwin",
+      "xcode": "<10"
+    },
     {
       "url": "Mantle.zip",
       "platform": "darwin"
