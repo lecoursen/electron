@@ -50,7 +50,11 @@ describe('TouchBar API', function () {
     clipboard.writeText('')
     while (clipboard.readImage().toDataURL() === EMPTY_IMAGE) {
       await new Promise(r => setTimeout(r, 50))
-      cp.execSync('screencapture -b -x -c')
+      try {
+        cp.execSync('screencapture -b -x -c')
+      } catch {
+        // Ignore, the Touch Bar is not ready yet
+      }
     }
     const bar = clipboard.readImage()
     const size = bar.getSize()

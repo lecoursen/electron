@@ -25,6 +25,7 @@ machine-mac: &machine-mac
     xcode: "8.3.3"
 
 machine-mac-mojave: &machine-mac-mojave
+  resource_class: large
   macos:
     xcode: "10.2.0"
 
@@ -98,6 +99,9 @@ env-linux-2xlarge: &env-linux-2xlarge
 
 env-machine-mac: &env-machine-mac
   NUMBER_OF_NINJA_PROCESSES: 6
+
+env-machine-mojave: &env-machine-mojave
+  ELECTRON_TEST_ARGS: --only=main
 
 env-mac-large: &env-mac-large
   NUMBER_OF_NINJA_PROCESSES: 10
@@ -817,7 +821,7 @@ steps-tests: &steps-tests
         command: |
           cd src
           export ELECTRON_OUT_DIR=Default
-          (cd electron && npm run test -- --ci --enable-logging)
+          (cd electron && npm run test -- --ci --enable-logging $ELECTRON_TEST_ARGS)
     - run:
         name: Check test results existence
         command: |
@@ -1336,6 +1340,7 @@ jobs:
     <<: *machine-mac-mojave
     environment:
       <<: *env-machine-mac
+      <<: *env-machine-mojave
       <<: *env-stack-dumping
       <<: *env-disable-crash-reporter-tests
     <<: *steps-tests
