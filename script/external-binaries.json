@@ -4,8 +4,7 @@
   "binaries": [
     {
       "url": "touch-bar-simulator.zip",
-      "platform": "darwin",
-      "xcode": ">10"
+      "platform": "darwin"
     },
     {
       "url": "Mantle.zip",

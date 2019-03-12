@@ -7,7 +7,7 @@ import { clipboard, BrowserWindow, nativeImage, TouchBar, NativeImage } from 'el
 import { AssertionError } from 'assert';
 import { closeWindow } from './window-helpers';
 
-const touchBarSimulator = path.resolve(__dirname, '../external_binaries/Touch Bar Simulator.app/Contents/MacOS/Touch Bar Simulator')
+const touchBarSimulator = path.resolve(__dirname, '../external_binaries/Touché.app/Contents/MacOS/Touché')
 const snapPath = path.resolve(__dirname, 'touch-bar-snaps')
 
 const EMPTY_IMAGE = 'data:image/png;base64,'
@@ -23,9 +23,16 @@ describe('TouchBar API', function () {
     return
   }
 
+  before(() => {
+    // Ensure that the touch simulator does not prompt for prefs on launch
+    cp.execSync('defaults write com.red-sweater.touche SUEnableAutomaticChecks 0')
+    cp.execSync('defaults write com.red-sweater.touche SUSendProfileInfo 0')
+  })
+
   beforeEach(async () => {
     simulatorChild = cp.spawn(touchBarSimulator)
     simulatorChild.stdout.on('data', (data) => console.log(data.toString()))
+    await new Promise(r => setTimeout(r, 400))
     await takeScreenshot(true)
     w = new BrowserWindow()
     w.focus()

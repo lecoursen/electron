@@ -24,11 +24,6 @@ machine-mac: &machine-mac
   macos:
     xcode: "8.3.3"
 
-machine-mac-mojave: &machine-mac-mojave
-  resource_class: large
-  macos:
-    xcode: "10.2.0"
-
 machine-mac-large: &machine-mac-large
   resource_class: large
   macos:
@@ -99,9 +94,6 @@ env-linux-2xlarge: &env-linux-2xlarge
 
 env-machine-mac: &env-machine-mac
   NUMBER_OF_NINJA_PROCESSES: 6
-
-env-machine-mojave: &env-machine-mojave
-  ELECTRON_TEST_ARGS: --only=main
 
 env-mac-large: &env-mac-large
   NUMBER_OF_NINJA_PROCESSES: 10
@@ -1336,15 +1328,6 @@ jobs:
       <<: *env-disable-crash-reporter-tests
     <<: *steps-tests
 
-  osx-testing-tests-mojave:
-    <<: *machine-mac-mojave
-    environment:
-      <<: *env-machine-mac
-      <<: *env-machine-mojave
-      <<: *env-stack-dumping
-      <<: *env-disable-crash-reporter-tests
-    <<: *steps-tests
-
   osx-release-tests:
     <<: *machine-mac-large
     environment:
@@ -1372,13 +1355,6 @@ jobs:
     <<: *machine-mac-large
     environment:
       <<: *env-mac-large
-      <<: *env-stack-dumping
-    <<: *steps-tests
-
-  mas-testing-tests-mojave:
-    <<: *machine-mac-mojave
-    environment:
-      <<: *env-machine-mac
       <<: *env-stack-dumping
     <<: *steps-tests
 
@@ -1527,10 +1503,6 @@ workflows:
           requires:
             - osx-testing
 
-      - osx-testing-tests-mojave:
-          requires:
-            - osx-testing
-
       - mas-testing:
           requires:
             - mac-checkout
@@ -1543,10 +1515,6 @@ workflows:
             - mac-checkout
 
       - mas-testing-tests:
-          requires:
-            - mas-testing
-
-      - mas-testing-tests-mojave:
           requires:
             - mas-testing
 
