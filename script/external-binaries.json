@@ -8,11 +8,6 @@
       "xcode": ">10"
     },
     {
-      "url": "touch-bar-simulator-old.zip",
-      "platform": "darwin",
-      "xcode": "<10"
-    },
-    {
       "url": "Mantle.zip",
       "platform": "darwin"
     },

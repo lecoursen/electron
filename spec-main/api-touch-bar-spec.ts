@@ -19,7 +19,7 @@ describe('TouchBar API', function () {
 
   this.timeout(30000)
 
-  if (process.platform !== 'darwin') {
+  if (process.platform !== 'darwin' || !fs.pathExistsSync(touchBarSimulator)) {
     return
   }
 
