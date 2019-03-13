@@ -813,6 +813,7 @@ steps-tests: &steps-tests
         command: |
           cd src
           export ELECTRON_OUT_DIR=Default
+          export ELECTRON_SPEC_SNAP_FOLDER=$(pwd)/.snaps
           (cd electron && npm run test -- --ci --enable-logging $ELECTRON_TEST_ARGS)
     - run:
         name: Check test results existence
@@ -830,6 +831,10 @@ steps-tests: &steps-tests
           fi
     - store_test_results:
         path: src/junit
+
+    - store_artifacts:
+        path: src/.snaps
+        destination: spec-snaps  # Put it in the root folder.
 
     - *step-verify-mksnapshot
 

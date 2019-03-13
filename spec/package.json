@@ -17,6 +17,7 @@
     "echo": "file:fixtures/native-addon/echo",
     "graceful-fs": "^4.1.15",
     "is-valid-window": "0.0.5",
+    "looks-same": "^7.0.0",
     "mkdirp": "^0.5.1",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.18.0",

@@ -7,6 +7,8 @@ import { clipboard, BrowserWindow, nativeImage, TouchBar, NativeImage } from 'el
 import { AssertionError } from 'assert';
 import { closeWindow } from './window-helpers';
 
+const looksSame = require('looks-same')
+
 const touchBarSimulator = path.resolve(__dirname, '../external_binaries/Touché.app/Contents/MacOS/Touché')
 const snapPath = path.resolve(__dirname, 'touch-bar-snaps')
 
@@ -16,6 +18,7 @@ describe('TouchBar API', function () {
   let simulatorChild: cp.ChildProcess
   let w: BrowserWindow
   let waitedForBar = false
+  let tmpFolder: string;
 
   this.timeout(30000)
 
@@ -23,10 +26,14 @@ describe('TouchBar API', function () {
     return
   }
 
-  before(() => {
+  before(async () => {
     // Ensure that the touch simulator does not prompt for prefs on launch
     cp.execSync('defaults write com.red-sweater.touche SUEnableAutomaticChecks 0')
     cp.execSync('defaults write com.red-sweater.touche SUSendProfileInfo 0')
+    // Set the global shortcut binding
+    cp.execSync('defaults write com.red-sweater.touche PasteboardScreenshotShortcut "<62706c69 73743030 d4010203 0405061a 1b582476 65727369 6f6e5824 6f626a65 63747359 24617263 68697665 72542474 6f701200 0186a0a3 07080f55 246e756c 6cd3090a 0b0c0d0e 52243152 24305624 636c6173 73111300 10018002 d3101112 1314185a 24636c61 73736e61 6d655824 636c6173 7365735b 24636c61 73736869 6e74735d 5253486f 744b6579 436f6d62 6fa31516 175d5253 486f744b 6579436f 6d626f5f 10135253 436f6e74 61696e61 626c654f 626a6563 74584e53 4f626a65 6374a119 5b486f74 4b657943 6f6d626f 5f100f4e 534b6579 65644172 63686976 6572d11c 1d54726f 6f748001 08111a23 2d32373b 41484b4e 55585a5c 636e7783 9195a3b9 c2c4d0e2 e5ea0000 00000000 01010000 00000000 001e0000 00000000 00000000 00000000 00ec>"')
+
+    tmpFolder = process.env.ELECTRON_SPEC_SNAP_FOLDER || await fs.mkdtemp(path.resolve(os.tmpdir(), 'electron-snap-'))
   })
 
   beforeEach(async () => {
@@ -82,10 +89,17 @@ describe('TouchBar API', function () {
     if (!await fs.pathExists(snapFile) || process.argv.includes('--update-snaps')) {
       await fs.writeFile(snapFile, snap.toPNG())
     } else {
-      const current = nativeImage.createFromPath(snapFile)
-      if (Buffer.compare(current.toBitmap(), snap.toBitmap()) !== 0) {
-        const tmpFile = path.resolve(await fs.mkdtemp(path.resolve(os.tmpdir(), 'electron-snap-')), `${snapName}.png`)
-        await fs.writeFile(tmpFile, snap.toPNG())
+      const tmpFile = path.resolve(tmpFolder, `${snapName}.png`)
+      await fs.writeFile(tmpFile, snap.toPNG())
+
+      const equal = await new Promise<boolean>((resolve, reject) => {
+        looksSame(tmpFile, snapFile, { ignoreAntialiasing: true, tolerance: 5 }, (error: Error | null, { equal }: { equal: boolean}) => {
+          if (error) return reject(error)
+          resolve(equal)
+        })
+      })
+
+      if (!equal) {
         throw new AssertionError({
           message: `Expected snapshot "${snapName}" to be identical to the one on disk, but it was not.  Check ${tmpFile} for the output`
         })
