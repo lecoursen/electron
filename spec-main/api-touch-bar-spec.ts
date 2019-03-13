@@ -3,6 +3,7 @@ import * as cp from 'child_process'
 import * as fs from 'fs-extra'
 import * as os from 'os'
 import * as path from 'path'
+import * as semver from 'semver'
 import { clipboard, BrowserWindow, nativeImage, TouchBar, NativeImage } from 'electron';
 import { AssertionError } from 'assert';
 import { closeWindow } from './window-helpers';
@@ -22,7 +23,7 @@ describe('TouchBar API', function () {
 
   this.timeout(30000)
 
-  if (process.platform !== 'darwin' || !fs.pathExistsSync(touchBarSimulator)) {
+  if (process.platform !== 'darwin' || !fs.pathExistsSync(touchBarSimulator) || semver.lt(os.release(), '17.0.0')) {
     return
   }
 

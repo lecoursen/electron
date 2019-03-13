@@ -32,7 +32,7 @@ machine-mac-large: &machine-mac-large
 machine-mac-mojave: &machine-mac-mojave
   resource_class: large
   macos:
-    xcode: "10.2.0"
+    xcode: "9.4.1"
 
 # Build configurations options.
 env-debug-build: &env-debug-build
