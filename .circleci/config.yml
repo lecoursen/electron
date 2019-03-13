@@ -149,7 +149,7 @@ step-gclient-sync: &step-gclient-sync
         $GCLIENT_EXTRA_ARGS \
         "$CIRCLE_REPOSITORY_URL"
 
-      gclient sync --with_branch_heads --with_tags
+      gclient sync --with_branch_heads --with_tags -vvv
 
 step-setup-env-for-build: &step-setup-env-for-build
   run:
