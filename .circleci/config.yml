@@ -537,13 +537,6 @@ steps-checkout: &steps-checkout
     - *step-restore-brew-cache
     - *step-install-gnutar-on-mac
 
-    - restore_cache:
-        paths:
-          - ~/.gclient-cache
-        keys:
-          - v2-gclient-cache-{{ arch }}-{{ checksum "src/electron/DEPS" }}
-          # We delibrately do not take the closest cache to avoid an
-          # infinitely expanding cache
     - run:
         name: Set GIT_CACHE_PATH to make gclient to use the cache
         command: |
@@ -551,10 +544,6 @@ steps-checkout: &steps-checkout
           # https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-shell-command
           echo 'export GIT_CACHE_PATH="$HOME/.gclient-cache"' >> $BASH_ENV
     - *step-gclient-sync
-    - save_cache:
-        paths:
-          - ~/.gclient-cache
-        key: v2-gclient-cache-{{ arch }}-{{ checksum "src/electron/DEPS" }}
     - save_cache:
         paths:
           - /usr/local/Homebrew
