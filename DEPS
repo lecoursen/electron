@@ -10,12 +10,12 @@ gclient_gn_args = [
 
 vars = {
   'chromium_version':
-    '75.0.3740.3',
+    'c141432d093c446e6f506e1259b42ac3a186f5db', # 75.0.3740.3
   'node_version':
     '2dc0f8811b2b295c08d797b8a11b030234c98502',
 
   'boto_version': 'f7574aa6cc2c819430c1f05e9a1a1a666ef8169b',
-  'pyyaml_version': '3.12',
+  'pyyaml_version': '7e026bfee9cc0bddeb1bbca0c4a0bcd826c2bfdf', # 3.12
   'requests_version': 'e4d59bedfd3c7f4f254f4f5d036587bcd8152458',
 
   'boto_git': 'https://github.com/boto',
