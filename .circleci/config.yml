@@ -149,7 +149,7 @@ step-gclient-sync: &step-gclient-sync
         $GCLIENT_EXTRA_ARGS \
         "$CIRCLE_REPOSITORY_URL"
 
-      gclient sync --with_branch_heads --with_tags
+      gclient sync --no-history --no-rebase-patch-ref --with_tags -vvv
 
 step-setup-env-for-build: &step-setup-env-for-build
   run:
@@ -541,8 +541,9 @@ steps-checkout: &steps-checkout
         paths:
           - ~/.gclient-cache
         keys:
-          - v1-gclient-cache-{{ arch }}-{{ checksum "src/electron/DEPS" }}
-          - v1-gclient-cache-{{ arch }}-
+          - v2-gclient-cache-{{ arch }}-{{ checksum "src/electron/DEPS" }}
+          # We delibrately do not take the closest cache to avoid an
+          # infinitely expanding cache
     - run:
         name: Set GIT_CACHE_PATH to make gclient to use the cache
         command: |
@@ -553,7 +554,7 @@ steps-checkout: &steps-checkout
     - save_cache:
         paths:
           - ~/.gclient-cache
-        key: v1-gclient-cache-{{ arch }}-{{ checksum "src/electron/DEPS" }}
+        key: v2-gclient-cache-{{ arch }}-{{ checksum "src/electron/DEPS" }}
     - save_cache:
         paths:
           - /usr/local/Homebrew
@@ -565,6 +566,7 @@ steps-checkout: &steps-checkout
           rm -rf src/android_webview
           rm -rf src/ios
           rm -rf src/third_party/WebKit/LayoutTests
+          ( find ./src -type d -name ".git" ) | xargs -0 rm -rf
     - persist_to_workspace:
         root: .
         paths:
