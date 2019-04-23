@@ -35,6 +35,16 @@ environment:
   DISABLE_CRASH_REPORTER_TESTS: true
   ELECTRON_OUT_DIR: Default
   ELECTRON_ENABLE_STACK_DUMPING: 1
+
+init:
+- ps: >-
+  Move-Item $env:APPVEYOR_BUILD_FOLDER -Destination src\electron
+  cd src\electron
+  npm install
+  node script/generate-deps-hash.js
+    
+cache: src -> .depshash
+
 build_script:
   - ps: >-
       if(($env:APPVEYOR_PULL_REQUEST_HEAD_REPO_NAME -split "/")[0] -eq ($env:APPVEYOR_REPO_NAME -split "/")[0]) {
@@ -43,8 +53,7 @@ build_script:
   - echo "Building $env:GN_CONFIG build"
   - git config --global core.longpaths true
   - cd ..
-  - ps: if (Test-Path src\electron) { Remove-Item src\electron -Recurse }
-  - ps: Move-Item $env:APPVEYOR_BUILD_FOLDER -Destination src\electron
+
   - ps: $env:CHROMIUM_BUILDTOOLS_PATH="$pwd\src\buildtools"
   - ps: $env:SCCACHE_PATH="$pwd\src\electron\external_binaries\sccache.exe"
   - ps: >-
