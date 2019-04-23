@@ -37,8 +37,6 @@ environment:
   ELECTRON_ENABLE_STACK_DUMPING: 1
 
 init:
-- ps: Move-Item $env:APPVEYOR_BUILD_FOLDER -Destination src\electron
-- cd src\electron
 - npm install
 - node script/generate-deps-hash.js
     
@@ -52,7 +50,7 @@ build_script:
   - echo "Building $env:GN_CONFIG build"
   - git config --global core.longpaths true
   - cd ..
-
+  - ps: Move-Item $env:APPVEYOR_BUILD_FOLDER -Destination src\electron
   - ps: $env:CHROMIUM_BUILDTOOLS_PATH="$pwd\src\buildtools"
   - ps: $env:SCCACHE_PATH="$pwd\src\electron\external_binaries\sccache.exe"
   - ps: >-
