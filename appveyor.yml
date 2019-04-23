@@ -36,12 +36,7 @@ environment:
   ELECTRON_OUT_DIR: Default
   ELECTRON_ENABLE_STACK_DUMPING: 1
 
-init:
-- npm install
-- node script/generate-deps-hash.js
-    
-cache: src -> .depshash
-
+cache: src -> src\electron\DEPS
 build_script:
   - ps: >-
       if(($env:APPVEYOR_PULL_REQUEST_HEAD_REPO_NAME -split "/")[0] -eq ($env:APPVEYOR_REPO_NAME -split "/")[0]) {
