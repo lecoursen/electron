@@ -38,10 +38,10 @@ environment:
 
 init:
 - ps: >-
-  Move-Item $env:APPVEYOR_BUILD_FOLDER -Destination src\electron
-  cd src\electron
-  npm install
-  node script/generate-deps-hash.js
+    Move-Item $env:APPVEYOR_BUILD_FOLDER -Destination src\electron
+    cd src\electron
+    npm install
+    node script/generate-deps-hash.js
     
 cache: src -> .depshash
 
