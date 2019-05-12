@@ -147,6 +147,8 @@ WebContentsPreferences::WebContentsPreferences(
 #endif
   SetDefaultBoolIfUndefined(options::kOffscreen, false);
 
+  Merge(base::DictionaryValue());
+
   // If this is a <webview> tag, and the embedder is offscreen-rendered, then
   // this WebContents is also offscreen-rendered.
   int guest_instance_id = 0;
@@ -185,6 +187,10 @@ bool WebContentsPreferences::SetDefaultBoolIfUndefined(
   }
 }
 
+void WebContentsPreferences::SetBool(const base::StringPiece& key, bool value) {
+  preference_.SetKey(key, base::Value(value));
+}
+
 bool WebContentsPreferences::IsEnabled(const base::StringPiece& name,
                                        bool default_value) const {
   auto* current_value =
@@ -197,6 +203,10 @@ bool WebContentsPreferences::IsEnabled(const base::StringPiece& name,
 void WebContentsPreferences::Merge(const base::DictionaryValue& extend) {
   if (preference_.is_dict())
     static_cast<base::DictionaryValue*>(&preference_)->MergeDictionary(&extend);
+
+  if (IsEnabled(options::kSandbox)) {
+    SetBool(options::kNativeWindowOpen, true);
+  }
 }
 
 void WebContentsPreferences::Clear() {

@@ -75,6 +75,9 @@ class WebContentsPreferences
   // Set preference value to given bool if user did not provide value
   bool SetDefaultBoolIfUndefined(const base::StringPiece& key, bool val);
 
+  // Set preference value to given bool
+  void SetBool(const base::StringPiece& key, bool value);
+
   static std::vector<WebContentsPreferences*> instances_;
 
   content::WebContents* web_contents_;
