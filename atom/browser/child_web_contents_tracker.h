@@ -12,7 +12,7 @@
 namespace atom {
 
 // ChildWebContentsTracker tracks child WebContents
-// created by native `window.open()`
+// created by `window.open()`
 struct ChildWebContentsTracker
     : public content::WebContentsUserData<ChildWebContentsTracker> {
   GURL url;

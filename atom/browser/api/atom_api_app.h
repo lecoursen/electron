@@ -140,21 +140,6 @@ class App : public AtomBrowserClient::Delegate,
       net::SSLCertRequestInfo* cert_request_info,
       net::ClientCertIdentityList client_certs,
       std::unique_ptr<content::ClientCertificateDelegate> delegate) override;
-  bool CanCreateWindow(content::RenderFrameHost* opener,
-                       const GURL& opener_url,
-                       const GURL& opener_top_level_frame_url,
-                       const url::Origin& source_origin,
-                       content::mojom::WindowContainerType container_type,
-                       const GURL& target_url,
-                       const content::Referrer& referrer,
-                       const std::string& frame_name,
-                       WindowOpenDisposition disposition,
-                       const blink::mojom::WindowFeatures& features,
-                       const std::vector<std::string>& additional_features,
-                       const scoped_refptr<network::ResourceRequestBody>& body,
-                       bool user_gesture,
-                       bool opener_suppressed,
-                       bool* no_javascript_access) override;
 
   // content::GpuDataManagerObserver:
   void OnGpuProcessCrashed(base::TerminationStatus status) override;

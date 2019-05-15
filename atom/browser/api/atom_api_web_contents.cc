@@ -505,20 +505,6 @@ bool WebContents::DidAddMessageToConsole(
               source_id);
 }
 
-void WebContents::OnCreateWindow(
-    const GURL& target_url,
-    const content::Referrer& referrer,
-    const std::string& frame_name,
-    WindowOpenDisposition disposition,
-    const std::vector<std::string>& features,
-    const scoped_refptr<network::ResourceRequestBody>& body) {
-  if (type_ == Type::BROWSER_WINDOW || type_ == Type::OFF_SCREEN)
-    Emit("-new-window", target_url, frame_name, disposition, features, body,
-         referrer);
-  else
-    Emit("new-window", target_url, frame_name, disposition, features);
-}
-
 void WebContents::WebContentsCreated(content::WebContents* source_contents,
                                      int opener_render_process_id,
                                      int opener_render_frame_id,
@@ -558,9 +544,11 @@ content::WebContents* WebContents::OpenURLFromTab(
     const content::OpenURLParams& params) {
   if (params.disposition != WindowOpenDisposition::CURRENT_TAB) {
     if (type_ == Type::BROWSER_WINDOW || type_ == Type::OFF_SCREEN)
-      Emit("-new-window", params.url, "", params.disposition);
+      Emit("-new-window", params.url, "", params.disposition, "",
+           params.referrer);
     else
-      Emit("new-window", params.url, "", params.disposition);
+      Emit("new-window", params.url, "", params.disposition, "",
+           params.referrer);
     return nullptr;
   }
 

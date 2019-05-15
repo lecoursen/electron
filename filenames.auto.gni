@@ -63,7 +63,6 @@ auto_filenames = {
     "docs/api/web-frame.md",
     "docs/api/web-request.md",
     "docs/api/webview-tag.md",
-    "docs/api/window-open.md",
     "docs/api/structures/bluetooth-device.md",
     "docs/api/structures/certificate-principal.md",
     "docs/api/structures/certificate.md",

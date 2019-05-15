@@ -13,7 +13,6 @@
 #include "atom/common/node_includes.h"
 #include "base/hash/hash.h"
 #include "native_mate/dictionary.h"
-#include "url/origin.h"
 #include "v8/include/v8-profiler.h"
 
 namespace std {
@@ -103,10 +102,6 @@ void RequestGarbageCollectionForTesting(v8::Isolate* isolate) {
       v8::Isolate::GarbageCollectionType::kFullGarbageCollection);
 }
 
-bool IsSameOrigin(const GURL& l, const GURL& r) {
-  return url::Origin::Create(l).IsSameOriginWith(url::Origin::Create(r));
-}
-
 void Initialize(v8::Local<v8::Object> exports,
                 v8::Local<v8::Value> unused,
                 v8::Local<v8::Context> context,
@@ -126,7 +121,6 @@ void Initialize(v8::Local<v8::Object> exports,
       &atom::api::KeyWeakMap<std::pair<std::string, int32_t>>::Create);
   dict.SetMethod("requestGarbageCollectionForTesting",
                  &RequestGarbageCollectionForTesting);
-  dict.SetMethod("isSameOrigin", &IsSameOrigin);
 }
 
 }  // namespace

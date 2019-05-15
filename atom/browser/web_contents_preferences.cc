@@ -125,7 +125,6 @@ WebContentsPreferences::WebContentsPreferences(
   SetDefaultBoolIfUndefined(options::kDisableHtmlFullscreenWindowResize, false);
   SetDefaultBoolIfUndefined(options::kWebviewTag, false);
   SetDefaultBoolIfUndefined(options::kSandbox, false);
-  SetDefaultBoolIfUndefined(options::kNativeWindowOpen, false);
   SetDefaultBoolIfUndefined(options::kEnableRemoteModule, true);
   SetDefaultBoolIfUndefined(options::kContextIsolation, false);
   SetDefaultBoolIfUndefined(options::kJavaScript, true);
@@ -146,8 +145,6 @@ WebContentsPreferences::WebContentsPreferences(
   SetDefaultBoolIfUndefined(options::kScrollBounce, false);
 #endif
   SetDefaultBoolIfUndefined(options::kOffscreen, false);
-
-  Merge(base::DictionaryValue());
 
   // If this is a <webview> tag, and the embedder is offscreen-rendered, then
   // this WebContents is also offscreen-rendered.
@@ -203,10 +200,6 @@ bool WebContentsPreferences::IsEnabled(const base::StringPiece& name,
 void WebContentsPreferences::Merge(const base::DictionaryValue& extend) {
   if (preference_.is_dict())
     static_cast<base::DictionaryValue*>(&preference_)->MergeDictionary(&extend);
-
-  if (IsEnabled(options::kSandbox)) {
-    SetBool(options::kNativeWindowOpen, true);
-  }
 }
 
 void WebContentsPreferences::Clear() {
@@ -298,10 +291,6 @@ void WebContentsPreferences::AppendCommandLineSwitches(
     command_line->AppendSwitch(service_manager::switches::kNoSandbox);
     command_line->AppendSwitch(::switches::kNoZygote);
   }
-
-  // Check if nativeWindowOpen is enabled.
-  if (IsEnabled(options::kNativeWindowOpen))
-    command_line->AppendSwitch(switches::kNativeWindowOpen);
 
   // The preload script.
   base::FilePath::StringType preload;

@@ -1994,14 +1994,13 @@ describe('BrowserWindow module', () => {
       })
     })
 
-    describe('nativeWindowOpen option', () => {
+    describe('window.open()', () => {
       beforeEach(() => {
         w.destroy()
         w = new BrowserWindow({
           show: false,
           webPreferences: {
-            nodeIntegration: true,
-            nativeWindowOpen: true
+            nodeIntegration: true
           }
         })
       })
@@ -2011,28 +2010,28 @@ describe('BrowserWindow module', () => {
           assert.strictEqual(content, 'Hello')
           done()
         })
-        w.loadFile(path.join(fixtures, 'api', 'native-window-open-blank.html'))
+        w.loadFile(path.join(fixtures, 'api', 'window-open-blank.html'))
       })
       it('opens window of same domain with cross-scripting enabled', (done) => {
         ipcMain.once('answer', (event, content) => {
           assert.strictEqual(content, 'Hello')
           done()
         })
-        w.loadFile(path.join(fixtures, 'api', 'native-window-open-file.html'))
+        w.loadFile(path.join(fixtures, 'api', 'window-open-file.html'))
       })
       it('blocks accessing cross-origin frames', (done) => {
         ipcMain.once('answer', (event, content) => {
           assert.strictEqual(content, 'Blocked a frame with origin "file://" from accessing a cross-origin frame.')
           done()
         })
-        w.loadFile(path.join(fixtures, 'api', 'native-window-open-cross-origin.html'))
+        w.loadFile(path.join(fixtures, 'api', 'window-open-cross-origin.html'))
       })
       it('opens window from <iframe> tags', (done) => {
         ipcMain.once('answer', (event, content) => {
           assert.strictEqual(content, 'Hello')
           done()
         })
-        w.loadFile(path.join(fixtures, 'api', 'native-window-open-iframe.html'))
+        w.loadFile(path.join(fixtures, 'api', 'window-open-iframe.html'))
       });
       (nativeModulesEnabled ? it : it.skip)('loads native addons correctly after reload', (done) => {
         ipcMain.once('answer', (event, content) => {
@@ -2043,32 +2042,12 @@ describe('BrowserWindow module', () => {
           })
           w.reload()
         })
-        w.loadFile(path.join(fixtures, 'api', 'native-window-open-native-addon.html'))
-      })
-      it('should inherit the nativeWindowOpen setting in opened windows', (done) => {
-        w.destroy()
-        w = new BrowserWindow({
-          show: false,
-          webPreferences: {
-            nativeWindowOpen: true
-          }
-        })
-
-        const preloadPath = path.join(fixtures, 'api', 'new-window-preload.js')
-        ipcRenderer.send('set-web-preferences-on-next-new-window', w.webContents.id, 'preload', preloadPath)
-        ipcMain.once('answer', (event, args) => {
-          assert.strictEqual(args.includes('--native-window-open'), true)
-          done()
-        })
-        w.loadFile(path.join(fixtures, 'api', 'new-window.html'))
+        w.loadFile(path.join(fixtures, 'api', 'window-open-native-addon.html'))
       })
       it('should open windows with the options configured via new-window event listeners', (done) => {
         w.destroy()
         w = new BrowserWindow({
-          show: false,
-          webPreferences: {
-            nativeWindowOpen: true
-          }
+          show: false
         })
 
         const preloadPath = path.join(fixtures, 'api', 'new-window-preload.js')
@@ -2086,10 +2065,7 @@ describe('BrowserWindow module', () => {
 
         w.destroy()
         w = new BrowserWindow({
-          show: true,
-          webPreferences: {
-            nativeWindowOpen: true
-          }
+          show: true
         })
 
         ipcRenderer.send('set-web-preferences-on-next-new-window', w.webContents.id, 'preload', path.join(fixtures, 'api', 'window-open-preload.js'))
@@ -2097,13 +2073,12 @@ describe('BrowserWindow module', () => {
         w.loadFile(path.join(fixtures, 'api', 'window-open-location-open.html'))
         const [, args, typeofProcess] = await p
         expect(args).not.to.include('--node-integration')
-        expect(args).to.include('--native-window-open')
         expect(typeofProcess).to.eql('undefined')
       })
 
       it('should have nodeIntegration disabled in child windows', async () => {
         const p = emittedOnce(ipcMain, 'answer')
-        w.loadFile(path.join(fixtures, 'api', 'native-window-open-argv.html'))
+        w.loadFile(path.join(fixtures, 'api', 'window-open-argv.html'))
         const [, typeofProcess] = await p
         expect(typeofProcess).to.eql('undefined')
       })
@@ -2132,15 +2107,14 @@ describe('BrowserWindow module', () => {
     })
   })
 
-  describe('nativeWindowOpen + contextIsolation options', () => {
+  describe('window.open() + contextIsolation', () => {
     beforeEach(() => {
       w.destroy()
       w = new BrowserWindow({
         show: false,
         webPreferences: {
-          nativeWindowOpen: true,
           contextIsolation: true,
-          preload: path.join(fixtures, 'api', 'native-window-open-isolated-preload.js')
+          preload: path.join(fixtures, 'api', 'window-open-isolated-preload.js')
         }
       })
     })
@@ -2150,7 +2124,7 @@ describe('BrowserWindow module', () => {
         assert.strictEqual(content, 'Hello')
         done()
       })
-      w.loadFile(path.join(fixtures, 'api', 'native-window-open-isolated.html'))
+      w.loadFile(path.join(fixtures, 'api', 'window-open-isolated.html'))
     })
   })
 
@@ -2420,11 +2394,10 @@ describe('BrowserWindow module', () => {
     })
 
     it('emits when window.open is called', (done) => {
-      w.webContents.once('new-window', (e, url, frameName, disposition, options, additionalFeatures) => {
+      w.webContents.once('new-window', (e, url, frameName) => {
         e.preventDefault()
         assert.strictEqual(url, 'http://host/')
         assert.strictEqual(frameName, 'host')
-        assert.strictEqual(additionalFeatures[0], 'this-is-not-a-standard-feature')
         done()
       })
       w.loadFile(path.join(fixtures, 'pages', 'window-open.html'))
@@ -2432,11 +2405,10 @@ describe('BrowserWindow module', () => {
     it('emits when window.open is called with no webPreferences', (done) => {
       w.destroy()
       w = new BrowserWindow({ show: false })
-      w.webContents.once('new-window', function (e, url, frameName, disposition, options, additionalFeatures) {
+      w.webContents.once('new-window', function (e, url, frameName) {
         e.preventDefault()
         assert.strictEqual(url, 'http://host/')
         assert.strictEqual(frameName, 'host')
-        assert.strictEqual(additionalFeatures[0], 'this-is-not-a-standard-feature')
         done()
       })
       w.loadFile(path.join(fixtures, 'pages', 'window-open.html'))

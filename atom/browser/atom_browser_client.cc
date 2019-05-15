@@ -214,10 +214,6 @@ bool AtomBrowserClient::ShouldForceNewSiteInstance(
     // Renderer is sandboxed, delegate the decision to the content layer for all
     // origins.
     return false;
-  } else if (!RendererUsesNativeWindowOpen(process_id)) {
-    // non-sandboxed renderers without native window.open should always create
-    // a new SiteInstance
-    return true;
   } else {
     auto* web_contents = content::WebContents::FromRenderFrameHost(current_rfh);
     if (!ChildWebContentsTracker::FromWebContents(web_contents)) {
@@ -273,12 +269,6 @@ bool AtomBrowserClient::IsRendererSandboxed(int process_id) const {
   base::AutoLock auto_lock(process_preferences_lock_);
   auto it = process_preferences_.find(process_id);
   return it != process_preferences_.end() && it->second.sandbox;
-}
-
-bool AtomBrowserClient::RendererUsesNativeWindowOpen(int process_id) const {
-  base::AutoLock auto_lock(process_preferences_lock_);
-  auto it = process_preferences_.find(process_id);
-  return it != process_preferences_.end() && it->second.native_window_open;
 }
 
 bool AtomBrowserClient::RendererDisablesPopups(int process_id) const {
@@ -349,8 +339,6 @@ void AtomBrowserClient::RenderProcessWillLaunch(
       WebContentsPreferences::From(GetWebContentsFromProcessID(process_id));
   if (web_preferences) {
     prefs.sandbox = web_preferences->IsEnabled(options::kSandbox);
-    prefs.native_window_open =
-        web_preferences->IsEnabled(options::kNativeWindowOpen);
     prefs.disable_popups = web_preferences->IsEnabled("disablePopups");
     prefs.web_security = web_preferences->IsEnabled(options::kWebSecurity,
                                                     true /* default value */);
@@ -608,26 +596,14 @@ bool AtomBrowserClient::CanCreateWindow(
 
   int opener_render_process_id = opener->GetProcess()->GetID();
 
-  if (RendererUsesNativeWindowOpen(opener_render_process_id)) {
-    if (RendererDisablesPopups(opener_render_process_id)) {
-      // <webview> without allowpopups attribute should return
-      // null from window.open calls
-      return false;
-    } else {
-      *no_javascript_access = false;
-      return true;
-    }
+  if (RendererDisablesPopups(opener_render_process_id)) {
+    // <webview> without allowpopups attribute should return
+    // null from window.open calls
+    return false;
+  } else {
+    *no_javascript_access = false;
+    return true;
   }
-
-  if (delegate_) {
-    return delegate_->CanCreateWindow(
-        opener, opener_url, opener_top_level_frame_url, source_origin,
-        container_type, target_url, referrer, frame_name, disposition, features,
-        additional_features, body, user_gesture, opener_suppressed,
-        no_javascript_access);
-  }
-
-  return false;
 }
 
 void AtomBrowserClient::GetAdditionalAllowedSchemesForFileSystem(

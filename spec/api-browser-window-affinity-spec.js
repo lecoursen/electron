@@ -76,7 +76,6 @@ describe('BrowserWindow with affinity module', () => {
 
   testAffinityProcessIds(`BrowserWindow with an affinity '${myAffinityName}'`)
   testAffinityProcessIds(`BrowserWindow with an affinity '${myAffinityName}' and sandbox enabled`, { sandbox: true })
-  testAffinityProcessIds(`BrowserWindow with an affinity '${myAffinityName}' and nativeWindowOpen enabled`, { nativeWindowOpen: true })
 
   describe(`BrowserWindow with an affinity : nodeIntegration=false`, () => {
     const preload = path.join(fixtures, 'module', 'send-later.js')

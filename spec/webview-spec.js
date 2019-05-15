@@ -569,7 +569,6 @@ describe('<webview> tag', function () {
 
     generateSpecs('without sandbox')
     generateSpecs('with sandbox', 'sandbox=yes')
-    generateSpecs('with nativeWindowOpen', 'nativeWindowOpen=yes')
   })
 
   describe('webpreferences attribute', () => {
@@ -1570,17 +1569,16 @@ describe('<webview> tag', function () {
     })
   })
 
-  describe('nativeWindowOpen option', () => {
+  describe('window.open()', () => {
     beforeEach(() => {
       webview.setAttribute('allowpopups', 'on')
       webview.setAttribute('nodeintegration', 'on')
-      webview.setAttribute('webpreferences', 'nativeWindowOpen=1')
     })
 
     it('opens window of about:blank with cross-scripting enabled', async () => {
       // Don't wait for loading to finish.
       loadWebView(webview, {
-        src: `file://${path.join(fixtures, 'api', 'native-window-open-blank.html')}`
+        src: `file://${path.join(fixtures, 'api', 'window-open-blank.html')}`
       })
 
       const [, content] = await emittedOnce(ipcMain, 'answer')
@@ -1590,7 +1588,7 @@ describe('<webview> tag', function () {
     it('opens window of same domain with cross-scripting enabled', async () => {
       // Don't wait for loading to finish.
       loadWebView(webview, {
-        src: `file://${path.join(fixtures, 'api', 'native-window-open-file.html')}`
+        src: `file://${path.join(fixtures, 'api', 'window-open-file.html')}`
       })
 
       const [, content] = await emittedOnce(ipcMain, 'answer')
@@ -1602,7 +1600,7 @@ describe('<webview> tag', function () {
 
       // Don't wait for loading to finish.
       loadWebView(webview, {
-        src: `file://${path.join(fixtures, 'api', 'native-window-open-no-allowpopups.html')}`
+        src: `file://${path.join(fixtures, 'api', 'window-open-no-allowpopups.html')}`
       })
 
       const [, { windowOpenReturnedNull }] = await emittedOnce(ipcMain, 'answer')
@@ -1612,7 +1610,7 @@ describe('<webview> tag', function () {
     it('blocks accessing cross-origin frames', async () => {
       // Don't wait for loading to finish.
       loadWebView(webview, {
-        src: `file://${path.join(fixtures, 'api', 'native-window-open-cross-origin.html')}`
+        src: `file://${path.join(fixtures, 'api', 'window-open-cross-origin.html')}`
       })
 
       const [, content] = await emittedOnce(ipcMain, 'answer')

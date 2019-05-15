@@ -241,11 +241,10 @@ describe('BrowserView module', () => {
     it('works in BrowserView', (done) => {
       view = new BrowserView()
       w.setBrowserView(view)
-      view.webContents.once('new-window', (e, url, frameName, disposition, options, additionalFeatures) => {
+      view.webContents.once('new-window', (e, url, frameName) => {
         e.preventDefault()
         assert.strictEqual(url, 'http://host/')
         assert.strictEqual(frameName, 'host')
-        assert.strictEqual(additionalFeatures[0], 'this-is-not-a-standard-feature')
         done()
       })
       view.webContents.loadFile(path.join(fixtures, 'pages', 'window-open.html'))

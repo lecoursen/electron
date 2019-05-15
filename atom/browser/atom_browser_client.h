@@ -193,7 +193,6 @@ class AtomBrowserClient : public content::ContentBrowserClient,
  private:
   struct ProcessPreferences {
     bool sandbox = false;
-    bool native_window_open = false;
     bool disable_popups = false;
     bool web_security = true;
   };
@@ -213,7 +212,6 @@ class AtomBrowserClient : public content::ContentBrowserClient,
   void RemoveProcessPreferences(int process_id);
   bool IsProcessObserved(int process_id) const;
   bool IsRendererSandboxed(int process_id) const;
-  bool RendererUsesNativeWindowOpen(int process_id) const;
   bool RendererDisablesPopups(int process_id) const;
   std::string GetAffinityPreference(content::RenderFrameHost* rfh) const;
   content::SiteInstance* GetSiteInstanceFromAffinity(

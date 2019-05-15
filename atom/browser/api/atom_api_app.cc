@@ -44,7 +44,6 @@
 #include "content/public/browser/child_process_data.h"
 #include "content/public/browser/client_certificate_delegate.h"
 #include "content/public/browser/gpu_data_manager.h"
-#include "content/public/browser/render_frame_host.h"
 #include "content/public/common/content_switches.h"
 #include "media/audio/audio_manager.h"
 #include "native_mate/object_template_builder.h"
@@ -684,38 +683,6 @@ void App::OnLogin(scoped_refptr<LoginHandler> login_handler,
   // Default behavior is to always cancel the auth.
   if (!prevent_default)
     login_handler->CancelAuth();
-}
-
-bool App::CanCreateWindow(
-    content::RenderFrameHost* opener,
-    const GURL& opener_url,
-    const GURL& opener_top_level_frame_url,
-    const url::Origin& source_origin,
-    content::mojom::WindowContainerType container_type,
-    const GURL& target_url,
-    const content::Referrer& referrer,
-    const std::string& frame_name,
-    WindowOpenDisposition disposition,
-    const blink::mojom::WindowFeatures& features,
-    const std::vector<std::string>& additional_features,
-    const scoped_refptr<network::ResourceRequestBody>& body,
-    bool user_gesture,
-    bool opener_suppressed,
-    bool* no_javascript_access) {
-  v8::Locker locker(isolate());
-  v8::HandleScope handle_scope(isolate());
-  content::WebContents* web_contents =
-      content::WebContents::FromRenderFrameHost(opener);
-  if (web_contents) {
-    auto api_web_contents = WebContents::From(isolate(), web_contents);
-    // No need to emit any event if the WebContents is not available in JS.
-    if (!api_web_contents.IsEmpty()) {
-      api_web_contents->OnCreateWindow(target_url, referrer, frame_name,
-                                       disposition, additional_features, body);
-    }
-  }
-
-  return false;
 }
 
 void App::AllowCertificateError(
