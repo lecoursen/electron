@@ -1,7 +1,5 @@
 // TODO: Updating this file also required updating the module-keys file
 
-const features = process.electronBinding('features')
-
 // Browser side modules, please sort alphabetically.
 export const browserModuleList: ElectronInternal.ModuleEntry[] = [
   { name: 'app', loader: () => require('./app') },
@@ -34,7 +32,7 @@ export const browserModuleList: ElectronInternal.ModuleEntry[] = [
   { name: 'WebContentsView', loader: () => require('./web-contents-view') }
 ]
 
-if (features.isViewApiEnabled()) {
+if (BUILDFLAG(ENABLE_VIEW_API)) {
   browserModuleList.push(
     { name: 'BoxLayout', loader: () => require('./views/box-layout') },
     { name: 'Button', loader: () => require('./views/button') },

@@ -6,8 +6,10 @@ const electronRoot = path.resolve(__dirname, '../..')
 
 const onlyPrintingGraph = !!process.env.PRINT_WEBPACK_GRAPH
 
+const buildFlagArg = process.argv.find(arg => arg.startsWith('--buildflags='));
+
 class AccessDependenciesPlugin {
-  apply(compiler) {
+  apply (compiler) {
     // Only hook into webpack when we are printing the dependency graph
     if (!onlyPrintingGraph) return
 
@@ -18,6 +20,25 @@ class AccessDependenciesPlugin {
       })
     })
   }
+}
+
+function generateBuildFlagDefines() {
+  if (!buildFlagArg) return {}
+  const buildFlagPath = buildFlagArg.substr(13)
+
+  const defines = {
+    BUILDFLAG: ' '
+  }
+
+  const flagFile = fs.readFileSync(buildFlagPath, 'utf8')
+  for (const line of flagFile.split(/(\r\n|\r|\n)/g)) {
+    const flagMatch = line.match(/#define BUILDFLAG_INTERNAL_(.+?)\(\) \(([01])\)/)
+    if (flagMatch) {
+      defines[flagMatch[1]] = JSON.stringify(Boolean(parseInt(flagMatch[2], 10)))
+    }
+  }
+
+  return defines
 }
 
 module.exports = ({
@@ -64,7 +85,7 @@ module.exports = ({
       __filename: false,
       // We provide our own "timers" import above, any usage of setImmediate inside
       // one of our renderer bundles should import it from the 'timers' package
-      setImmediate: false,
+      setImmediate: false
     },
     plugins: [
       new AccessDependenciesPlugin(),
@@ -74,7 +95,8 @@ module.exports = ({
           global: ['@electron/internal/renderer/webpack-provider', '_global'],
           Buffer: ['@electron/internal/renderer/webpack-provider', 'Buffer'],
         })
-      ] : [])
+      ] : []),
+      new webpack.DefinePlugin(generateBuildFlagDefines())
     ]
   })
 }
