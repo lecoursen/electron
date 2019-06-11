@@ -78,3 +78,4 @@ fix_breakpad_symbol_generation_on_linux_arm.patch
 frame_host_manager.patch
 cross_site_document_resource_handler.patch
 woa_compiler_workaround.patch
+build_patch_x11_includes_for_goma_support.patch

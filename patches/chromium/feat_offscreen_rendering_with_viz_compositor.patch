@@ -177,7 +177,7 @@ index f3867356e3d641416e00e6d115ae9ae2a0be90ab..b1d192d2b20ccb63fba07093101d745e
  
 diff --git a/components/viz/service/display_embedder/software_output_device_proxy.cc b/components/viz/service/display_embedder/software_output_device_proxy.cc
 new file mode 100644
-index 0000000000000000000000000000000000000000..bbca3a43b5ba8bcf1e3a4dab4509b903b7117f36
+index 0000000000000000000000000000000000000000..0cda53bce6bd6b6943c65d5bd7cc6bb9c10b4d8a
 --- /dev/null
 +++ b/components/viz/service/display_embedder/software_output_device_proxy.cc
 @@ -0,0 +1,167 @@
@@ -350,10 +350,10 @@ index 0000000000000000000000000000000000000000..bbca3a43b5ba8bcf1e3a4dab4509b903
 +}  // namespace viz
 diff --git a/components/viz/service/display_embedder/software_output_device_proxy.h b/components/viz/service/display_embedder/software_output_device_proxy.h
 new file mode 100644
-index 0000000000000000000000000000000000000000..ff3c0217812a8370a20aa528f117e928fd1b95f4
+index 0000000000000000000000000000000000000000..94f46d9eb10a3ad0e6a76996a13c4230df6f2b1e
 --- /dev/null
 +++ b/components/viz/service/display_embedder/software_output_device_proxy.h
-@@ -0,0 +1,89 @@
+@@ -0,0 +1,90 @@
 +// Copyright 2014 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -367,6 +367,7 @@ index 0000000000000000000000000000000000000000..ff3c0217812a8370a20aa528f117e928
 +
 +#include <memory>
 +
++#include "base/memory/shared_memory_mapping.h"
 +#include "base/threading/thread_checker.h"
 +#include "components/viz/host/host_display_client.h"
 +#include "components/viz/service/display/software_output_device.h"
@@ -512,7 +513,7 @@ index 360cab3eee4c5189a55269d76daa1d78a98ed3d3..6834242f23d27fd6d428c2cd6040206a
 +  Draw(gfx.mojom.Rect damage_rect) => ();
  };
 diff --git a/ui/compositor/compositor.h b/ui/compositor/compositor.h
-index 494241c374b7ffac0fa89549dc1b8a30359eb17f..5ac7c707374ebcb5510c76017edfcceee97b599e 100644
+index 494241c374b7ffac0fa89549dc1b8a30359eb17f..f18b00c4d6d099380835b7ce1f092f7c45cb942c 100644
 --- a/ui/compositor/compositor.h
 +++ b/ui/compositor/compositor.h
 @@ -23,6 +23,7 @@
@@ -523,7 +524,7 @@ index 494241c374b7ffac0fa89549dc1b8a30359eb17f..5ac7c707374ebcb5510c76017edfccee
  #include "components/viz/host/host_frame_sink_client.h"
  #include "services/viz/privileged/interfaces/compositing/vsync_parameter_observer.mojom-forward.h"
  #include "third_party/skia/include/core/SkColor.h"
-@@ -199,6 +200,15 @@ class COMPOSITOR_EXPORT ContextFactory {
+@@ -199,6 +202,15 @@ class COMPOSITOR_EXPORT ContextFactory {
    virtual bool SyncTokensRequiredForDisplayCompositor() = 0;
  };
  
@@ -539,7 +540,7 @@ index 494241c374b7ffac0fa89549dc1b8a30359eb17f..5ac7c707374ebcb5510c76017edfccee
  // Compositor object to take care of GPU painting.
  // A Browser compositor object is responsible for generating the final
  // displayable form of pixels comprising a single widget's contents. It draws an
-@@ -238,6 +248,9 @@ class COMPOSITOR_EXPORT Compositor : public cc::LayerTreeHostClient,
+@@ -238,6 +250,9 @@ class COMPOSITOR_EXPORT Compositor : public cc::LayerTreeHostClient,
    // Schedules a redraw of the layer tree associated with this compositor.
    void ScheduleDraw();
  
@@ -549,7 +550,7 @@ index 494241c374b7ffac0fa89549dc1b8a30359eb17f..5ac7c707374ebcb5510c76017edfccee
    // Sets the root of the layer tree drawn by this Compositor. The root layer
    // must have no parent. The compositor's root layer is reset if the root layer
    // is destroyed. NULL can be passed to reset the root layer, in which case the
-@@ -454,6 +467,8 @@ class COMPOSITOR_EXPORT Compositor : public cc::LayerTreeHostClient,
+@@ -454,6 +469,8 @@ class COMPOSITOR_EXPORT Compositor : public cc::LayerTreeHostClient,
    ui::ContextFactory* context_factory_;
    ui::ContextFactoryPrivate* context_factory_private_;
  
