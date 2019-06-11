@@ -10,7 +10,7 @@
 # Build machines configs.
 docker-image: &docker-image
   docker:
-    - image: electronbuilds/electron:0.0.9
+    - image: electronbuilds/electron:0.0.10
 
 machine-linux-medium: &machine-linux-medium
   <<: *docker-image
@@ -83,6 +83,15 @@ env-mas: &env-mas
 # Misc build configuration options.
 env-enable-sccache: &env-enable-sccache
   USE_SCCACHE: true
+
+env-enable-goma: &env-enable-goma
+  USE_GOMA: true
+  GN_GOMA_ARGS: 'use_goma=true'
+  GOMA_SERVER_HOST: 'goma.ionicpineapple.com'
+  GOMA_SERVER_PORT: '443'
+  GOMA_ARBITRARY_TOOLCHAIN_SUPPORT: 'true'
+  SUPER_NUMBER_OF_NINJA_PROCESSES: 200
+  GOMA_PROVIDE_INFO: false
 
 env-send-slack-notifications: &env-send-slack-notifications
   NOTIFY_SLACK: true
@@ -173,6 +182,13 @@ step-setup-env-for-build: &step-setup-env-for-build
         fi
       fi
 
+      # TODO: Ensure we install the correct platform
+      if [ "$USE_GOMA" == "true" ]; then
+        cipd install infra/goma/client/linux-amd64 -root ${HOME}/goma
+        echo $RAW_GOMA_CONFIG >> $HOME/.goma_client_oauth2_config
+        $HOME/goma/goma_ctl.py ensure_start
+      fi
+
 step-restore-brew-cache: &step-restore-brew-cache
   restore_cache:
     paths:
@@ -248,7 +264,7 @@ step-gn-gen-default: &step-gn-gen-default
     name: Default GN gen
     command: |
       cd src
-      gn gen out/Default --args='import("'$GN_CONFIG'") cc_wrapper="'"$SCCACHE_PATH"'"'" $GN_EXTRA_ARGS"
+      gn gen out/Default --args='import("'$GN_CONFIG'") cc_wrapper="'"$SCCACHE_PATH"'"'" $GN_EXTRA_ARGS $GN_GOMA_ARGS"
 
 step-gn-check: &step-gn-check
   run:
@@ -266,7 +282,7 @@ step-electron-build: &step-electron-build
     no_output_timeout: 30m
     command: |
       cd src
-      ninja -C out/Default electron -j $NUMBER_OF_NINJA_PROCESSES
+      ninja -C out/Default electron -j ${SUPER_NUMBER_OF_NINJA_PROCESSES:-$NUMBER_OF_NINJA_PROCESSES}
 
 step-maybe-electron-dist-strip: &step-maybe-electron-dist-strip
   run:
@@ -316,7 +332,7 @@ step-electron-chromedriver-build: &step-electron-chromedriver-build
     name: Build chromedriver.zip
     command: |
       cd src
-      ninja -C out/Default chrome/test/chromedriver -j $NUMBER_OF_NINJA_PROCESSES
+      ninja -C out/Default chrome/test/chromedriver -j ${SUPER_NUMBER_OF_NINJA_PROCESSES:-$NUMBER_OF_NINJA_PROCESSES}
       electron/script/strip-binaries.py --target-cpu="$TARGET_ARCH" --file $PWD/out/Default/chromedriver
       ninja -C out/Default electron:electron_chromedriver_zip
 
@@ -395,7 +411,7 @@ step-ffmpeg-build: &step-ffmpeg-build
     name: Non proprietary ffmpeg build
     command: |
       cd src
-      ninja -C out/ffmpeg electron:electron_ffmpeg_zip -j $NUMBER_OF_NINJA_PROCESSES
+      ninja -C out/ffmpeg electron:electron_ffmpeg_zip -j ${SUPER_NUMBER_OF_NINJA_PROCESSES:-$NUMBER_OF_NINJA_PROCESSES}
 
 step-verify-ffmpeg: &step-verify-ffmpeg
   run:
@@ -432,6 +448,14 @@ step-show-sccache-stats: &step-show-sccache-stats
         $SCCACHE_PATH -s
       fi
 
+step-show-goma-stats: &step-show-goma-stats
+  run:
+    name: Check goma stats after build
+    command: |
+      if [ "$USE_GOMA" == "true" ]; then
+        $HOME/goma/goma_ctl.py stat
+      fi
+
 step-mksnapshot-build: &step-mksnapshot-build
   run:
     name: mksnapshot build
@@ -446,7 +470,7 @@ step-mksnapshot-build: &step-mksnapshot-build
           electron/script/strip-binaries.py --file $PWD/out/Default/mksnapshot
         fi
       fi
-      ninja -C out/Default electron:electron_mksnapshot_zip -j $NUMBER_OF_NINJA_PROCESSES
+      ninja -C out/Default electron:electron_mksnapshot_zip -j ${SUPER_NUMBER_OF_NINJA_PROCESSES:-$NUMBER_OF_NINJA_PROCESSES}
 
 step-mksnapshot-store: &step-mksnapshot-store
   store_artifacts:
@@ -689,6 +713,7 @@ steps-electron-build: &steps-electron-build
     - *step-nodejs-headers-store
 
     - *step-show-sccache-stats
+    - *step-show-goma-stats
 
 steps-electron-build-for-tests: &steps-electron-build-for-tests
   steps:
@@ -712,6 +737,7 @@ steps-electron-build-for-tests: &steps-electron-build-for-tests
     - *step-nodejs-headers-store
 
     - *step-show-sccache-stats
+    - *step-show-goma-stats
 
     # mksnapshot
     - *step-mksnapshot-build
@@ -957,7 +983,7 @@ jobs:
     environment:
       <<: *env-linux-2xlarge
       <<: *env-debug-build
-      <<: *env-enable-sccache
+      <<: *env-enable-goma
     <<: *steps-electron-build
 
   linux-x64-debug-gn-check:
@@ -972,7 +998,7 @@ jobs:
     environment:
       <<: *env-linux-2xlarge
       <<: *env-testing-build
-      <<: *env-enable-sccache
+      <<: *env-enable-goma
     <<: *steps-electron-build-for-tests
 
   linux-x64-testing-gn-check:
