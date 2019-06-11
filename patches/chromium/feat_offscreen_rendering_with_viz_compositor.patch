@@ -180,7 +180,7 @@ new file mode 100644
 index 0000000000000000000000000000000000000000..bbca3a43b5ba8bcf1e3a4dab4509b903b7117f36
 --- /dev/null
 +++ b/components/viz/service/display_embedder/software_output_device_proxy.cc
-@@ -0,0 +1,168 @@
+@@ -0,0 +1,167 @@
 +// Copyright 2014 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -188,7 +188,6 @@ index 0000000000000000000000000000000000000000..bbca3a43b5ba8bcf1e3a4dab4509b903
 +#include "components/viz/service/display_embedder/software_output_device_proxy.h"
 +
 +#include "base/memory/shared_memory.h"
-+#include "base/threading/thread_checker.h"
 +#include "components/viz/common/resources/resource_sizes.h"
 +#include "components/viz/service/display_embedder/output_device_backing.h"
 +#include "mojo/public/cpp/system/platform_handle.h"
@@ -354,7 +353,7 @@ new file mode 100644
 index 0000000000000000000000000000000000000000..ff3c0217812a8370a20aa528f117e928fd1b95f4
 --- /dev/null
 +++ b/components/viz/service/display_embedder/software_output_device_proxy.h
-@@ -0,0 +1,88 @@
+@@ -0,0 +1,89 @@
 +// Copyright 2014 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -368,6 +367,7 @@ index 0000000000000000000000000000000000000000..ff3c0217812a8370a20aa528f117e928
 +
 +#include <memory>
 +
++#include "base/threading/thread_checker.h"
 +#include "components/viz/host/host_display_client.h"
 +#include "components/viz/service/display/software_output_device.h"
 +#include "components/viz/service/viz_service_export.h"
