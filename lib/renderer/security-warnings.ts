@@ -264,7 +264,7 @@ const logSecurityWarnings = function (
 
 const getWebPreferences = function () {
   try {
-    return invokeSync('ELECTRON_BROWSER_GET_LAST_WEB_PREFERENCES')
+    return invokeSync<Electron.WebPreferences>('ELECTRON_BROWSER_GET_LAST_WEB_PREFERENCES')
   } catch (error) {
     console.warn(`getLastWebPreferences() failed: ${error}`)
   }
