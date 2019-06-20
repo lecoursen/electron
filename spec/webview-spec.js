@@ -917,11 +917,12 @@ describe('<webview> tag', function () {
 
   describe('<webview>.clearHistory()', () => {
     it('should clear the navigation history', async () => {
+      const ipcMessage = waitForEvent(webview, 'ipc-message')
       loadWebView(webview, {
         nodeintegration: 'on',
         src: `file://${fixtures}/pages/history.html`
       })
-      const event = await waitForEvent(webview, 'ipc-message')
+      const event = await ipcMessage
 
       expect(event.channel).to.equal('history')
       expect(event.args[0]).to.equal(2)
