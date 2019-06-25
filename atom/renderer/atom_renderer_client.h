@@ -14,7 +14,10 @@
 
 namespace node {
 class Environment;
-}
+namespace tracing {
+class Agent;
+}  // namespace tracing
+}  // namespace node
 
 namespace atom {
 
@@ -64,6 +67,7 @@ class AtomRendererClient : public RendererClientBase {
   // Whether the node integration has been initialized.
   bool node_integration_initialized_ = false;
 
+  std::unique_ptr<node::tracing::Agent> tracing_agent_;
   std::unique_ptr<NodeBindings> node_bindings_;
   std::unique_ptr<AtomBindings> atom_bindings_;
 

@@ -103,16 +103,16 @@ int NodeMain(int argc, char* argv[]) {
     gin_env.platform()->UnregisterIsolate(env->isolate());
 
     node::FreeEnvironment(env);
+
+    // According to "src/gin/shell/gin_main.cc":
+    //
+    // gin::IsolateHolder waits for tasks running in TaskScheduler in its
+    // destructor and thus must be destroyed before TaskScheduler starts
+    // skipping CONTINUE_ON_SHUTDOWN tasks.
+    base::TaskScheduler::GetInstance()->Shutdown();
+
+    v8::V8::Dispose();
   }
-
-  // According to "src/gin/shell/gin_main.cc":
-  //
-  // gin::IsolateHolder waits for tasks running in TaskScheduler in its
-  // destructor and thus must be destroyed before TaskScheduler starts skipping
-  // CONTINUE_ON_SHUTDOWN tasks.
-  base::TaskScheduler::GetInstance()->Shutdown();
-
-  v8::V8::Dispose();
 
   return exit_code;
 }

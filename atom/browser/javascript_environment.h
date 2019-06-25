@@ -13,7 +13,10 @@
 
 namespace node {
 class Environment;
-class MultiIsolatePlatform;
+class NodePlatform;
+namespace tracing {
+class Agent;
+}  // namespace tracing
 }  // namespace node
 
 namespace atom {
@@ -28,7 +31,7 @@ class JavascriptEnvironment {
   void OnMessageLoopCreated();
   void OnMessageLoopDestroying();
 
-  node::MultiIsolatePlatform* platform() const { return platform_; }
+  node::NodePlatform* platform() const { return platform_.get(); }
   v8::Isolate* isolate() const { return isolate_; }
   v8::Local<v8::Context> context() const {
     return v8::Local<v8::Context>::New(isolate_, context_);
@@ -36,8 +39,9 @@ class JavascriptEnvironment {
 
  private:
   v8::Isolate* Initialize(uv_loop_t* event_loop);
-  // Leaked on exit.
-  node::MultiIsolatePlatform* platform_;
+
+  std::unique_ptr<node::NodePlatform> platform_;
+  std::unique_ptr<node::tracing::Agent> tracing_agent_;
 
   v8::Isolate* isolate_;
   gin::IsolateHolder isolate_holder_;

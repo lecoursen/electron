@@ -16,7 +16,7 @@
 #include "gin/v8_initializer.h"
 
 #include "atom/common/node_includes.h"
-#include "tracing/trace_event.h"
+#include "tracing/agent.h"
 
 namespace atom {
 
@@ -33,7 +33,9 @@ JavascriptEnvironment::JavascriptEnvironment(uv_loop_t* event_loop)
       context_(isolate_, v8::Context::New(isolate_)),
       context_scope_(v8::Local<v8::Context>::New(isolate_, context_)) {}
 
-JavascriptEnvironment::~JavascriptEnvironment() = default;
+JavascriptEnvironment::~JavascriptEnvironment() {
+  platform_->Shutdown();
+}
 
 v8::Isolate* JavascriptEnvironment::Initialize(uv_loop_t* event_loop) {
   auto* cmd = base::CommandLine::ForCurrentProcess();
@@ -45,13 +47,13 @@ v8::Isolate* JavascriptEnvironment::Initialize(uv_loop_t* event_loop) {
 
   // The V8Platform of gin relies on Chromium's task schedule, which has not
   // been started at this point, so we have to rely on Node's V8Platform.
-  auto* tracing_controller = new v8::TracingController();
-  node::tracing::TraceEventHelper::SetTracingController(tracing_controller);
-  platform_ = node::CreatePlatform(
-      base::RecommendedMaxNumberOfThreadsInPool(3, 8, 0.1, 0),
-      tracing_controller);
+  tracing_agent_.reset(new node::tracing::Agent());
+  auto* controller = tracing_agent_->GetTracingController();
+  node::tracing::TraceEventHelper::SetTracingController(controller);
+  platform_.reset(new node::NodePlatform(
+      base::RecommendedMaxNumberOfThreadsInPool(3, 8, 0.1, 0), controller));
 
-  v8::V8::InitializePlatform(platform_);
+  v8::V8::InitializePlatform(platform_.get());
   gin::IsolateHolder::Initialize(
       gin::IsolateHolder::kNonStrictMode, gin::IsolateHolder::kStableV8Extras,
       gin::ArrayBufferAllocator::SharedInstance(),
@@ -72,6 +74,8 @@ void JavascriptEnvironment::OnMessageLoopCreated() {
 void JavascriptEnvironment::OnMessageLoopDestroying() {
   DCHECK(microtasks_runner_);
   base::MessageLoopCurrent::Get()->RemoveTaskObserver(microtasks_runner_.get());
+  platform_->DrainTasks(isolate_);
+  platform_->CancelPendingDelayedTasks(isolate_);
   platform_->UnregisterIsolate(isolate_);
 }
 
