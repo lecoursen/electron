@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include "atom/renderer/api/atom_spell_check_language.h"
 #include "base/callback.h"
 #include "base/memory/weak_ptr.h"
 #include "components/spellcheck/renderer/spellcheck_worditerator.h"
@@ -31,7 +32,7 @@ class SpellCheckClient : public blink::WebSpellCheckPanelHostClient,
                          public blink::WebTextCheckClient,
                          public base::SupportsWeakPtr<SpellCheckClient> {
  public:
-  SpellCheckClient(const std::string& language,
+  SpellCheckClient(const std::vector<std::string>& languages,
                    v8::Isolate* isolate,
                    v8::Local<v8::Object> provider);
   ~SpellCheckClient() override;
@@ -60,6 +61,8 @@ class SpellCheckClient : public blink::WebSpellCheckPanelHostClient,
     ~SpellCheckScope();
   };
 
+  void AddSpellcheckLanguage(const std::string& language);
+
   // Run through the word iterator and send out requests
   // to the JS API for checking spellings of words in the current
   // request.
@@ -68,36 +71,22 @@ class SpellCheckClient : public blink::WebSpellCheckPanelHostClient,
   // Call JavaScript to check spelling a word.
   // The javascript function will callback OnSpellCheckDone
   // with the results of all the misspelled words.
-  void SpellCheckWords(const SpellCheckScope& scope,
-                       const std::set<base::string16>& words);
-
-  // Returns whether or not the given word is a contraction of valid words
-  // (e.g. "word:word").
-  // Output variable contraction_words will contain individual
-  // words in the contraction.
-  bool IsContraction(const SpellCheckScope& scope,
-                     const base::string16& word,
-                     std::vector<base::string16>* contraction_words);
+  void SpellCheckWords(
+      const SpellCheckScope& scope,
+      const std::unordered_map<std::string, std::set<base::string16>>&
+          lang_words);
 
   // Callback for the JS API which returns the list of misspelled words.
   void OnSpellCheckDone(const std::vector<base::string16>& misspelled_words);
-
-  // Represents character attributes used for filtering out characters which
-  // are not supported by this SpellCheck object.
-  SpellcheckCharAttribute character_attributes_;
-
-  // Represents word iterators used in this spellchecker. The |text_iterator_|
-  // splits text provided by WebKit into words, contractions, or concatenated
-  // words. The |contraction_iterator_| splits a concatenated word extracted by
-  // |text_iterator_| into word components so we can treat a concatenated word
-  // consisting only of correct words as a correct word.
-  SpellcheckWordIterator text_iterator_;
-  SpellcheckWordIterator contraction_iterator_;
 
   // The parameters of a pending background-spellchecking request.
   // (When WebKit sends two or more requests, we cancel the previous
   // requests so we do not have to use vectors.)
   std::unique_ptr<SpellcheckRequest> pending_request_param_;
+
+  // A vector of objects used to actually check spelling, one for each enabled
+  // language.
+  std::vector<std::unique_ptr<SpellcheckLanguage>> languages_;
 
   v8::Isolate* isolate_;
   v8::Persistent<v8::Context> context_;
