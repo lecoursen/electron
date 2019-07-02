@@ -12,20 +12,14 @@
 
 namespace atom {
 
-SpellcheckLanguage::Word::Word() {}
+SpellcheckLanguage::Word::Word() = default;
 
-SpellcheckLanguage::Word::Word(const Word& word) {
-  result = word.result;
-  text = word.text;
-  contraction_words = word.contraction_words;
-  misspelled_count = word.misspelled_count;
-}
+SpellcheckLanguage::Word::Word(const Word& word) = default;
 
-SpellcheckLanguage::Word::~Word() {}
+SpellcheckLanguage::Word::~Word() = default;
 
 bool SpellcheckLanguage::Word::operator==(const Word& word) const {
   return result.location == word.result.location && text == word.text;
-  ;
 }
 
 SpellcheckLanguage::SpellcheckLanguage() {}
