@@ -81,15 +81,10 @@ std::set<base::string16> SpellcheckLanguage::SpellCheckText(
     word_entry.contraction_words.clear();
     auto found = find(word_list.begin(), word_list.end(), word_entry);
     if (found != word_list.end()) {
-      auto& w = *found;
-      w.misspelled_count++;
-      LOG(INFO) << "WORD FOUND AND UPDATED IS: " << w.text;
-      LOG(INFO) << "misspelled_count is: " << w.misspelled_count;
+      found->misspelled_count++;
     } else {
       word_entry.misspelled_count = 1;
       word_list.push_back(word_entry);
-      LOG(INFO) << "WORD INSERTED: " << word_entry.text;
-      LOG(INFO) << "misspelled_count is: " << word_entry.misspelled_count;
     }
     words.insert(word);
     // If the given word is a concatenated word of two or more valid words

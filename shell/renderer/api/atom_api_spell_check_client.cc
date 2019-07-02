@@ -161,7 +161,6 @@ void SpellCheckClient::OnSpellCheckDone(
     const std::vector<base::string16>& misspelled_words) {
   std::unordered_set<base::string16> misspelled(misspelled_words.begin(),
                                                 misspelled_words.end());
-  LOG(INFO) << "SIZE OF MISSPELLED WORDS: " << misspelled.size();
   auto& word_list = pending_request_param_->wordlist();
 
   for (auto word = word_list.begin(); word != word_list.end(); ++word) {
@@ -179,23 +178,17 @@ void SpellCheckClient::OnSpellCheckDone(
         if (all_correct)
           continue;
       }
-      LOG(INFO) << "MISSPELLED WORD COUNT: " << word->misspelled_count;
       word->misspelled_count--;
-      LOG(INFO) << "OnSpellCheckDone WORD: " << word->text;
-      LOG(INFO) << "misspelled_count is: " << word->misspelled_count;
     }
   }
   pending_request_param_->decrement();
   if (pending_request_param_->remaining() == 0) {
     std::vector<blink::WebTextCheckingResult> result;
     for (const auto& w : word_list) {
-      LOG(INFO) << "MISSPELLED COUNT IS " << w.misspelled_count << " FOR "
-                << w.text;
       if (w.misspelled_count == 0) {
         result.push_back(w.result);
       }
     }
-    LOG(INFO) << "CALLING WITH RESULT SIZE = " << result.size();
     pending_request_param_->completion()->DidFinishCheckingText(result);
     pending_request_param_ = nullptr;
   }
