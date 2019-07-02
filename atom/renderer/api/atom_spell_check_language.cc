@@ -39,7 +39,7 @@ bool SpellcheckLanguage::InitializeIfNeeded() {
 
 std::set<base::string16> SpellcheckLanguage::SpellCheckText(
     const base::string16& text,
-    std::vector<SpellcheckLanguage::Word>& word_list) {
+    std::unordered_set<SpellcheckLanguage::Word>& word_list) {
   if (!text_iterator_.IsInitialized() &&
       !text_iterator_.Initialize(&character_attributes_, true)) {
     // We failed to initialize text_iterator_, return as spelled correctly.
@@ -78,7 +78,7 @@ std::set<base::string16> SpellcheckLanguage::SpellCheckText(
       found->misspelled_count++;
     } else {
       word_entry.misspelled_count = 1;
-      word_list.push_back(word_entry);
+      word_list.insert(word_entry);
     }
     words.insert(word);
     // If the given word is a concatenated word of two or more valid words

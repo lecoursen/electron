@@ -25,7 +25,7 @@ class SpellcheckLanguage {
     blink::WebTextCheckingResult result;
     base::string16 text;
     std::vector<base::string16> contraction_words;
-    int misspelled_count = 0;
+    mutable int misspelled_count = 0;
     Word();
     Word(const Word&);
     ~Word();
@@ -38,7 +38,7 @@ class SpellcheckLanguage {
   void Init(const std::string& language);
 
   std::set<base::string16> SpellCheckText(const base::string16& text,
-                                          std::vector<Word>& word_list);
+                                          std::unordered_set<Word>& word_list);
 
   // Initialize |spellcheck_| if that hasn't happened yet.
   bool InitializeIfNeeded();
