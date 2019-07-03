@@ -10,7 +10,7 @@
 # Build machines configs.
 docker-image: &docker-image
   docker:
-    - image: electronbuilds/electron:0.0.10
+    - image: electronbuilds/electron@sha256:32ad209c83095a760fd35b23590034ffa5684660df5250d06be7b0b17801f747
 
 machine-linux-medium: &machine-linux-medium
   <<: *docker-image
