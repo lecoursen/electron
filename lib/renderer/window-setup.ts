@@ -154,7 +154,7 @@ class BrowserWindowProxy {
   }
 
   public postMessage (message: any, targetOrigin: string) {
-    ipcRendererUtils.invoke('ELECTRON_GUEST_WINDOW_MANAGER_WINDOW_POSTMESSAGE', this.guestId, message, toString(targetOrigin), window.location.origin)
+    ipcRendererUtils.invoke('ELECTRON_GUEST_WINDOW_MANAGER_WINDOW_POSTMESSAGE', this.guestId, message, toString(targetOrigin))
   }
 
   public eval (code: string) {

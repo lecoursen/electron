@@ -635,15 +635,6 @@ describe('chromium feature', () => {
       window.addEventListener('message', listener)
       w = window.open(`file://${fixtures}/pages/window-opener-location.html`, '', 'show=no,nodeIntegration=no')
     })
-
-    it('works when origin does not match opener but has node integration', (done) => {
-      listener = (event) => {
-        expect(event.data).to.equal(location.href)
-        done()
-      }
-      window.addEventListener('message', listener)
-      w = window.open(url, '', 'show=no,nodeIntegration=yes')
-    })
   })
 
   describe('window.opener access from <webview>', () => {
