@@ -1563,7 +1563,7 @@ void WebContents::InspectSharedWorker() {
   }
 }
 
-void WebContents::InspectSharedWorkerById(std::string worker_id) {
+void WebContents::InspectSharedWorkerById(const std::string& worker_id) {
   // TODO
 }
 
