@@ -45,7 +45,7 @@ bool HasWordCharacters(const base::string16& text, int index) {
 
 }  // namespace
 
-using Word = atom::SpellcheckLanguage::Word;
+using Word = electron::SpellcheckLanguage::Word;
 
 class SpellCheckClient::SpellcheckRequest {
  public:

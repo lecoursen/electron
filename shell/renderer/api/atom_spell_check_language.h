@@ -2,8 +2,8 @@
 // Use of this source code is governed by the MIT license that can be
 // found in the LICENSE file.
 
-#ifndef ATOM_RENDERER_API_ATOM_API_SPELL_CHECK_LANGUAGE_H_
-#define ATOM_RENDERER_API_ATOM_API_SPELL_CHECK_LANGUAGE_H_
+#ifndef SHELL_RENDERER_API_ATOM_API_SPELL_CHECK_LANGUAGE_H_
+#define SHELL_RENDERER_API_ATOM_API_SPELL_CHECK_LANGUAGE_H_
 
 #include <memory>
 #include <queue>
@@ -17,7 +17,7 @@
 #include "components/spellcheck/renderer/spellcheck_worditerator.h"
 #include "third_party/blink/public/web/web_text_checking_result.h"
 
-namespace atom {
+namespace electron {
 
 class SpellcheckLanguage {
  public:
@@ -70,14 +70,14 @@ class SpellcheckLanguage {
   DISALLOW_COPY_AND_ASSIGN(SpellcheckLanguage);
 };
 
-}  // namespace atom
+}  // namespace electron
 
 namespace std {
 template <>
-struct hash<atom::SpellcheckLanguage::Word> {
-  size_t operator()(const atom::SpellcheckLanguage::Word& obj) const {
+struct hash<electron::SpellcheckLanguage::Word> {
+  size_t operator()(const electron::SpellcheckLanguage::Word& obj) const {
     return hash<base::string16>()(obj.text);
   }
 };
 }  // namespace std
-#endif  // ATOM_RENDERER_API_ATOM_API_SPELL_CHECK_LANGUAGE_H_
+#endif  // SHELL_RENDERER_API_ATOM_API_SPELL_CHECK_LANGUAGE_H_

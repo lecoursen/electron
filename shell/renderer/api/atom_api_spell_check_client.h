@@ -10,11 +10,11 @@
 #include <string>
 #include <vector>
 
-#include "atom/renderer/api/atom_spell_check_language.h"
 #include "base/callback.h"
 #include "base/memory/weak_ptr.h"
 #include "components/spellcheck/renderer/spellcheck_worditerator.h"
 #include "native_mate/scoped_persistent.h"
+#include "shell/renderer/api/atom_spell_check_language.h"
 #include "third_party/blink/public/platform/web_spell_check_panel_host_client.h"
 #include "third_party/blink/public/platform/web_vector.h"
 #include "third_party/blink/public/web/web_text_check_client.h"

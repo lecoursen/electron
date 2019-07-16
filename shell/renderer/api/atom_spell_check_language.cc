@@ -2,7 +2,7 @@
 // Use of this source code is governed by the MIT license that can be
 // found in the LICENSE file.
 
-#include "atom/renderer/api/atom_spell_check_language.h"
+#include "shell/renderer/api/atom_spell_check_language.h"
 
 #include <utility>
 
@@ -10,7 +10,7 @@
 #include "components/spellcheck/renderer/spellcheck_worditerator.h"
 #include "components/spellcheck/renderer/spelling_engine.h"
 
-namespace atom {
+namespace electron {
 
 SpellcheckLanguage::Word::Word() = default;
 
@@ -125,4 +125,4 @@ bool SpellcheckLanguage::IsEnabled() {
   return true;
 }
 
-}  // namespace atom
+}  // namespace electron
