@@ -370,16 +370,18 @@ static NSString* const ImageScrubberItemIdentifier = @"scrubber.image.item";
   gfx::Image image;
   if (settings.Get("icon", &image)) {
     button.image = image.AsNSImage();
+  } else {
+    button.image = nil;
+  }
 
-    std::string iconPosition;
-    settings.Get("iconPosition", &iconPosition);
-    if (iconPosition == "left") {
-      button.imagePosition = NSImageLeft;
-    } else if (iconPosition == "right") {
-      button.imagePosition = NSImageRight;
-    } else {
-      button.imagePosition = NSImageOverlaps;
-    }
+  std::string iconPosition;
+  settings.Get("iconPosition", &iconPosition);
+  if (iconPosition == "left") {
+    button.imagePosition = NSImageLeft;
+  } else if (iconPosition == "right") {
+    button.imagePosition = NSImageRight;
+  } else {
+    button.imagePosition = NSImageOverlaps;
   }
 }
 
@@ -503,6 +505,8 @@ static NSString* const ImageScrubberItemIdentifier = @"scrubber.image.item";
   gfx::Image image;
   if (settings.Get("icon", &image)) {
     item.collapsedRepresentationImage = image.AsNSImage();
+  } else {
+    item.collapsedRepresentationImage = nil;
   }
 
   bool showCloseButton = true;
