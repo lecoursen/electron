@@ -668,6 +668,9 @@ bool NativeWindowViews::IsResizable() {
   return CanResize();
 }
 
+void NativeWindowViews::SetAspectRatio(double aspect_ratio,
+                                       const gfx::Size& extra_size) {}
+
 void NativeWindowViews::SetMovable(bool movable) {
   movable_ = movable;
 }
