@@ -41,6 +41,8 @@
 #include "content/public/common/web_preferences.h"
 #include "electron/buildflags/buildflags.h"
 #include "electron/grit/electron_resources.h"
+#include "extensions/browser/extension_protocols.h"
+#include "extensions/common/constants.h"
 #include "net/base/escape.h"
 #include "net/ssl/ssl_cert_request_info.h"
 #include "ppapi/host/ppapi_host.h"
@@ -958,6 +960,11 @@ void AtomBrowserClient::RegisterNonNetworkNavigationURLLoaderFactories(
       content::WebContents::FromFrameTreeNodeId(frame_tree_node_id);
   api::ProtocolNS* protocol = api::ProtocolNS::FromWrappedClass(
       v8::Isolate::GetCurrent(), web_contents->GetBrowserContext());
+  factories->emplace(
+      extensions::kExtensionScheme,
+      extensions::CreateExtensionNavigationURLLoaderFactory(
+          web_contents->GetBrowserContext(),
+          false /* TODO(nornagon): something about WebViewGuest? */));
   if (protocol)
     protocol->RegisterURLLoaderFactories(factories);
 }
@@ -966,6 +973,11 @@ void AtomBrowserClient::RegisterNonNetworkSubresourceURLLoaderFactories(
     int render_process_id,
     int render_frame_id,
     NonNetworkURLLoaderFactoryMap* factories) {
+  auto factory = extensions::CreateExtensionURLLoaderFactory(render_process_id,
+                                                             render_frame_id);
+  if (factory)
+    factories->emplace(extensions::kExtensionScheme, std::move(factory));
+
   // Chromium may call this even when NetworkService is not enabled.
   if (!base::FeatureList::IsEnabled(network::features::kNetworkService))
     return;
