@@ -101,8 +101,14 @@ class IPCRenderer : public mate::Wrappable<IPCRenderer> {
     electron_browser_ptr_->get()->MessageHost(channel, arguments.Clone());
   }
 
+  struct SendSyncContext {
+    base::Value result;
+    base::WaitableEvent event;
+  };
+
   base::Value SendSync(bool internal,
                        const std::string& channel,
+                       int64_t timeout,
                        const base::ListValue& arguments) {
     // We aren't using a true synchronous mojo call here. We're calling an
     // asynchronous method and blocking on the result. The reason we're doing
@@ -150,40 +156,40 @@ class IPCRenderer : public mate::Wrappable<IPCRenderer> {
     //
     // Phew. If you got this far, here's a gold star: ⭐️
 
-    base::Value result;
+    auto context = std::make_shared<SendSyncContext>();
 
     // A task is posted to a worker thread to execute the request so that
-    // this thread may block on a waitable event. It is safe to pass raw
-    // pointers to |result| and |response_received_event| as this stack frame
-    // will survive until the request is complete.
+    // this thread may block on a waitable event.
 
-    base::WaitableEvent response_received_event;
     task_runner_->PostTask(
         FROM_HERE, base::BindOnce(&IPCRenderer::SendMessageSyncOnWorkerThread,
-                                  base::Unretained(this),
-                                  base::Unretained(&response_received_event),
-                                  base::Unretained(&result), internal, channel,
-                                  arguments.Clone()));
-    response_received_event.Wait();
-    return result;
+                                  base::Unretained(this), context, internal,
+                                  channel, arguments.Clone()));
+
+    if (timeout > 0) {
+      context->event.TimedWait(base::TimeDelta::FromMilliseconds(timeout));
+    } else {
+      context->event.Wait();
+    }
+
+    return std::move(context->result);
   }
 
  private:
-  void SendMessageSyncOnWorkerThread(base::WaitableEvent* event,
-                                     base::Value* result,
-                                     bool internal,
-                                     const std::string& channel,
-                                     base::Value arguments) {
+  void SendMessageSyncOnWorkerThread(
+      const std::shared_ptr<SendSyncContext>& context,
+      bool internal,
+      const std::string& channel,
+      base::Value arguments) {
     electron_browser_ptr_->get()->MessageSync(
         internal, channel, std::move(arguments),
-        base::BindOnce(&IPCRenderer::ReturnSyncResponseToMainThread,
-                       base::Unretained(event), base::Unretained(result)));
+        base::BindOnce(&IPCRenderer::ReturnSyncResponseToMainThread, context));
   }
-  static void ReturnSyncResponseToMainThread(base::WaitableEvent* event,
-                                             base::Value* result,
-                                             base::Value response) {
-    *result = std::move(response);
-    event->Signal();
+  static void ReturnSyncResponseToMainThread(
+      const std::shared_ptr<SendSyncContext>& context,
+      base::Value response) {
+    context->result = std::move(response);
+    context->event.Signal();
   }
 
   scoped_refptr<base::SequencedTaskRunner> task_runner_;
