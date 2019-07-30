@@ -670,6 +670,7 @@ bool NativeWindowViews::IsResizable() {
 
 void NativeWindowViews::SetAspectRatio(double aspect_ratio,
                                        const gfx::Size& extra_size) {
+#if defined(OS_LINUX)
   NativeWindow::SetAspectRatio(aspect_ratio, extra_size);
   gfx::SizeF aspect(aspect_ratio, 1.0);
   // widget SetAspectRatio() won't work with numbers too small
@@ -680,6 +681,7 @@ void NativeWindowViews::SetAspectRatio(double aspect_ratio,
   } else {
     // reset aspect ratio somehow
   }
+#endif
 }
 
 void NativeWindowViews::SetMovable(bool movable) {
