@@ -10,25 +10,34 @@
 #include <vector>
 
 #include "base/strings/utf_string_conversions.h"
-#include "native_mate/handle.h"
-#include "shell/browser/api/trackable_object.h"
+#include "gin/handle.h"
+#include "gin/wrappable.h"
 #include "shell/browser/notifications/notification.h"
 #include "shell/browser/notifications/notification_delegate.h"
 #include "shell/browser/notifications/notification_presenter.h"
 #include "ui/gfx/image/image.h"
 
+namespace gin {
+class Arguments;
+class ObjectTemplateBuilder;
+}  // namespace gin
+
 namespace electron {
 
 namespace api {
 
-class Notification : public mate::TrackableObject<Notification>,
+class Notification : public gin::Wrappable<Notification>,
                      public NotificationDelegate {
  public:
-  static mate::WrappableBase* New(mate::Arguments* args);
+  static gin::Handle<Notification> Create(v8::Isolate* isolate,
+                                          gin::Arguments* args);
   static bool IsSupported();
 
-  static void BuildPrototype(v8::Isolate* isolate,
-                             v8::Local<v8::FunctionTemplate> prototype);
+  // gin::Wrappable
+  gin::ObjectTemplateBuilder GetObjectTemplateBuilder(
+      v8::Isolate* isolate) override;
+
+  static gin::WrapperInfo kWrapperInfo;
 
   // NotificationDelegate:
   void NotificationAction(int index) override;
@@ -39,9 +48,7 @@ class Notification : public mate::TrackableObject<Notification>,
   void NotificationClosed() override;
 
  protected:
-  Notification(v8::Isolate* isolate,
-               v8::Local<v8::Object> wrapper,
-               mate::Arguments* args);
+  Notification(gin::Arguments* args);
   ~Notification() override;
 
   void Show();

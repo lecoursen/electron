@@ -8,8 +8,7 @@
 #include "gin/converter.h"
 #include "shell/common/native_mate_converters/image_converter.h"
 
-// TODO(deermichel): replace adapter with real implementation after removing
-// mate
+// TODO(deermichel): replace adapter with real converter after removing mate
 // -- this adapter forwards all conversions to the existing mate converter --
 // (other direction might be preferred, but this is safer for now :D)
 
@@ -20,6 +19,15 @@ struct Converter<gfx::ImageSkia> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      gfx::ImageSkia* out) {
+    return mate::ConvertFromV8(isolate, val, out);
+  }
+};
+
+template <>
+struct Converter<gfx::Image> {
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     gfx::Image* out) {
     return mate::ConvertFromV8(isolate, val, out);
   }
 };
