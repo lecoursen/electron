@@ -1,5 +1,5 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Micha Hanselmann <deermichel@github.com>
+From: Erick Zhao <erickzhao@github.com>
 Date: Thu, 1 Aug 2019 10:41:44 -0700
 Subject: feat: implement unset window aspect ratio on linux
 
