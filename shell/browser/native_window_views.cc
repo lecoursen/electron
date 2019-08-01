@@ -676,11 +676,7 @@ void NativeWindowViews::SetAspectRatio(double aspect_ratio,
   // Scale up because SetAspectRatio() truncates aspect value to int
   aspect.Scale(100);
 
-  if (aspect_ratio > 0) {
-    widget()->SetAspectRatio(aspect);
-  } else {
-    // reset aspect ratio somehow
-  }
+  widget()->SetAspectRatio(aspect);
 #endif
 }
 

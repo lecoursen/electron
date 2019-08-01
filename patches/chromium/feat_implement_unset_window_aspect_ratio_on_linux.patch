@@ -1,0 +1,49 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Micha Hanselmann <deermichel@github.com>
+Date: Thu, 1 Aug 2019 10:41:44 -0700
+Subject: feat: implement unset window aspect ratio on linux
+
+
+diff --git a/electron b/electron
+new file mode 160000
+index 0000000000000000000000000000000000000000..6ae31bb94fdb0675fb134aa42e15f66b42cdc6e8
+--- /dev/null
++++ b/electron
+@@ -0,0 +1 @@
++Subproject commit 6ae31bb94fdb0675fb134aa42e15f66b42cdc6e8
+diff --git a/third_party/electron_node b/third_party/electron_node
+new file mode 160000
+index 0000000000000000000000000000000000000000..6d81b828df977ccfa8cab5501f0e96d883cda1f7
+--- /dev/null
++++ b/third_party/electron_node
+@@ -0,0 +1 @@
++Subproject commit 6d81b828df977ccfa8cab5501f0e96d883cda1f7
+diff --git a/third_party/nan b/third_party/nan
+new file mode 160000
+index 0000000000000000000000000000000000000000..2ee313aaca52e2b478965ac50eb5082520380d1b
+--- /dev/null
++++ b/third_party/nan
+@@ -0,0 +1 @@
++Subproject commit 2ee313aaca52e2b478965ac50eb5082520380d1b
+diff --git a/ui/base/x/x11_window.cc b/ui/base/x/x11_window.cc
+index 7df0a3a8ed268e9b2ca1bad8ac5fd35115b98f77..a895defd2b695e2d5b2b4324551adcaac487f588 100644
+--- a/ui/base/x/x11_window.cc
++++ b/ui/base/x/x11_window.cc
+@@ -676,9 +676,14 @@ void XWindow::SetAspectRatio(const gfx::SizeF& aspect_ratio) {
+   long supplied_return;
+ 
+   XGetWMNormalHints(xdisplay_, xwindow_, &size_hints, &supplied_return);
+-  size_hints.flags |= PAspect;
+-  size_hints.min_aspect.x = size_hints.max_aspect.x = aspect_ratio.width();
+-  size_hints.min_aspect.y = size_hints.max_aspect.y = aspect_ratio.height();
++  // if ratio parameter has length 0, unforce the aspect ratio
++  if (aspect_ratio.IsEmpty()) {
++    size_hints.flags &= ~PAspect;
++  } else {
++    size_hints.flags |= PAspect;
++    size_hints.min_aspect.x = size_hints.max_aspect.x = aspect_ratio.width();
++    size_hints.min_aspect.y = size_hints.max_aspect.y = aspect_ratio.height();
++  }
+   XSetWMNormalHints(xdisplay_, xwindow_, &size_hints);
+ }
+ 
