@@ -190,7 +190,8 @@ export const windowSetup = (
       if (url != null && url !== '') {
         url = resolveURL(url, location.href)
       }
-      const guestId = ipcRendererInternal.sendSync('ELECTRON_GUEST_WINDOW_MANAGER_WINDOW_OPEN', url, toString(frameName), toString(features))
+      const referrer = { url: location.href, policy: 'no-referrer-when-downgrade' }
+      const guestId = ipcRendererInternal.sendSync('ELECTRON_GUEST_WINDOW_MANAGER_WINDOW_OPEN', url, referrer, toString(frameName), toString(features))
       if (guestId != null) {
         return getOrCreateProxy(guestId)
       } else {

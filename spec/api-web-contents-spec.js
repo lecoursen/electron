@@ -298,9 +298,7 @@ describe('webContents module', () => {
       })
     })
 
-    // TODO(jeremy): window.open() in a real browser passes the referrer, but
-    // our hacked-up window.open() shim doesn't. It should.
-    xit('propagates referrer information to windows opened with window.open', (done) => {
+    it('propagates referrer information to windows opened with window.open', (done) => {
       const server = http.createServer((req, res) => {
         if (req.url === '/should_have_referrer') {
           expect(req.headers.referer).to.equal(`http://127.0.0.1:${server.address().port}/`)
