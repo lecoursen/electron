@@ -223,7 +223,12 @@ blink::mojom::PermissionStatus AtomPermissionManager::GetPermissionStatus(
     content::PermissionType permission,
     const GURL& requesting_origin,
     const GURL& embedding_origin) {
-  return blink::mojom::PermissionStatus::GRANTED;
+  base::DictionaryValue details;
+  details.SetString("embeddingOrigin", embedding_origin.spec());
+  bool granted = CheckPermissionWithDetails(permission, nullptr,
+                                            requesting_origin, &details);
+  return granted ? blink::mojom::PermissionStatus::GRANTED
+                 : blink::mojom::PermissionStatus::DENIED;
 }
 
 int AtomPermissionManager::SubscribePermissionStatusChange(
@@ -246,13 +251,28 @@ bool AtomPermissionManager::CheckPermissionWithDetails(
     return true;
   }
   auto* web_contents =
-      content::WebContents::FromRenderFrameHost(render_frame_host);
+      render_frame_host
+          ? content::WebContents::FromRenderFrameHost(render_frame_host)
+          : nullptr;
   auto mutable_details =
       details == nullptr ? base::DictionaryValue() : details->Clone();
-  mutable_details.SetStringKey("requestingUrl",
-                               render_frame_host->GetLastCommittedURL().spec());
-  mutable_details.SetBoolKey("isMainFrame",
-                             render_frame_host->GetParent() == nullptr);
+  if (render_frame_host) {
+    mutable_details.SetStringKey(
+        "requestingUrl", render_frame_host->GetLastCommittedURL().spec());
+  }
+  mutable_details.SetBoolKey(
+      "isMainFrame",
+      render_frame_host && render_frame_host->GetParent() == nullptr);
+  switch (permission) {
+    case content::PermissionType::AUDIO_CAPTURE:
+      mutable_details.SetStringKey("mediaType", "audio");
+      break;
+    case content::PermissionType::VIDEO_CAPTURE:
+      mutable_details.SetStringKey("mediaType", "video");
+      break;
+    default:
+      break;
+  }
   return check_handler_.Run(web_contents, permission, requesting_origin,
                             mutable_details);
 }
@@ -262,7 +282,11 @@ AtomPermissionManager::GetPermissionStatusForFrame(
     content::PermissionType permission,
     content::RenderFrameHost* render_frame_host,
     const GURL& requesting_origin) {
-  return blink::mojom::PermissionStatus::GRANTED;
+  base::DictionaryValue details;
+  bool granted = CheckPermissionWithDetails(permission, render_frame_host,
+                                            requesting_origin, &details);
+  return granted ? blink::mojom::PermissionStatus::GRANTED
+                 : blink::mojom::PermissionStatus::DENIED;
 }
 
 }  // namespace electron
