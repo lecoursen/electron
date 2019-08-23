@@ -101,7 +101,7 @@ AVMediaType ParseMediaType(const std::string& media_type) {
   }
 }
 
-std::string ConvertAuthorizationStatus(AVAuthorizationStatusMac status) {
+std::string ConvertAuthorizationStatus(AVAuthorizationStatus status) {
   switch (status) {
     case AVAuthorizationStatusNotDeterminedMac:
       return "not-determined";
