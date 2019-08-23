@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "base/stl_util.h"
+#include "content/common/url_schemes.h"
 #include "content/public/browser/child_process_security_policy.h"
 #include "shell/browser/atom_browser_context.h"
 #include "shell/browser/browser.h"
@@ -131,6 +132,7 @@ void RegisterSchemesAsPrivileged(v8::Local<v8::Value> val,
                          service_worker_schemes);
   AppendSchemesToCmdLine(electron::switches::kStandardSchemes,
                          g_standard_schemes);
+  content::RegisterContentSchemes(false);
 }
 
 namespace {
