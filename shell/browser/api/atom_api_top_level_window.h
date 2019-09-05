@@ -32,12 +32,15 @@ class TopLevelWindow : public mate::TrackableObject<TopLevelWindow>,
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
+  static std::vector<TopLevelWindow*> GetAllWindows() { return all_windows; }
 
   base::WeakPtr<TopLevelWindow> GetWeakPtr() {
     return weak_factory_.GetWeakPtr();
   }
 
   NativeWindow* window() const { return window_.get(); }
+
+  void SetGTKDarkThemeEnabled(bool use_dark_theme);
 
  protected:
   // Common constructor.
@@ -202,7 +205,6 @@ class TopLevelWindow : public mate::TrackableObject<TopLevelWindow>,
   void SetAspectRatio(double aspect_ratio, mate::Arguments* args);
   void PreviewFile(const std::string& path, mate::Arguments* args);
   void CloseFilePreview();
-  void SetGTKDarkThemeEnabled(bool use_dark_theme);
 
   // Public getters of NativeWindow.
   v8::Local<v8::Value> GetContentView() const;
@@ -258,6 +260,8 @@ class TopLevelWindow : public mate::TrackableObject<TopLevelWindow>,
   KeyWeakMap<int> child_windows_;
 
   std::unique_ptr<NativeWindow> window_;
+
+  static std::vector<TopLevelWindow*> all_windows;
 
   base::WeakPtrFactory<TopLevelWindow> weak_factory_;
 };

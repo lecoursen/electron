@@ -8,6 +8,7 @@
 
 #include "native_mate/dictionary.h"
 #include "native_mate/object_template_builder.h"
+#include "shell/browser/api/atom_api_top_level_window.h"
 #include "shell/common/node_includes.h"
 #include "ui/gfx/color_utils.h"
 #include "ui/native_theme/native_theme.h"
@@ -36,6 +37,9 @@ void NativeTheme::SetThemeSource(ui::NativeTheme::ThemeSource override) {
   // Update the macOS appearance setting for this new override value
   UpdateMacOSAppearanceForOverrideValue(override);
 #endif
+  for (auto* window : electron::api::TopLevelWindow::GetAllWindows()) {
+    window->SetGTKDarkThemeEnabled(ShouldUseDarkColors());
+  }
   // TODO(MarshallOfSound): Update all existing browsers windows to use GTK dark
   // theme
 }
