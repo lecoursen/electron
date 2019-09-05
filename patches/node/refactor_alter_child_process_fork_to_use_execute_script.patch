@@ -1,8 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Shelley Vohr <shelley.vohr@gmail.com>
 Date: Mon, 30 Jul 2018 10:30:35 -0700
-Subject: refactor: alter child_process.fork to use execute script with
- Electron
+Subject: refactor_alter_child_process_fork_to_use_execute_script.patch
 
 When forking a child script, we setup a special environment to make the Electron binary run like the upstream node. On Mac, we use the helper app as node binary.
 

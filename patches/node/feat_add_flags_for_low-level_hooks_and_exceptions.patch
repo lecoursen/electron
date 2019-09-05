@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Shelley Vohr <shelley.vohr@gmail.com>
 Date: Thu, 13 Sep 2018 08:42:22 -0700
-Subject: feat: add flags for low-level hooks and exceptions
+Subject: feat_add_flags_for_low-level_hooks_and_exceptions.patch
 
 This commit adds two new exposed methods to `node.cc`, `InitGeneric` and
 `LoadEnvironmentGeneric` that allow for control of which mode Node

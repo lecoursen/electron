@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Samuel Attard <sattard@slack-corp.com>
 Date: Mon, 15 Jul 2019 14:20:10 -0700
-Subject: fix: extern the NativeModuleEnv and options parser for debug builds
+Subject: fix_extern_the_nativemoduleenv_and_options_parser_for_debug_builds.patch
 
 
 diff --git a/src/node_native_module_env.h b/src/node_native_module_env.h

@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Samuel Attard <sattard@slack-corp.com>
 Date: Fri, 28 Jun 2019 16:52:24 -0700
-Subject: fixme: Revert "crypto: add support for RSA-PSS keys"
+Subject: fixme_revert_crypto_add_support_for_rsa-pss_keys.patch
 
 This reverts commit 969bd1eb7b56fda3573ad3d41745a491f2b06dde.
 

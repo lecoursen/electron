@@ -1,7 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Cheng Zhao <zcbenz@gmail.com>
 Date: Tue, 4 Jun 2019 17:42:11 +0900
-Subject: Inherit ELECTRON_CRASHPAD_PIPE_NAME in child process
+Subject: inherit_electron_crashpad_pipe_name_in_child_process.patch
+
+This PR inherits ELECTRON_CRASHPAD_PIPE_NAME in child process.
 
 This is required for crashReporter to work correctly in node process.
 

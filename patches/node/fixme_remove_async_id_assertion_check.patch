@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Shelley Vohr <shelley.vohr@gmail.com>
 Date: Thu, 13 Sep 2018 09:08:10 -0700
-Subject: FIXME: remove async_id assertion check
+Subject: fixme_remove_async_id_assertion_check.patch
 
 
 diff --git a/src/api/callback.cc b/src/api/callback.cc

@@ -1,9 +1,12 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Nitish Sakhawalkar <nitsakh@icloud.com>
 Date: Thu, 4 Apr 2019 16:45:35 -0700
-Subject: src: Disable NODE_USE_V8_PLATFORM in node_options
+Subject: src_disable_node_use_v8_platform_in_node_options.patch
 
-Electron does not set NODE_USE_V8_PLATFORM. If inspector is enabled when NODE_USE_V8_PLATFORM is false, then there's an error. We want to ignore that, use our own v8 platform but still use the node inspector
+Electron does not set NODE_USE_V8_PLATFORM.
+If inspector is enabled when NODE_USE_V8_PLATFORM is false,
+then there's an error. We want to ignore that and use our own v8 platform,
+but still use the node inspector.
 
 diff --git a/src/node_options.cc b/src/node_options.cc
 index b9d6108c5db800465e6c7156ad1c28002c33261b..01dddb979042c098326a8b1ff37397642733f49b 100644

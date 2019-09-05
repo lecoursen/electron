@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Nitish Sakhawalkar <nitsakh@icloud.com>
 Date: Thu, 11 Apr 2019 11:50:49 -0700
-Subject: fix: export DebugOptions
+Subject: fix_export_debugoptions.patch
 
 
 diff --git a/src/node_options.cc b/src/node_options.cc

@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Nitish Sakhawalkar <nitsakh@icloud.com>
 Date: Wed, 27 Mar 2019 14:17:15 -0700
-Subject: fix: Export node::Abort and Assert
+Subject: fix_export_node_abort_and_assert.patch
 
 
 diff --git a/src/node_errors.cc b/src/node_errors.cc

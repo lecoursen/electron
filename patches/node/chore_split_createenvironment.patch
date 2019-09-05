@@ -1,8 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Samuel Attard <sattard@slack-corp.com>
 Date: Wed, 17 Jul 2019 14:45:59 -0700
-Subject: chore: split CreateEnvironment into CreateEnvironment and
- BootstrapEnvironment
+Subject: chore_split_createenvironment.patch
+
+This PR splits CreateEnvironment into CreateEnvironment and BootstrapEnvironment.
 
 This allows us to run operations on a created but not yet bootstrapped
 environment such as setting up an InspectorAgent

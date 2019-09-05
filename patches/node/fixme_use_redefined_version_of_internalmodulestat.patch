@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Shelley Vohr <shelley.vohr@gmail.com>
 Date: Wed, 21 Aug 2019 11:06:16 -0700
-Subject: FIXME: use redefined version of internalModuleStat
+Subject: fixme_use_redefined_version_of_internalmodulestat.patch
 
 Instantiate redefined version of the internalModuleStat function
 (see lib/common/asar.js in the electron/electron repo). For some reason

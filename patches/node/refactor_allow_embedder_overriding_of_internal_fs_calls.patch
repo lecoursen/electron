@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Samuel Attard <sattard@slack-corp.com>
 Date: Mon, 22 Apr 2019 13:23:37 -0700
-Subject: refactor: allow embedder overriding of internal FS calls
+Subject: refactor_allow_embedder_overriding_of_internal_fs_calls.patch
 
 
 diff --git a/lib/internal/bootstrap/node.js b/lib/internal/bootstrap/node.js

@@ -1,7 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Cheng Zhao <zcbenz@gmail.com>
 Date: Sun, 14 Apr 2013 15:54:46 +0800
-Subject: Make Module.globalPaths a reference.
+Subject: make_module_globalpaths_a_reference.patch
+
+This PR makes Module.globalPaths a reference.
 
 We need to hack the search paths of the require function so we can
 load libraries from embedded applications without modifications of

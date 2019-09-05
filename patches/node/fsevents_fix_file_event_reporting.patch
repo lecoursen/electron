@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Ben Noordhuis <info@bnoordhuis.nl>
 Date: Mon, 27 May 2019 14:31:53 +0200
-Subject: fsevents: fix file event reporting
+Subject: fsevents_fix_file_event_reporting.patch
 
 Commit 2d2af38 ("fsevents: really watch files with fsevents on macos
 10.7+") from last November introduced a regression where events that

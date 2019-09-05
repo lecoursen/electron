@@ -1,8 +1,10 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Samuel Attard <sattard@slack-corp.com>
 Date: Wed, 22 May 2019 13:34:18 -0700
-Subject: chore: add ability to prevent / warn non context-aware native modules
- being loaded
+Subject: chore_warn_on_context_aware_native_module_load.patch
+
+This PR adds the ability to warn on and prevent non context-aware
+native node modules being loaded. 
 
 diff --git a/src/env.h b/src/env.h
 index 2dd6bdb75f02e2ccb07129996d16df99c0c4ccf2..ecb845803776f5ff6e7eec712ec7a5ebea2e8d0a 100644

@@ -1,9 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: deepak1556 <hop2deep@gmail.com>
 Date: Wed, 19 Dec 2018 08:54:45 +0530
-Subject: fix: use bssl BN_bn2bin_padded for ossl's BN_bn2binpad
+Subject: fix_use_bssl_bn_bn2bin_padded_for_ossl_s_bn_bn2binpad.patch
 
-Also note that BN_bn2bin_padded returns 1 on success instead of size
+This PR use bssl BN_bn2bin_padded for ossl's BN_bn2binpad.
+
+Also note that BN_bn2bin_padded returns 1 on success instead of size.
 
 diff --git a/src/node_crypto.cc b/src/node_crypto.cc
 index 91e62f41b3db02bac516e6e91ffb77d5476fb9ad..dd78a59742fc05e938ba2397d3701b2ac8ccfc23 100644

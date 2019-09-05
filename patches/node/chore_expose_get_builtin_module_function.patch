@@ -1,7 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Thiago de Arruda <tpadilha84@gmail.com>
 Date: Mon, 6 Mar 2017 10:42:34 -0300
-Subject: Expose `get_builtin_module` function
+Subject: chore_expose_get_builtin_module_function.patch
+
+This PR exposes the `get_builtin_module` function.
 
 This is a requirement for electron/electron#8815, which exposes some builtin
 modules to sandboxed renderers.

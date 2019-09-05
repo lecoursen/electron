@@ -1,7 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Kevin Sawicki <kevinsawicki@gmail.com>
 Date: Wed, 12 Oct 2016 09:43:26 -0700
-Subject: Call process.log from fallback stream on Windows
+Subject: call_process_log_from_fallback_stream_on_windows.patch
+
+Call process.log from fallback stream on Windows.
 
 (cherry picked from commit d31e629b4f2daf3500a485caab2b2990a41e3ad4)
 

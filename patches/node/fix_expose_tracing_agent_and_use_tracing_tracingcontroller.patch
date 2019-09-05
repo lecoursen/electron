@@ -1,8 +1,10 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Samuel Attard <sattard@atlassian.com>
 Date: Fri, 26 Oct 2018 15:35:13 +1100
-Subject: fix: expose tracing::Agent and use tracing::TracingController instead
- of v8::TracingController
+Subject: fix_expose_tracing_agent_and_use_tracing_tracingcontroller.patch
+
+This PR exposes tracing::Agent and uses tracing::TracingController instead
+of v8::TracingController≥
 
 diff --git a/src/api/environment.cc b/src/api/environment.cc
 index ac1e513967310aefa50100843c643c788ab5157c..35e8666ef771c56a1bcd441c99d4483a0d3e90bf 100644

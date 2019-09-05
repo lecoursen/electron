@@ -1,10 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jeremy Apthorp <nornagon@nornagon.net>
 Date: Wed, 19 Sep 2018 12:20:44 -0700
-Subject: fix: add default values for 'enable_lto' and 'build_v8_with_gn' in
- common.gypi
+Subject: fix_add_default_values_for_enable_lto_and_build_v8_with_gn.patch
 
-common.gypi is a file that's included in the node header bundle, despite
+Common.gypi is a file that's included in the node header bundle, despite
 the fact that we do not build node with gyp.
 
 diff --git a/common.gypi b/common.gypi

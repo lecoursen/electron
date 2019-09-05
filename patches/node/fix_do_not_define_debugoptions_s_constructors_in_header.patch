@@ -1,9 +1,10 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Cheng Zhao <zcbenz@gmail.com>
 Date: Fri, 29 Mar 2019 17:17:30 +0900
-Subject: fix: do not define DebugOptions's constructors in header
+Subject: fix_do_not_define_debugoptions_s_constructors_in_header.patch
 
-The e3ca89ef49 changed NODE_EXTERN to always expose symbols for
+We do not want to define DebugOptions's constructors in the header.
+e3ca89ef49 changed NODE_EXTERN to always expose symbols for
 DebugOptions, and since the constructors of DebugOptions are defined in
 header, the compiler would end up generating no constructor
 implementations for DebugOptions.

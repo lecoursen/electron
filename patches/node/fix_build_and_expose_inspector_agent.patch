@@ -1,9 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Shelley Vohr <shelley.vohr@gmail.com>
 Date: Mon, 30 Jul 2018 15:18:11 -0700
-Subject: fix: build and expose inspector agent
+Subject: fix_build_and_expose_inspector_agent.patch
 
-Node inspector initialization happens in a different start-up function in node.cc, which we don't call in Electron. This allows for us to use the inspector agent in electron/atom/browser/node_debugger.cc
+Node inspector initialization happens in a different start-up function
+in node.cc, which we don't call in Electron. This allows for us to use 
+the inspector agent in electron/atom/browser/node_debugger.cc.
 
 diff --git a/src/inspector_agent.cc b/src/inspector_agent.cc
 index 2965483dea6244e7123c08c104f399fc023a84e0..b6624300e96daf6041a296fdc1ceeaf579e215cd 100644

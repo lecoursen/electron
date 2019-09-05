@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Nitish Sakhawalkar <nitsakh@icloud.com>
 Date: Mon, 12 Aug 2019 12:54:47 -0700
-Subject: Revert "crypto: add outputLength option to crypto.createHash"
+Subject: revert_crypto_add_outputlength_option_to_crypto_createhash.patch
 
 This reverts commit b7c6ad595b80442e433c6308dc5b80ed641866e0.
 

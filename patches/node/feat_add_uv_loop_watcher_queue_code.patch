@@ -1,9 +1,15 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Shelley Vohr <shelley.vohr@gmail.com>
 Date: Mon, 30 Jul 2018 10:34:54 -0700
-Subject: feat: add uv_loop watcher_queue code
+Subject: feat_add_uv_loop_watcher_queue_code.patch
 
-Electron's Node Integration works by listening to Node's backend file descriptor in a separate thread; when an event is ready the backend file descriptor will trigger a new event for it, and the main thread will then iterate the libuv loop. For certain operations (ex. adding a timeout task) the backend file descriptor isn't informed, & as a result the main thread doesn't know it needs to iterate the libuv loop so the timeout task will never execute until something else trigger a new event. This commit should be removed when https://github.com/libuv/libuv/pull/1921 is merged
+Electron's Node Integration works by listening to Node's backend file
+descriptor in a separate thread; when an event is ready the backend file
+descriptor will trigger a new event for it, and the main thread will then
+iterate the libuv loop. For certain operations (ex. adding a timeout task)
+the backend file descriptor isn't informed, & as a result the main thread
+doesn't know it needs to iterate the libuv loop so the timeout task will
+never execute until something else trigger a new event.
 
 diff --git a/deps/uv/include/uv.h b/deps/uv/include/uv.h
 index f97801cec2f41b104fae591277ffbb94c3b2f299..da648b3efd5948843c485d65035ae29c79eebc69 100644
