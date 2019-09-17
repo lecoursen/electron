@@ -32,7 +32,7 @@ class TopLevelWindow : public mate::TrackableObject<TopLevelWindow>,
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
-  static std::vector<TopLevelWindow*> GetAllWindows() { return all_windows; }
+  static std::vector<TopLevelWindow*> GetAllWindows() { return all_windows_; }
 
   base::WeakPtr<TopLevelWindow> GetWeakPtr() {
     return weak_factory_.GetWeakPtr();
@@ -261,7 +261,7 @@ class TopLevelWindow : public mate::TrackableObject<TopLevelWindow>,
 
   std::unique_ptr<NativeWindow> window_;
 
-  static std::vector<TopLevelWindow*> all_windows;
+  static std::vector<TopLevelWindow*> all_windows_;
 
   base::WeakPtrFactory<TopLevelWindow> weak_factory_;
 };
