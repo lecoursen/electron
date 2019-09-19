@@ -18,9 +18,9 @@ SpellcheckLanguage::Word::Word(const Word& word) = default;
 
 SpellcheckLanguage::Word::~Word() = default;
 
-bool SpellcheckLanguage::Word::operator==(const Word& word) const {
-  return result.location == word.result.location && text == word.text;
-}
+// bool SpellcheckLanguage::Word::operator==(const Word& word) const {
+//   return result.location == word.result.location && text == word.text;
+// }
 
 SpellcheckLanguage::SpellcheckLanguage() {}
 
@@ -37,29 +37,27 @@ bool SpellcheckLanguage::InitializeIfNeeded() {
   return true;
 }
 
-std::set<base::string16> SpellcheckLanguage::SpellCheckText(
-    const base::string16& text,
-    std::unordered_set<SpellcheckLanguage::Word>& word_list) {
+std::vector<Word> SpellcheckLanguage::SpellCheckText(
+    const base::string16& text) {
   if (!text_iterator_.IsInitialized() &&
       !text_iterator_.Initialize(&character_attributes_, true)) {
     // We failed to initialize text_iterator_, return as spelled correctly.
     VLOG(1) << "Failed to initialize SpellcheckWordIterator";
-    return std::set<base::string16>();
+    return std::vector<Word>();
   }
 
   if (!contraction_iterator_.IsInitialized() &&
       !contraction_iterator_.Initialize(&character_attributes_, false)) {
     // We failed to initialize the word iterator, return as spelled correctly.
     VLOG(1) << "Failed to initialize contraction_iterator_";
-    return std::set<base::string16>();
+    return std::vector<Word>();
   }
 
   text_iterator_.SetText(text.c_str(), text.size());
 
-  base::string16 word;
   size_t word_start;
   size_t word_length;
-  std::set<base::string16> words;
+  std::vector<Word> words;
   Word word_entry;
   for (;;) {  // Run until end of text
     const auto status =
@@ -73,19 +71,15 @@ std::set<base::string16> SpellcheckLanguage::SpellCheckText(
     word_entry.result.length = base::checked_cast<int>(word_length);
     word_entry.text = word;
     word_entry.contraction_words.clear();
-    auto found = find(word_list.begin(), word_list.end(), word_entry);
-    if (found != word_list.end()) {
-      found->misspelled_count++;
-    } else {
-      word_entry.misspelled_count = 1;
-      word_list.insert(word_entry);
-    }
-    words.insert(word);
+    words.push_back(word_entry);
     // If the given word is a concatenated word of two or more valid words
     // (e.g. "hello:hello"), we should treat it as a valid word.
-    if (IsContraction(word, &word_entry.contraction_words)) {
+    if (IsContraction(word_entry.text, &word_entry.contraction_words)) {
       for (const auto& w : word_entry.contraction_words) {
-        words.insert(w);
+        Word cw;
+        cw.text = w;
+        cw.result = word_entry.result;
+        words.push_back(cw);
       }
     }
   }

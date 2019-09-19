@@ -20,9 +20,30 @@
 #include "native_mate/dictionary.h"
 #include "native_mate/function_template.h"
 #include "shell/common/native_mate_converters/string16_converter.h"
+// #include "shell/common/native_mate_converters/map_converter.h"
 #include "third_party/blink/public/web/web_text_checking_completion.h"
 #include "third_party/blink/public/web/web_text_checking_result.h"
 #include "third_party/icu/source/common/unicode/uscript.h"
+
+// namespace gin {
+
+// template<>
+// struct Converter<electron::SpellcheckLanguage::Word> {
+// static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+//                                    electron::SpellcheckLanguage::Word value)
+//                                    {
+//   // static_assert(false, "WORD Static Assert");
+//   return v8::String::NewFromTwoByte(isolate,
+//                                 reinterpret_cast<const
+//                                 uint16_t*>(value.text.data()),
+//                                 v8::NewStringType::kNormal,
+//                                 value.text.size())
+//       .ToLocalChecked();
+// }
+
+// };
+
+// }
 
 namespace electron {
 
@@ -61,9 +82,6 @@ class SpellCheckClient::SpellcheckRequest {
   std::vector<blink::WebTextCheckingResult>* misspelled_words() {
     return &results_;
   }
-  void setCount(int count) { remaining_ = count; }
-  void decrement() { remaining_--; }
-  int remaining() { return remaining_; }
 
  private:
   base::string16 text_;                 // Text to be checked in this task.
@@ -71,7 +89,6 @@ class SpellCheckClient::SpellcheckRequest {
   // The interface to send the misspelled ranges to WebKit.
   std::unique_ptr<blink::WebTextCheckingCompletion> completion_;
   std::vector<blink::WebTextCheckingResult> results_;
-  int remaining_ = 0;
 
   DISALLOW_COPY_AND_ASSIGN(SpellcheckRequest);
 };
@@ -146,75 +163,65 @@ void SpellCheckClient::SpellCheckText() {
     return;
   }
   SpellCheckScope scope(*this);
-  auto& word_list = pending_request_param_->wordlist();
-  pending_request_param_->setCount(languages_.size());
-  std::unordered_map<std::string, std::set<base::string16>> lang_words;
+  std::map<std::string, std::vector<Word>> lang_words;
   for (const auto& language : languages_) {
-    auto words = language->SpellCheckText(text, word_list);
-    lang_words.insert(std::make_pair(language->GetLanguageString(), words));
+    auto words = language->SpellCheckText(text);
+    lang_words.insert(lang_words.end(),
+                      std::make_pair(language->GetLanguageString(), words));
   }
   // Send out all the words data to the spellchecker to check
   SpellCheckWords(scope, lang_words);
 }
 
 void SpellCheckClient::OnSpellCheckDone(
+    const std::map<std::string, std::vector<Word>>& lang_words,
     const std::vector<base::string16>& misspelled_words) {
+  std::vector<blink::WebTextCheckingResult> results;
   std::unordered_set<base::string16> misspelled(misspelled_words.begin(),
                                                 misspelled_words.end());
-  auto& word_list = pending_request_param_->wordlist();
+  for (const auto& entry : lang_words) {
+    const auto& word_list = entry.second;
 
-  for (auto word = word_list.begin(); word != word_list.end(); ++word) {
-    if (misspelled.find(word->text) != misspelled.end()) {
-      // If this is a contraction, iterate through parts and accept the word
-      // if none of them are misspelled
-      if (!word->contraction_words.empty()) {
-        auto all_correct = true;
-        for (const auto& contraction_word : word->contraction_words) {
-          if (misspelled.find(contraction_word) != misspelled.end()) {
-            all_correct = false;
-            break;
+    for (auto word = word_list.begin(); word != word_list.end(); ++word) {
+      if (misspelled.find(word->text) != misspelled.end()) {
+        // If this is a contraction, iterate through parts and accept the word
+        // if none of them are misspelled
+        if (!word->contraction_words.empty()) {
+          auto all_correct = true;
+          for (const auto& contraction_word : word->contraction_words) {
+            if (misspelled.find(contraction_word) != misspelled.end()) {
+              all_correct = false;
+              break;
+            }
           }
+          if (all_correct)
+            continue;
         }
-        if (all_correct)
-          continue;
-      }
-      word->misspelled_count--;
-    }
-  }
-  pending_request_param_->decrement();
-  if (pending_request_param_->remaining() == 0) {
-    std::vector<blink::WebTextCheckingResult> result;
-    for (const auto& w : word_list) {
-      if (w.misspelled_count == 0) {
-        result.push_back(w.result);
+        results.push_back(word->result);
       }
     }
-    pending_request_param_->completion()->DidFinishCheckingText(result);
-    pending_request_param_ = nullptr;
   }
+
+  pending_request_param_->completion()->DidFinishCheckingText(results);
+  pending_request_param_ = nullptr;
 }
 
 void SpellCheckClient::SpellCheckWords(
     const SpellCheckScope& scope,
-    const std::unordered_map<std::string, std::set<base::string16>>&
-        lang_words) {
+    const std::map<std::string, std::vector<Word>>& lang_words) {
   DCHECK(!scope.spell_check_.IsEmpty());
 
-  for (const auto& entry : lang_words) {
-    const auto& language = entry.first;
-    const auto& words = entry.second;
-    v8::Local<v8::FunctionTemplate> templ = mate::CreateFunctionTemplate(
-        isolate_,
-        base::BindRepeating(&SpellCheckClient::OnSpellCheckDone, AsWeakPtr()));
+  v8::Local<v8::FunctionTemplate> templ = mate::CreateFunctionTemplate(
+      isolate_,
+      base::Bind(&SpellCheckClient::OnSpellCheckDone, AsWeakPtr(), lang_words));
 
-    auto context = isolate_->GetCurrentContext();
-    v8::Local<v8::Value> args[] = {
-        mate::ConvertToV8(isolate_, language),
-        mate::ConvertToV8(isolate_, words),
-        templ->GetFunction(context).ToLocalChecked()};
-    // Call javascript with the words and the callback function
-    scope.spell_check_->Call(context, scope.provider_, 3, args).IsEmpty();
-  }
+  auto context = isolate_->GetCurrentContext();
+  v8::Local<v8::Value> args[] = {
+      // gin::Converter<std::map<std::string,
+      // std::vector<Word>>>::ToV8(isolate_, lang_words),
+      templ->GetFunction(context).ToLocalChecked()};
+  // Call javascript with the words and the callback function
+  scope.spell_check_->Call(context, scope.provider_, 1, args).IsEmpty();
 }
 
 SpellCheckClient::SpellCheckScope::SpellCheckScope(

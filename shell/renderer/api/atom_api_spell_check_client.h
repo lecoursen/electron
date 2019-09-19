@@ -73,11 +73,14 @@ class SpellCheckClient : public blink::WebSpellCheckPanelHostClient,
   // with the results of all the misspelled words.
   void SpellCheckWords(
       const SpellCheckScope& scope,
-      const std::unordered_map<std::string, std::set<base::string16>>&
+      const std::map<std::string, std::vector<SpellcheckLanguage::Word>>&
           lang_words);
 
   // Callback for the JS API which returns the list of misspelled words.
-  void OnSpellCheckDone(const std::vector<base::string16>& misspelled_words);
+  void OnSpellCheckDone(
+      const std::map<std::string, std::vector<SpellcheckLanguage::Word>>&
+          lang_words,
+      const std::vector<base::string16>& misspelled_words);
 
   // The parameters of a pending background-spellchecking request.
   // (When WebKit sends two or more requests, we cancel the previous

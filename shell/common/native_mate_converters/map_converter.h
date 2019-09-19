@@ -40,7 +40,7 @@ struct Converter<std::map<std::string, T>> {
     auto context = isolate->GetCurrentContext();
     for (auto i = val.begin(); i != val.end(); i++) {
       result
-          ->Set(context, Converter<T>::ToV8(isolate, i->first),
+          ->Set(context, Converter<std::string>::ToV8(isolate, i->first),
                 Converter<T>::ToV8(isolate, i->second))
           .Check();
     }
