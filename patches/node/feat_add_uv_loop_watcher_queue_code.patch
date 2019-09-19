@@ -12,10 +12,10 @@ doesn't know it needs to iterate the libuv loop so the timeout task will
 never execute until something else trigger a new event.
 
 diff --git a/deps/uv/include/uv.h b/deps/uv/include/uv.h
-index f97801cec2f41b104fae591277ffbb94c3b2f299..da648b3efd5948843c485d65035ae29c79eebc69 100644
+index f71767b6e9fab58e22069e4f40d371feef11fb95..1df588207da8eb4711b420f214896ad81d219883 100644
 --- a/deps/uv/include/uv.h
 +++ b/deps/uv/include/uv.h
-@@ -1657,6 +1657,8 @@ union uv_any_req {
+@@ -1682,6 +1682,8 @@ union uv_any_req {
  struct uv_loop_s {
    /* User data - use this for whatever. */
    void* data;
@@ -25,10 +25,10 @@ index f97801cec2f41b104fae591277ffbb94c3b2f299..da648b3efd5948843c485d65035ae29c
    unsigned int active_handles;
    void* handle_queue[2];
 diff --git a/deps/uv/src/unix/core.c b/deps/uv/src/unix/core.c
-index 202c75bbb5e94cb2e8a588b09d4fbfdfe1ccfe3a..041b1838c629ec828f2160ac735953f1bf986c01 100644
+index f4b94e30cc0049ec12e9d0efdc46cc4f7b0032e1..18361f796e90de6350971866f22ee7570dc3a328 100644
 --- a/deps/uv/src/unix/core.c
 +++ b/deps/uv/src/unix/core.c
-@@ -892,8 +892,11 @@ void uv__io_start(uv_loop_t* loop, uv__io_t* w, unsigned int events) {
+@@ -896,8 +896,11 @@ void uv__io_start(uv_loop_t* loop, uv__io_t* w, unsigned int events) {
      return;
  #endif
  
@@ -41,7 +41,7 @@ index 202c75bbb5e94cb2e8a588b09d4fbfdfe1ccfe3a..041b1838c629ec828f2160ac735953f1
  
    if (loop->watchers[w->fd] == NULL) {
      loop->watchers[w->fd] = w;
-@@ -929,8 +932,11 @@ void uv__io_stop(uv_loop_t* loop, uv__io_t* w, unsigned int events) {
+@@ -933,8 +936,11 @@ void uv__io_stop(uv_loop_t* loop, uv__io_t* w, unsigned int events) {
        w->events = 0;
      }
    }
@@ -54,7 +54,7 @@ index 202c75bbb5e94cb2e8a588b09d4fbfdfe1ccfe3a..041b1838c629ec828f2160ac735953f1
  }
  
  
-@@ -947,6 +953,8 @@ void uv__io_close(uv_loop_t* loop, uv__io_t* w) {
+@@ -951,6 +957,8 @@ void uv__io_close(uv_loop_t* loop, uv__io_t* w) {
  void uv__io_feed(uv_loop_t* loop, uv__io_t* w) {
    if (QUEUE_EMPTY(&w->pending_queue))
      QUEUE_INSERT_TAIL(&loop->pending_queue, &w->pending_queue);

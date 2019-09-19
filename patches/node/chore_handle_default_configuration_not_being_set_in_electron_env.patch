@@ -1,12 +1,13 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Samuel Attard <sattard@slack-corp.com>
 Date: Tue, 23 Jul 2019 11:36:48 -0700
-Subject: chore_handle_default_configuration_not_being_set_in_electron_env.patch
+Subject: 
+ chore_handle_default_configuration_not_being_set_in_electron_env.patch
 
 This PR handles default_configuration not being set in the Electron environment.
 
 diff --git a/test/common/index.js b/test/common/index.js
-index 13604d06e14a3612e4d161ebbdda10912a46d3b0..0f1398ed665b66d4fe7778a33ceab5176c086ff4 100644
+index 98a26872223cb9879efc8399dd4a4b88193ebb57..7160fd44a19fc3514697965ac6f024bf10e09323 100644
 --- a/test/common/index.js
 +++ b/test/common/index.js
 @@ -118,7 +118,7 @@ const enoughTestCpu = Array.isArray(cpus) &&

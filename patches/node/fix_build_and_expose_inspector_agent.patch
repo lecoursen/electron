@@ -4,11 +4,11 @@ Date: Mon, 30 Jul 2018 15:18:11 -0700
 Subject: fix_build_and_expose_inspector_agent.patch
 
 Node inspector initialization happens in a different start-up function
-in node.cc, which we don't call in Electron. This allows for us to use 
+in node.cc, which we don't call in Electron. This allows for us to use
 the inspector agent in electron/atom/browser/node_debugger.cc.
 
 diff --git a/src/inspector_agent.cc b/src/inspector_agent.cc
-index 2965483dea6244e7123c08c104f399fc023a84e0..b6624300e96daf6041a296fdc1ceeaf579e215cd 100644
+index 323e6646d6f1bbf761bf74b4693f697f55b35651..1fa5dc12d9ec55a8ed6034c1d2f25593f3736bac 100644
 --- a/src/inspector_agent.cc
 +++ b/src/inspector_agent.cc
 @@ -217,7 +217,7 @@ const int CONTEXT_GROUP_ID = 1;

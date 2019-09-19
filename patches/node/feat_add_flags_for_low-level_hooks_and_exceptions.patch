@@ -107,7 +107,7 @@ index 572490730da5854ad1a79670564ad9705c86747b..9b43d7676e5e106318b58bfe443651cc
  
    // We should set node_is_initialized here instead of in node::Start,
 diff --git a/src/node.h b/src/node.h
-index f78c76023bb667031b46e5fac80028bc5fd5374c..42ad1a5aba3fb57e27a07689768fd0dc8dd37d6d 100644
+index 13d71d41398545963139e61488474e23fa0ebeea..2baf51c3181fe2d390246f655ad35c3aac51f229 100644
 --- a/src/node.h
 +++ b/src/node.h
 @@ -203,6 +203,9 @@ namespace node {

@@ -16,7 +16,7 @@ By putting the definitions of constructors into the implementation file,
 we can avoid this problem.
 
 diff --git a/src/node_options.cc b/src/node_options.cc
-index f4dc3d7df5a33ce92ca52e901283db5aa9f143b4..b9d6108c5db800465e6c7156ad1c28002c33261b 100644
+index 65bd7b63c6ccf20af153db38f41fe46c4b5f503b..8937692d359659b6808350c27723fed4f87f5d15 100644
 --- a/src/node_options.cc
 +++ b/src/node_options.cc
 @@ -26,6 +26,12 @@ Mutex cli_options_mutex;

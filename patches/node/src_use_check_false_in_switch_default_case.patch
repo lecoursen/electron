@@ -6,10 +6,10 @@ Subject: src_use_check_false_in_switch_default_case.patch
 Porting https://github.com/nodejs/node/pull/26502
 
 diff --git a/src/node_crypto.cc b/src/node_crypto.cc
-index dd78a59742fc05e938ba2397d3701b2ac8ccfc23..bca482cc9724fef680196a192a6bbd7b4d2e4fde 100644
+index c59c6ee1aadb714d19b3794e43dfdf08d70973bc..1dbe88cbf6c4bde59da6dbaf1268a0fca58f1f1d 100644
 --- a/src/node_crypto.cc
 +++ b/src/node_crypto.cc
-@@ -3476,7 +3476,7 @@ static ManagedEVPPKey GetPublicOrPrivateKeyFromJs(
+@@ -3477,7 +3477,7 @@ static ManagedEVPPKey GetPublicOrPrivateKeyFromJs(
            is_public = false;
            break;
          default:

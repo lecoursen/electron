@@ -20,10 +20,10 @@ index 86b2164bb0d74a531acd0f01da5269642ea574cf..48a38a6b5054c6bf14df82a8cb3c41d4
  process.config = JSON.parse(internalBinding('native_module').config);
  
 diff --git a/lib/internal/modules/cjs/loader.js b/lib/internal/modules/cjs/loader.js
-index ffc7fb6fd5857b807198d4d26b7b899e63cde4a1..2a7ffbff213f23536b94664c3ecffa18eb812849 100644
+index adb6dffa8f89035078c6e5b8a975c4874a5b0eb8..49c3f0bdd6cef493b6e627502bd2e02fee1f08a4 100644
 --- a/lib/internal/modules/cjs/loader.js
 +++ b/lib/internal/modules/cjs/loader.js
-@@ -37,10 +37,7 @@ const assert = require('internal/assert');
+@@ -38,10 +38,7 @@ const assert = require('internal/assert');
  const fs = require('fs');
  const internalFS = require('internal/fs/utils');
  const path = require('path');
@@ -35,7 +35,7 @@ index ffc7fb6fd5857b807198d4d26b7b899e63cde4a1..2a7ffbff213f23536b94664c3ecffa18
  const { safeGetenv } = internalBinding('credentials');
  const {
    makeRequireFunction,
-@@ -117,14 +117,12 @@ const relativeResolveCache = Object.create(null);
+@@ -117,14 +114,12 @@ function enrichCJSError(err) {
  }
  
  function stat(filename) {
@@ -51,7 +51,7 @@ index ffc7fb6fd5857b807198d4d26b7b899e63cde4a1..2a7ffbff213f23536b94664c3ecffa18
    if (statCache !== null) statCache.set(filename, result);
    return result;
  }
-@@ -205,7 +200,7 @@ const packageExportsCache = new SafeMap();
+@@ -229,7 +224,7 @@ const packageExportsCache = new SafeMap();
  
  function readPackageRaw(requestPath) {
    const jsonPath = path.resolve(requestPath, 'package.json');

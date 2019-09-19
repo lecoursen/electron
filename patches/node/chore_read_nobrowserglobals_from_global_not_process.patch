@@ -3,7 +3,7 @@ From: Samuel Attard <sattard@slack-corp.com>
 Date: Mon, 15 Jul 2019 17:45:02 -0700
 Subject: chore_read_nobrowserglobals_from_global_not_process.patch
 
-This updates bootstrap/node.js to read _noBrowserGlobals from global 
+This updates bootstrap/node.js to read _noBrowserGlobals from global
 and not from config. This is used so that we can modify the flag at
 runtime where config can only be set at compile time.
 
