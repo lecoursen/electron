@@ -103,6 +103,42 @@ void DeepFreeze(const v8::Local<v8::Object>& object,
 v8::Local<v8::Value> PassValueToOtherContext(v8::Local<v8::Context> source,
                                              v8::Local<v8::Context> destination,
                                              v8::Local<v8::Value> value) {
+  // Proxy promises as they have a safe and guarunteed memory lifecycle (unlike
+  // functions)
+  if (value->IsPromise()) {
+    v8::Context::Scope destination_scope(destination);
+
+    auto v8_promise = v8::Local<v8::Promise>::Cast(value);
+    util::Promise<v8::Local<v8::Value>> promise(args->isolate());
+    v8::Local<v8::Promise> handle = promise.GetHandle();
+
+    v8::Local<v8::Value> promise_handler = mate::ConvertToV8(
+        destination->GetIsolate(),
+        base::BindOnce(
+            [](electron::util::Promise<v8::Local<v8::Value>> p,
+               v8::Isolate* isolate, v8::Global<v8::Context> source,
+               v8::Global<v8::Context> destination,
+               v8::Local<v8::Value> result) {
+              if (p.GetHandle()->State() ==
+                  v8::Promise::PromiseState::kFulfilled) {
+                p.Resolve(PassValueToOtherContext(
+                    source.Get(isolate), destination.Get(isolate), result));
+              } else {
+                p.Reject(PassValueToOtherContext(
+                    source.Get(isolate), destination.Get(isolate), result));
+              }
+            },
+            std::move(promise), destination->GetIsolate(),
+            v8::Global<v8::Context>(args->isolate(), source),
+            v8::Global<v8::Context>(args->isolate(), destination)));
+    v8::Local<v8::Function> promise_func =
+        v8::Local<v8::Function>::Cast(promise_handler);
+
+    ignore_result(v8_promise->Then(source, promise_func, promise_func));
+
+    return handle;
+  }
+
   // Errors aren't serializable currently, we need to pull the message out and
   // re-construct in the destination context
   if (value->IsNativeError()) {
@@ -178,41 +214,6 @@ v8::Local<v8::Value> ProxyFunctionWrapper(RenderFramePersistenceStore* store,
     return v8::Undefined(args->isolate());
 
   auto return_value = maybe_return_value.ToLocalChecked();
-
-  if (return_value->IsPromise()) {
-    v8::Context::Scope calling_context_scope(calling_context);
-
-    auto v8_promise = v8::Local<v8::Promise>::Cast(return_value);
-    util::Promise<v8::Local<v8::Value>> promise(args->isolate());
-    v8::Local<v8::Promise> handle = promise.GetHandle();
-
-    v8::Local<v8::Value> promise_handler = mate::ConvertToV8(
-        args->isolate(),
-        base::BindOnce(
-            [](electron::util::Promise<v8::Local<v8::Value>> p,
-               v8::Isolate* isolate, v8::Global<v8::Context> source,
-               v8::Global<v8::Context> destination,
-               v8::Local<v8::Value> result) {
-              if (p.GetHandle()->State() ==
-                  v8::Promise::PromiseState::kFulfilled) {
-                p.Resolve(PassValueToOtherContext(
-                    source.Get(isolate), destination.Get(isolate), result));
-              } else {
-                p.Reject(PassValueToOtherContext(
-                    source.Get(isolate), destination.Get(isolate), result));
-              }
-            },
-            std::move(promise), args->isolate(),
-            v8::Global<v8::Context>(args->isolate(), func_owning_context),
-            v8::Global<v8::Context>(args->isolate(), calling_context)));
-    v8::Local<v8::Function> promise_func =
-        v8::Local<v8::Function>::Cast(promise_handler);
-
-    ignore_result(
-        v8_promise->Then(func_owning_context, promise_func, promise_func));
-
-    return handle;
-  }
 
   return PassValueToOtherContext(func_owning_context, calling_context,
                                  return_value);
