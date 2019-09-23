@@ -25,8 +25,8 @@ index 158e9b73facc28aec07d98f7aac3c0e7402774bf..8773e37c5ca0152e79efd59613e5f22d
 @@ -52,6 +52,7 @@ function prepareMainThreadExecution(expandArgv1 = false) {
    initializeESMLoader();
    loadPreloadModules();
-   initializeFrozenIntrinsics();
 +  setupAsarSupport();
+   initializeFrozenIntrinsics();
  }
  
  function patchProcessObject(expandArgv1) {
