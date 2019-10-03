@@ -5,6 +5,7 @@ import * as path from 'path'
 import { emittedOnce } from './events-helpers'
 import { BrowserView, BrowserWindow } from 'electron'
 import { closeWindow } from './window-helpers';
+import { ifit } from './spec-helpers';
 
 const { expect } = chai
 chai.use(dirtyChai)
@@ -85,7 +86,7 @@ describe('BrowserView module', () => {
       view.setBounds({ x: 0, y: 0, width: 1, height: 1 })
     })
 
-    it('throws for invalid args', () => {
+    ifit(process.platform !== 'win32' || process.arch !== 'ia32'))('throws for invalid args', () => {
       view = new BrowserView()
       expect(() => {
         view.setBounds(null as any)
